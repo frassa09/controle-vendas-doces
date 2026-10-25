@@ -8,6 +8,59 @@ export type Database = {
   };
   public: {
     Tables: {
+      customers: {
+        Row: {
+          consent_at: string | null;
+          consented: boolean;
+          created_at: string;
+          id: string;
+          link_token: string;
+          name: string;
+          notes: string | null;
+          pin: string;
+          reference: string | null;
+          store_id: string;
+          updated_at: string;
+          whatsapp: string;
+        };
+        Insert: {
+          consent_at?: string | null;
+          consented?: boolean;
+          created_at?: string;
+          id?: string;
+          link_token?: string;
+          name: string;
+          notes?: string | null;
+          pin: string;
+          reference?: string | null;
+          store_id: string;
+          updated_at?: string;
+          whatsapp: string;
+        };
+        Update: {
+          consent_at?: string | null;
+          consented?: boolean;
+          created_at?: string;
+          id?: string;
+          link_token?: string;
+          name?: string;
+          notes?: string | null;
+          pin?: string;
+          reference?: string | null;
+          store_id?: string;
+          updated_at?: string;
+          whatsapp?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'customers_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       store_invites: {
         Row: {
           code: string;
@@ -145,6 +198,29 @@ export type Database = {
           to: 'stores';
           isOneToOne: true;
           isSetofReturn: false;
+        };
+      };
+      search_customers: {
+        Args: { p_query: string };
+        Returns: {
+          consent_at: string | null;
+          consented: boolean;
+          created_at: string;
+          id: string;
+          link_token: string;
+          name: string;
+          notes: string | null;
+          pin: string;
+          reference: string | null;
+          store_id: string;
+          updated_at: string;
+          whatsapp: string;
+        }[];
+        SetofOptions: {
+          from: '*';
+          to: 'customers';
+          isOneToOne: false;
+          isSetofReturn: true;
         };
       };
     };

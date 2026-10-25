@@ -13,6 +13,7 @@ export type CoreErrorCode =
   | 'INVITE_NOT_FOUND'
   | 'INVITE_ALREADY_USED'
   | 'FORBIDDEN'
+  | 'CUSTOMER_NOT_FOUND'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -26,6 +27,7 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   INVITE_NOT_FOUND: 'Não encontramos esse código. Confira as letras e os números.',
   INVITE_ALREADY_USED: 'Este código já foi usado. Peça um código novo para quem te convidou.',
   FORBIDDEN: 'Você não tem acesso a esses dados.',
+  CUSTOMER_NOT_FOUND: 'Cliente não encontrado.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

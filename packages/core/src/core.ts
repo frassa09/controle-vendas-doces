@@ -1,4 +1,5 @@
 import { createAuthOperations, type AuthOperations } from './auth';
+import { createCustomerOperations, type CustomerOperations } from './customers';
 import type { DbClient } from './db/client';
 import { createStoreOperations, type StoreOperations } from './store';
 
@@ -10,6 +11,7 @@ import { createStoreOperations, type StoreOperations } from './store';
 export interface Core {
   auth: AuthOperations;
   store: StoreOperations;
+  customers: CustomerOperations;
 }
 
 export interface CoreDependencies {
@@ -21,5 +23,6 @@ export function createCore({ supabase }: CoreDependencies): Core {
   return {
     auth: createAuthOperations(supabase),
     store: createStoreOperations(supabase),
+    customers: createCustomerOperations(supabase),
   };
 }

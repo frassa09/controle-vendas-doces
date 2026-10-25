@@ -1,15 +1,16 @@
 import { isCoreError, type StoreInvite } from '@cvd/core';
-import { useRouter } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { ScrollView, Share, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Appbar, Button, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../src/core';
 import { useSession } from '../src/session/SessionProvider';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
+import { BackHeader } from '../src/ui/BackHeader';
 import { FormError } from '../src/ui/FormError';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
+import { useFocusQuery } from '../src/ui/useFocusQuery';
 
 const fallbackMessage = 'Algo deu errado. Tente de novo.';
 
@@ -25,34 +26,23 @@ function messageOf(error: unknown): string {
 /** Configurações da loja. Por enquanto: convidar a pessoa que vende junto. */
 export default function SettingsScreen() {
   const session = useSession();
-  const router = useRouter();
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
-  const [inviteState, setInviteState] = useState<InviteState>({ status: 'loading' });
+  // Relido sempre que a tela ganha foco: o código some quando a pessoa o usa.
+  const query = useFocusQuery(useCallback(() => core.store.getOpenInvite(), []));
   const [generating, setGenerating] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const busy = useRef(false);
 
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    let active = true;
-    core.store.getOpenInvite().then(
-      (invite) => {
-        if (active) setInviteState({ status: 'loaded', invite });
-      },
-      (error: unknown) => {
-        if (active) setInviteState({ status: 'failed', message: messageOf(error) });
-      },
-    );
-    return () => {
-      active = false;
-    };
-  }, [attempt]);
+  const inviteState: InviteState =
+    query.status === 'ready'
+      ? { status: 'loaded', invite: query.data }
+      : query.status === 'error'
+        ? { status: 'failed', message: messageOf(query.error) }
+        : { status: 'loading' };
 
   const retry = () => {
-    setInviteState({ status: 'loading' });
-    setAttempt((value) => value + 1);
+    void query.reload();
   };
 
   if (session.state.status !== 'ready') return null;
@@ -64,7 +54,9 @@ export default function SettingsScreen() {
     setGenerating(true);
     setActionError(null);
     try {
-      setInviteState({ status: 'loaded', invite: await core.store.createInvite() });
+      await core.store.createInvite();
+      // Relê em vez de usar a resposta: a tela mostra sempre o código disponível.
+      await query.reload();
     } catch (error) {
       setActionError(messageOf(error));
     } finally {
@@ -88,18 +80,7 @@ export default function SettingsScreen() {
 
   return (
     <View style={[styles.flex, { backgroundColor: theme.colors.background }]}>
-      <Appbar.Header
-        style={{ backgroundColor: theme.colors.background }}
-        statusBarHeight={insets.top}
-      >
-        <Appbar.BackAction
-          accessibilityLabel="Voltar"
-          onPress={() => {
-            router.back();
-          }}
-        />
-        <Appbar.Content title="Configurações" titleStyle={styles.appbarTitle} />
-      </Appbar.Header>
+      <BackHeader title="Configurações" />
 
       <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.fim }]}
@@ -198,7 +179,6 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  appbarTitle: { fontSize: 20, fontWeight: '700' },
   content: {
     paddingHorizontal: spacing.folha,
     paddingTop: spacing.gap,

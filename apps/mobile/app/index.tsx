@@ -7,7 +7,7 @@ import { useSession } from '../src/session/SessionProvider';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
 
-/** Tela inicial da loja. As áreas de venda, clientes e cobrança chegam aqui depois. */
+/** Tela inicial da loja: atalhos para as áreas (clientes; vendas e cobrança depois). */
 export default function StoreHomeScreen() {
   const session = useSession();
   const theme = useAppTheme();
@@ -85,6 +85,29 @@ export default function StoreHomeScreen() {
           ]}
         >
           <List.Item
+            title="Clientes"
+            description="Cadastrar, buscar e ver o PIN"
+            onPress={() => {
+              router.push('/clientes');
+            }}
+            left={(props) => <List.Icon {...props} icon="account-group-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.areaTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.area}
+          />
+        </View>
+
+        <View
+          style={[
+            styles.details,
+            {
+              backgroundColor: theme.colors.elevation.level1,
+              borderColor: theme.colors.outlineVariant,
+            },
+          ]}
+        >
+          <List.Item
             title="Chave Pix"
             description={store.pixKey}
             left={(props) => <List.Icon {...props} icon="key-outline" />}
@@ -123,6 +146,8 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     overflow: 'hidden',
   },
+  area: { minHeight: 64 },
+  areaTitle: { fontSize: 17, fontWeight: '800' },
   itemTitle: { fontSize: 14, fontWeight: '700' },
   itemValue: { fontSize: 17, marginTop: 2 },
 });
