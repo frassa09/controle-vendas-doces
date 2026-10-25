@@ -1,4 +1,5 @@
 import { createAuthOperations, type AuthOperations } from './auth';
+import { createCollectionOperations, type CollectionOperations } from './collections';
 import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
 import type { DbClient } from './db/client';
@@ -18,14 +19,17 @@ export interface Core {
   customers: CustomerOperations;
   sales: SaleOperations;
   payments: PaymentOperations;
+  collections: CollectionOperations;
 }
 
 export interface CoreDependencies {
   /** Cliente criado com createSupabaseClient. */
   supabase: DbClient;
+  /** Endereço da página do cliente, usado no link das mensagens de cobrança. */
+  customerPageUrl?: string | undefined;
 }
 
-export function createCore({ supabase }: CoreDependencies): Core {
+export function createCore({ supabase, customerPageUrl }: CoreDependencies): Core {
   return {
     auth: createAuthOperations(supabase),
     store: createStoreOperations(supabase),
@@ -33,5 +37,6 @@ export function createCore({ supabase }: CoreDependencies): Core {
     customers: createCustomerOperations(supabase),
     sales: createSaleOperations(supabase),
     payments: createPaymentOperations(supabase),
+    collections: createCollectionOperations(supabase, { customerPageUrl }),
   };
 }

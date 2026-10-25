@@ -15,7 +15,7 @@ export type StoreRow = Database['public']['Tables']['stores']['Row'];
 /** Colunas lidas sempre que o core devolve uma loja. */
 export const storeColumns = 'id, name, pix_key, city, created_at';
 
-export function toStore(row: StoreRow): Store {
+export function toStore(row: Omit<StoreRow, 'collection_template'>): Store {
   return {
     id: row.id,
     name: row.name,

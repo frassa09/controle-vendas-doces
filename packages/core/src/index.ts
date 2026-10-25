@@ -65,3 +65,22 @@ export {
   type SaleStandingStatus,
 } from './payments';
 export { formatCents, parseCents } from './money';
+export {
+  COLLECTION_TEMPLATE_MAX,
+  COLLECTION_VARIABLES,
+  DEFAULT_COLLECTION_TEMPLATE,
+  buildPixCopyAndPaste,
+  buildWhatsAppUrl,
+  collectionRangeOf,
+  crc16,
+  type Collection,
+  type CollectionMessage,
+  type CollectionOperations,
+  type CollectionQueueItem,
+  type CollectionQueueOptions,
+  type CollectionRange,
+  type CollectionTemplate,
+  type CollectionVariable,
+  type PixField,
+  type PixInput,
+} from './collections';
