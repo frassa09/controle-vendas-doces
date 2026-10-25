@@ -1,10 +1,11 @@
-import { formatCents, type MemberRef, type PaymentMethod } from '@cvd/core';
+import { formatCents, type MemberRef } from '@cvd/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Divider, List, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../../src/core';
+import { methodLabel } from '../../src/payments/debt';
 import { useSession } from '../../src/session/SessionProvider';
 import { radii, spacing } from '../../src/theme/theme';
 import { useAppTheme } from '../../src/theme/ThemeProvider';
@@ -22,8 +23,6 @@ const whenFormat = new Intl.DateTimeFormat('pt-BR', {
 });
 
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
-
-const methodLabel: Record<PaymentMethod, string> = { pix: 'Pix', cash: 'Dinheiro' };
 
 /** Detalhe da venda: itens, pagamento, quem registrou e quando. */
 export default function SaleDetailScreen() {
@@ -90,6 +89,22 @@ export default function SaleDetailScreen() {
           Pagamento
         </Text>
         <View style={cardStyle}>
+          {sale.paymentType === 'fiado' && sale.customer ? (
+            <List.Item
+              title="Fiado · na conta do cliente"
+              description={`Entra no saldo devedor de ${sale.customer.name}. Toque para ver o saldo.`}
+              left={(props) => <List.Icon {...props} icon="notebook-outline" />}
+              right={(props) => <List.Icon {...props} icon="chevron-right" />}
+              onPress={() => {
+                if (sale.customer) {
+                  router.push({ pathname: '/clientes/[id]', params: { id: sale.customer.id } });
+                }
+              }}
+              titleStyle={styles.itemTitle}
+              descriptionStyle={muted}
+              descriptionNumberOfLines={2}
+            />
+          ) : null}
           {sale.payments.map((payment, index) => (
             <View key={payment.id}>
               {index > 0 ? divider : null}

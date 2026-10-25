@@ -3,6 +3,7 @@ import {
   isCoreError,
   parseCents,
   unitPriceError,
+  type CustomerBalance,
   type CustomerSummary,
   type PaymentMethod,
   type Product,
@@ -28,6 +29,7 @@ import {
 } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../src/core';
+import { debtSinceText } from '../src/payments/debt';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
 import { BackHeader } from '../src/ui/BackHeader';
@@ -45,6 +47,9 @@ interface Line {
 
 const MAX_QUANTITY = 999;
 
+/** Pago agora (Pix ou dinheiro) ou fiado. */
+type Settlement = PaymentMethod | 'fiado';
+
 const failMessage = (error: unknown) =>
   isCoreError(error) ? error.message : 'Algo deu errado. Tente de novo.';
 
@@ -52,9 +57,9 @@ const failMessage = (error: unknown) =>
 const priceText = (cents: number) => (cents / 100).toFixed(2).replace('.', ',');
 
 /**
- * Venda no balcão, paga na hora: cliente opcional (sem cliente = avulsa), um toque
- * no produto soma uma unidade, toque longo ajusta quantidade e preço, e o total
- * acompanha ao vivo até finalizar no Pix ou no dinheiro.
+ * Venda no balcão: cliente opcional (sem cliente = avulsa), um toque no produto
+ * soma uma unidade, toque longo ajusta quantidade e preço, e o total acompanha ao
+ * vivo até finalizar no Pix, no dinheiro ou fiado (só com cliente).
  */
 export default function SaleScreen() {
   const router = useRouter();
@@ -64,7 +69,7 @@ export default function SaleScreen() {
   const products = useFocusQuery(loadProducts);
   const [customer, setCustomer] = useState<CustomerSummary | null>(null);
   const [lines, setLines] = useState<Line[]>([]);
-  const [method, setMethod] = useState<PaymentMethod>('pix');
+  const [settlement, setSettlement] = useState<Settlement>('pix');
   const [editing, setEditing] = useState<Line | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -118,6 +123,14 @@ export default function SaleScreen() {
     );
   };
 
+  // Venda avulsa não pode ser fiado: tirar o cliente volta para o Pix.
+  const chooseCustomer = (chosen: CustomerSummary | null) => {
+    setCustomer(chosen);
+    if (!chosen && settlement === 'fiado') setSettlement('pix');
+  };
+
+  const fiado = settlement === 'fiado';
+
   const finish = async () => {
     if (submitting || lines.length === 0) return;
     setSubmitting(true);
@@ -129,7 +142,8 @@ export default function SaleScreen() {
           quantity: line.quantity,
           unitPriceCents: line.unitPriceCents,
         })),
-        payment: { type: 'paidNow', method },
+        payment:
+          settlement === 'fiado' ? { type: 'fiado' } : { type: 'paidNow', method: settlement },
       });
       router.replace({ pathname: '/vendas/[id]', params: { id: sale.id, nova: '1' } });
     } catch (error) {
@@ -147,7 +161,7 @@ export default function SaleScreen() {
       <BackHeader title="Nova venda" />
 
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <CustomerPicker customer={customer} onChange={setCustomer} />
+        <CustomerPicker customer={customer} onChange={chooseCustomer} />
 
         <Text variant="titleMedium" accessibilityRole="header" style={styles.sectionTitle}>
           Produtos
@@ -265,23 +279,30 @@ export default function SaleScreen() {
           </Text>
         </View>
         <SegmentedButtons
-          value={method}
+          value={settlement}
           onValueChange={(value) => {
-            setMethod(value);
+            setSettlement(value);
           }}
           buttons={[
             { value: 'pix', label: 'Pix', icon: 'qrcode' },
             { value: 'cash', label: 'Dinheiro', icon: 'cash' },
+            {
+              value: 'fiado',
+              label: 'Fiado',
+              icon: 'notebook-outline',
+              disabled: !customer,
+              accessibilityLabel: customer ? 'Fiado' : 'Fiado: escolha o cliente primeiro',
+            },
           ]}
           style={styles.methods}
         />
         <PrimaryButton
-          icon="check"
+          icon={fiado ? 'notebook-outline' : 'check'}
           onPress={finish}
           loading={submitting}
           disabled={submitting || lines.length === 0}
         >
-          Pago agora · finalizar
+          {fiado ? 'Fiado · anotar na conta' : 'Pago agora · finalizar'}
         </PrimaryButton>
       </View>
 
@@ -350,7 +371,7 @@ function CustomerPicker({
       <View style={cardStyle}>
         <List.Item
           title={customer.name}
-          description={customer.reference ?? 'Cliente da venda'}
+          description={() => <BalanceLine customer={customer} />}
           left={(props) => <List.Icon {...props} icon="account-check-outline" />}
           right={() => (
             <IconButton
@@ -406,8 +427,65 @@ function CustomerPicker({
       ) : null}
       <Text variant="bodyMedium" style={[styles.hint, { color: theme.colors.onSurfaceVariant }]}>
         {typed && !loading && results.length === 0
-          ? `Ninguém com “${query}”. Sem cliente, a venda fica avulsa.`
-          : 'Sem cliente, a venda fica avulsa.'}
+          ? `Ninguém com “${query}”. Sem cliente, a venda fica avulsa e não pode ser fiado.`
+          : 'Sem cliente, a venda fica avulsa e não pode ser fiado.'}
+      </Text>
+    </View>
+  );
+}
+
+/** O saldo devedor do cliente escolhido, para lembrar da dívida no balcão. */
+function BalanceLine({ customer }: { customer: CustomerSummary }) {
+  const theme = useAppTheme();
+  // Saldo do último cliente lido; o do cliente atual ainda não chegou se o id difere.
+  const [read, setRead] = useState<{ id: string; balance: CustomerBalance | null } | null>(null);
+  const current = read?.id === customer.id ? read : null;
+
+  useEffect(() => {
+    let active = true;
+    core.payments
+      .getCustomerBalance(customer.id)
+      .then((balance) => {
+        if (active) setRead({ id: customer.id, balance });
+      })
+      .catch(() => {
+        if (active) setRead({ id: customer.id, balance: null });
+      });
+    return () => {
+      active = false;
+    };
+  }, [customer.id]);
+
+  const muted = { color: theme.colors.onSurfaceVariant };
+  if (!current) {
+    return (
+      <Text variant="bodyMedium" style={muted}>
+        Conferindo o saldo devedor…
+      </Text>
+    );
+  }
+  if (!current.balance) {
+    return (
+      <Text variant="bodyMedium" style={muted}>
+        Não deu para ver o saldo devedor agora.
+      </Text>
+    );
+  }
+  const { balance } = current;
+  if (balance.balanceCents === 0) {
+    return (
+      <Text variant="bodyMedium" style={muted}>
+        {customer.reference ? `${customer.reference} · ` : ''}Não deve nada
+      </Text>
+    );
+  }
+  return (
+    <View accessibilityLiveRegion="polite">
+      <Text variant="bodyLarge" style={[styles.debt, { color: theme.colors.primary }]}>
+        Deve {formatCents(balance.balanceCents)}
+      </Text>
+      <Text variant="bodyMedium" style={muted}>
+        {debtSinceText(balance)}
       </Text>
     </View>
   );
@@ -627,6 +705,7 @@ const styles = StyleSheet.create({
   searchInput: { fontSize: 17 },
   hint: { marginTop: spacing.sm },
   customerName: { fontSize: 17, fontWeight: '700' },
+  debt: { fontWeight: '800' },
   sectionTitle: { marginTop: spacing.secao - spacing.gap, marginBottom: spacing.xs },
   state: { marginTop: spacing.secao, alignItems: 'center', gap: spacing.md },
   stateText: { textAlign: 'center', fontWeight: '600' },
