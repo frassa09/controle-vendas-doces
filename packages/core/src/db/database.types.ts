@@ -61,41 +61,6 @@ export type Database = {
           },
         ];
       };
-      store_invites: {
-        Row: {
-          code: string;
-          created_at: string;
-          created_by: string | null;
-          store_id: string;
-          used_at: string | null;
-          used_by: string | null;
-        };
-        Insert: {
-          code: string;
-          created_at?: string;
-          created_by?: string | null;
-          store_id: string;
-          used_at?: string | null;
-          used_by?: string | null;
-        };
-        Update: {
-          code?: string;
-          created_at?: string;
-          created_by?: string | null;
-          store_id?: string;
-          used_at?: string | null;
-          used_by?: string | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: 'store_invites_store_id_fkey';
-            columns: ['store_id'];
-            isOneToOne: false;
-            referencedRelation: 'stores';
-            referencedColumns: ['id'];
-          },
-        ];
-      };
       products: {
         Row: {
           can_be_prize: boolean;
@@ -133,6 +98,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'products_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      store_invites: {
+        Row: {
+          code: string;
+          created_at: string;
+          created_by: string | null;
+          store_id: string;
+          used_at: string | null;
+          used_by: string | null;
+        };
+        Insert: {
+          code: string;
+          created_at?: string;
+          created_by?: string | null;
+          store_id: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          created_by?: string | null;
+          store_id?: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'store_invites_store_id_fkey';
             columns: ['store_id'];
             isOneToOne: false;
             referencedRelation: 'stores';

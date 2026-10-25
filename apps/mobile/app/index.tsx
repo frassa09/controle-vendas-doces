@@ -43,6 +43,14 @@ export default function StoreHomeScreen() {
           <Menu.Item title={member.email} disabled />
           <Divider />
           <Menu.Item
+            leadingIcon="cog-outline"
+            title="Configurações"
+            onPress={() => {
+              setMenuOpen(false);
+              router.push('/configuracoes');
+            }}
+          />
+          <Menu.Item
             leadingIcon="logout"
             title="Sair"
             onPress={() => {

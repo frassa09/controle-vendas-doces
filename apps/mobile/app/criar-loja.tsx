@@ -1,4 +1,5 @@
 import { STORE_LIMITS, type StoreDetailsField } from '@cvd/core';
+import { Link } from 'expo-router';
 import { useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-paper';
@@ -12,7 +13,7 @@ import { PrimaryButton } from '../src/ui/PrimaryButton';
 import { ScreenHeader } from '../src/ui/ScreenHeader';
 import { useCoreForm } from '../src/ui/useCoreForm';
 
-/** Primeiro acesso sem loja: o dono cria a sua. */
+/** Primeiro acesso sem loja: o dono cria a sua (ou quem foi convidado vai digitar o código). */
 export default function CreateStoreScreen() {
   const session = useSession();
   const theme = useAppTheme();
@@ -87,6 +88,20 @@ export default function CreateStoreScreen() {
         Criar loja
       </PrimaryButton>
 
+      <View style={styles.invite}>
+        <Text
+          variant="bodyMedium"
+          style={[styles.account, { color: theme.colors.onSurfaceVariant }]}
+        >
+          Alguém já usa o app na sua loja?
+        </Text>
+        <Link href="/entrar-com-convite" asChild>
+          <Button mode="text" compact labelStyle={styles.link} disabled={form.submitting}>
+            Entrar com código de convite
+          </Button>
+        </Link>
+      </View>
+
       <View style={styles.footer}>
         <Text
           variant="bodyMedium"
@@ -103,6 +118,7 @@ export default function CreateStoreScreen() {
 }
 
 const styles = StyleSheet.create({
+  invite: { marginTop: spacing.md, alignItems: 'center' },
   footer: {
     marginTop: spacing.secao,
     flexDirection: 'row',

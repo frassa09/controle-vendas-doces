@@ -26,7 +26,7 @@ export default function RootLayout() {
 
 /**
  * Cada etapa do primeiro acesso só existe enquanto faz sentido: sem sessão, entrar
- * ou criar conta; com sessão e sem loja, criar a loja; com loja, a loja.
+ * ou criar conta; com sessão e sem loja, criar a loja ou entrar com convite; com loja, a loja.
  */
 function Routes() {
   const { state } = useSession();
@@ -59,12 +59,14 @@ function Routes() {
       </Stack.Protected>
       <Stack.Protected guard={status === 'noStore'}>
         <Stack.Screen name="criar-loja" />
+        <Stack.Screen name="entrar-com-convite" options={{ animation: 'slide_from_right' }} />
       </Stack.Protected>
       <Stack.Protected guard={status === 'unavailable'}>
         <Stack.Screen name="sem-conexao" />
       </Stack.Protected>
       <Stack.Protected guard={status === 'ready'}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="configuracoes" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="clientes/index" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="clientes/novo" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="clientes/[id]/index" options={{ animation: 'slide_from_right' }} />
