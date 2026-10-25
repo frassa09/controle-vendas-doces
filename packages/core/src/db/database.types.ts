@@ -8,6 +8,41 @@ export type Database = {
   };
   public: {
     Tables: {
+      store_invites: {
+        Row: {
+          code: string;
+          created_at: string;
+          created_by: string | null;
+          store_id: string;
+          used_at: string | null;
+          used_by: string | null;
+        };
+        Insert: {
+          code: string;
+          created_at?: string;
+          created_by?: string | null;
+          store_id: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          created_by?: string | null;
+          store_id?: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'store_invites_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       store_members: {
         Row: {
           created_at: string;
@@ -65,6 +100,39 @@ export type Database = {
     Functions: {
       create_store: {
         Args: { p_city: string; p_name: string; p_pix_key: string };
+        Returns: {
+          city: string;
+          created_at: string;
+          id: string;
+          name: string;
+          pix_key: string;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'stores';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      create_store_invite: {
+        Args: never;
+        Returns: {
+          code: string;
+          created_at: string;
+          created_by: string | null;
+          store_id: string;
+          used_at: string | null;
+          used_by: string | null;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'store_invites';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      join_store_with_invite: {
+        Args: { p_code: string };
         Returns: {
           city: string;
           created_at: string;

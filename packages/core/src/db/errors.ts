@@ -7,7 +7,12 @@ interface PostgrestLikeError {
 }
 
 /** Códigos de negócio que as funções SQL levantam com errcode P0001. */
-const businessCodes = new Set<CoreErrorCode>(['NOT_AUTHENTICATED', 'ALREADY_HAS_STORE']);
+const businessCodes = new Set<CoreErrorCode>([
+  'NOT_AUTHENTICATED',
+  'ALREADY_HAS_STORE',
+  'INVITE_NOT_FOUND',
+  'INVITE_ALREADY_USED',
+]);
 
 /**
  * Traduz um erro do banco num CoreError. As funções SQL levantam

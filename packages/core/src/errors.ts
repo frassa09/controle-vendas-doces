@@ -10,6 +10,8 @@ export type CoreErrorCode =
   | 'EMAIL_ALREADY_REGISTERED'
   | 'EMAIL_CONFIRMATION_REQUIRED'
   | 'ALREADY_HAS_STORE'
+  | 'INVITE_NOT_FOUND'
+  | 'INVITE_ALREADY_USED'
   | 'FORBIDDEN'
   | 'NETWORK'
   | 'UNEXPECTED';
@@ -21,6 +23,8 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   EMAIL_ALREADY_REGISTERED: 'Já existe uma conta com esse e-mail. Tente entrar.',
   EMAIL_CONFIRMATION_REQUIRED: 'Confirme seu e-mail antes de entrar.',
   ALREADY_HAS_STORE: 'Você já faz parte de uma loja.',
+  INVITE_NOT_FOUND: 'Não encontramos esse código. Confira as letras e os números.',
+  INVITE_ALREADY_USED: 'Este código já foi usado. Peça um código novo para quem te convidou.',
   FORBIDDEN: 'Você não tem acesso a esses dados.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
