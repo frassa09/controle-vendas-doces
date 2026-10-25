@@ -38,7 +38,7 @@ export function toProduct(row: Omit<ProductRow, 'store_id'>): Product {
 }
 
 export function productNotFound(): CoreError {
-  return new CoreError('NOT_FOUND', { message: 'Esse produto não está no catálogo da sua loja.' });
+  return new CoreError('PRODUCT_NOT_FOUND');
 }
 
 /** Um id que não é uuid nunca existe (e evita o erro de sintaxe do Postgres). */

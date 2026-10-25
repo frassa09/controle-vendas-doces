@@ -9,6 +9,16 @@ export {
   type Member,
 } from './auth';
 export {
+  CUSTOMER_LIMITS,
+  formatWhatsApp,
+  normalizeWhatsApp,
+  type Customer,
+  type CustomerDetailsField,
+  type CustomerDetailsInput,
+  type CustomerOperations,
+  type CustomerSummary,
+} from './customers';
+export {
   STORE_LIMITS,
   type Store,
   type StoreDetailsField,

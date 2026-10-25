@@ -8,7 +8,7 @@ import { validateProduct, type ProductInput } from './productDetails';
  * Substitui os dados do produto (nome, preço, pontos, prêmio, combo). Campos
  * opcionais omitidos voltam ao padrão, como no cadastro. Não muda se está ativo.
  * Vendas já registradas guardam cópia do preço e dos pontos, então não mudam.
- * Erros: INVALID_INPUT, NOT_AUTHENTICATED, NOT_FOUND.
+ * Erros: INVALID_INPUT, NOT_AUTHENTICATED, PRODUCT_NOT_FOUND.
  */
 export async function updateProduct(
   db: DbClient,

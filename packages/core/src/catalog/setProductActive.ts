@@ -5,7 +5,7 @@ import { isProductId, productColumns, productNotFound, toProduct, type Product }
 
 /**
  * Ativa (volta à venda) ou desativa (sai da venda, continua no catálogo e no
- * histórico) um produto. Erros: NOT_AUTHENTICATED, NOT_FOUND.
+ * histórico) um produto. Erros: NOT_AUTHENTICATED, PRODUCT_NOT_FOUND.
  */
 export async function setProductActive(
   db: DbClient,

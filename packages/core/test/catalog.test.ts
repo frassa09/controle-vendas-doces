@@ -187,10 +187,10 @@ describe('editar produto', () => {
         name: 'Brownie',
         priceCents: 300,
       }),
-    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
     await expect(
       member.core.catalog.getProduct('00000000-0000-4000-8000-000000000000'),
-    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
   });
 });
 
@@ -224,7 +224,7 @@ describe('ativar e desativar produto', () => {
 
     await expect(
       member.core.catalog.deactivateProduct('00000000-0000-4000-8000-000000000000'),
-    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
   });
 });
 

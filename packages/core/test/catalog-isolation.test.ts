@@ -18,13 +18,13 @@ describe('isolamento do catálogo entre lojas', () => {
 
     expect(await attacker.core.catalog.listProducts()).toEqual([]);
     await expect(attacker.core.catalog.getProduct(brownie.id)).rejects.toMatchObject({
-      code: 'NOT_FOUND',
+      code: 'PRODUCT_NOT_FOUND',
     });
     await expect(
       attacker.core.catalog.updateProduct(brownie.id, { name: 'Golpe', priceCents: 1 }),
-    ).rejects.toMatchObject({ code: 'NOT_FOUND' });
+    ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
     await expect(attacker.core.catalog.deactivateProduct(brownie.id)).rejects.toMatchObject({
-      code: 'NOT_FOUND',
+      code: 'PRODUCT_NOT_FOUND',
     });
 
     expect(await owner.core.catalog.listProducts()).toEqual([brownie]);
