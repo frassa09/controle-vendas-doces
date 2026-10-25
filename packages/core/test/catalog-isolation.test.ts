@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import type { Product } from '../src';
 import { newSignedInPerson, type TestPerson } from './support/members';
 
 // Ponto de vista do atacante: membro de outra loja, pelo core e pela chave pública
@@ -11,11 +12,18 @@ async function memberWithStore(name: string): Promise<TestPerson> {
 }
 
 describe('isolamento do catálogo entre lojas', () => {
-  it('membro de outra loja não vê, não edita nem desativa os produtos', async () => {
-    const owner = await memberWithStore('Loja da Ana');
-    const attacker = await memberWithStore('Loja do Bruno');
-    const brownie = await owner.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
+  // Um cenário só (dono com um brownie, atacante com loja própria) para todos os
+  // testes: nenhum ataque pode mudar nada, então o cenário continua igual.
+  let owner: TestPerson;
+  let attacker: TestPerson;
+  let brownie: Product;
+  beforeAll(async () => {
+    owner = await memberWithStore('Loja da Ana');
+    attacker = await memberWithStore('Loja do Bruno');
+    brownie = await owner.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
+  });
 
+  it('membro de outra loja não vê, não edita nem desativa os produtos', async () => {
     expect(await attacker.core.catalog.listProducts()).toEqual([]);
     await expect(attacker.core.catalog.getProduct(brownie.id)).rejects.toMatchObject({
       code: 'PRODUCT_NOT_FOUND',
@@ -31,9 +39,6 @@ describe('isolamento do catálogo entre lojas', () => {
   });
 
   it('nem usando a chave pública direto', async () => {
-    const owner = await memberWithStore('Loja da Ana');
-    const attacker = await memberWithStore('Loja do Bruno');
-    const brownie = await owner.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
     const ownerStore = await owner.core.store.getMyStore();
     const attackerStore = await attacker.core.store.getMyStore();
 
@@ -60,7 +65,6 @@ describe('isolamento do catálogo entre lojas', () => {
   });
 
   it('ninguém grava produto inválido pulando o core', async () => {
-    const owner = await memberWithStore('Loja da Ana');
     const store = await owner.core.store.getMyStore();
     const storeId = store?.id ?? '';
 
@@ -73,12 +77,10 @@ describe('isolamento do catálogo entre lojas', () => {
     ]);
 
     expect(attempts.map((attempt) => attempt.error?.code)).toEqual(['23514', '23514', '23514']);
-    expect(await owner.core.catalog.listProducts()).toEqual([]);
+    expect(await owner.core.catalog.listProducts()).toEqual([brownie]);
   });
 
   it('quem não está em loja nenhuma não vê produtos', async () => {
-    const owner = await memberWithStore('Loja da Ana');
-    await owner.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
     const outsider = await newSignedInPerson();
 
     expect(await outsider.core.catalog.listProducts()).toEqual([]);

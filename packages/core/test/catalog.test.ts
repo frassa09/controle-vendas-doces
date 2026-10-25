@@ -12,9 +12,13 @@ async function memberWithStore(): Promise<TestPerson> {
 }
 
 describe('cadastrar produto', () => {
-  it('cria um produto com nome e preço, sem pontos, ativo e fora dos prêmios', async () => {
-    const member = await memberWithStore();
+  // Uma loja para os cadastros: cada teste confere só o produto que criou.
+  let member: TestPerson;
+  beforeAll(async () => {
+    member = await memberWithStore();
+  });
 
+  it('cria um produto com nome e preço, sem pontos, ativo e fora dos prêmios', async () => {
     const brownie = await member.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
 
     expect(brownie).toMatchObject({
@@ -29,8 +33,6 @@ describe('cadastrar produto', () => {
   });
 
   it('cria um combo com preço e pontos próprios, que pode ser prêmio', async () => {
-    const member = await memberWithStore();
-
     const combo = await member.core.catalog.createProduct({
       name: '  3 brownies ',
       priceCents: 800,
@@ -50,8 +52,6 @@ describe('cadastrar produto', () => {
   });
 
   it('aceita preço de um centavo e zero pontos', async () => {
-    const member = await memberWithStore();
-
     const bala = await member.core.catalog.createProduct({
       name: 'Bala',
       priceCents: 1,
@@ -131,8 +131,13 @@ describe('cadastrar produto', () => {
 });
 
 describe('editar produto', () => {
+  // Uma loja para as edições: cada teste mexe só no produto que criou.
+  let member: TestPerson;
+  beforeAll(async () => {
+    member = await memberWithStore();
+  });
+
   it('troca nome, preço, pontos e marcações', async () => {
-    const member = await memberWithStore();
     const brownie = await member.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
 
     const edited = await member.core.catalog.updateProduct(brownie.id, {
@@ -154,7 +159,6 @@ describe('editar produto', () => {
   });
 
   it('não muda se ativo ou inativo', async () => {
-    const member = await memberWithStore();
     const brownie = await member.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
     await member.core.catalog.deactivateProduct(brownie.id);
 
@@ -167,7 +171,6 @@ describe('editar produto', () => {
   });
 
   it('recusa dados inválidos e mantém o produto como estava', async () => {
-    const member = await memberWithStore();
     const brownie = await member.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
 
     await expect(
@@ -180,8 +183,6 @@ describe('editar produto', () => {
   });
 
   it('avisa quando o produto não existe', async () => {
-    const member = await memberWithStore();
-
     await expect(
       member.core.catalog.updateProduct('00000000-0000-4000-8000-000000000000', {
         name: 'Brownie',
@@ -190,6 +191,9 @@ describe('editar produto', () => {
     ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
     await expect(
       member.core.catalog.getProduct('00000000-0000-4000-8000-000000000000'),
+    ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
+    await expect(
+      member.core.catalog.deactivateProduct('00000000-0000-4000-8000-000000000000'),
     ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
   });
 });
@@ -217,14 +221,6 @@ describe('ativar e desativar produto', () => {
       brigadeiro,
       brownie,
     ]);
-  });
-
-  it('avisa quando o produto não existe', async () => {
-    const member = await memberWithStore();
-
-    await expect(
-      member.core.catalog.deactivateProduct('00000000-0000-4000-8000-000000000000'),
-    ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
   });
 });
 
