@@ -15,3 +15,12 @@ export {
   type StoreDetailsInput,
   type StoreOperations,
 } from './store';
+export {
+  PRODUCT_LIMITS,
+  type CatalogOperations,
+  type ListProductsOptions,
+  type Product,
+  type ProductField,
+  type ProductInput,
+} from './catalog';
+export { formatCents, parseCents } from './money';

@@ -11,6 +11,7 @@ export type CoreErrorCode =
   | 'EMAIL_CONFIRMATION_REQUIRED'
   | 'ALREADY_HAS_STORE'
   | 'FORBIDDEN'
+  | 'NOT_FOUND'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -22,6 +23,7 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   EMAIL_CONFIRMATION_REQUIRED: 'Confirme seu e-mail antes de entrar.',
   ALREADY_HAS_STORE: 'Você já faz parte de uma loja.',
   FORBIDDEN: 'Você não tem acesso a esses dados.',
+  NOT_FOUND: 'Não encontramos esse registro. Ele pode ter sido apagado ou ser de outra loja.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

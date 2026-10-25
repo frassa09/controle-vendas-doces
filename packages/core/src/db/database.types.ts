@@ -8,6 +8,50 @@ export type Database = {
   };
   public: {
     Tables: {
+      products: {
+        Row: {
+          can_be_prize: boolean;
+          created_at: string;
+          id: string;
+          is_active: boolean;
+          is_combo: boolean;
+          name: string;
+          points: number;
+          price_cents: number;
+          store_id: string;
+        };
+        Insert: {
+          can_be_prize?: boolean;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          is_combo?: boolean;
+          name: string;
+          points?: number;
+          price_cents: number;
+          store_id: string;
+        };
+        Update: {
+          can_be_prize?: boolean;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          is_combo?: boolean;
+          name?: string;
+          points?: number;
+          price_cents?: number;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'products_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       store_members: {
         Row: {
           created_at: string;
