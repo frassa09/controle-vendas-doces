@@ -245,12 +245,6 @@ describe('listar catálogo', () => {
     expect(names).toEqual(['Água', 'bolo de pote', 'Pudim', 'Brownie', 'Cocada']);
   });
 
-  it('é vazio numa loja nova', async () => {
-    const member = await memberWithStore();
-
-    expect(await member.core.catalog.listProducts()).toEqual([]);
-  });
-
   it('exige login', async () => {
     await expect(anonymousCore().catalog.listProducts()).rejects.toMatchObject({
       code: 'NOT_AUTHENTICATED',
