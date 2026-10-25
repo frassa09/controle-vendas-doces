@@ -61,6 +61,64 @@ export type Database = {
           },
         ];
       };
+      payments: {
+        Row: {
+          amount_cents: number;
+          created_at: string;
+          customer_id: string | null;
+          id: string;
+          method: string;
+          recorded_by: string;
+          sale_id: string | null;
+          status: string;
+          store_id: string;
+        };
+        Insert: {
+          amount_cents: number;
+          created_at?: string;
+          customer_id?: string | null;
+          id?: string;
+          method: string;
+          recorded_by: string;
+          sale_id?: string | null;
+          status?: string;
+          store_id: string;
+        };
+        Update: {
+          amount_cents?: number;
+          created_at?: string;
+          customer_id?: string | null;
+          id?: string;
+          method?: string;
+          recorded_by?: string;
+          sale_id?: string | null;
+          status?: string;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'payments_customer_fkey';
+            columns: ['store_id', 'customer_id'];
+            isOneToOne: false;
+            referencedRelation: 'customers';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'payments_sale_fkey';
+            columns: ['store_id', 'sale_id'];
+            isOneToOne: false;
+            referencedRelation: 'sales';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'payments_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       products: {
         Row: {
           can_be_prize: boolean;
@@ -98,6 +156,106 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'products_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      sale_items: {
+        Row: {
+          id: string;
+          points: number;
+          position: number;
+          product_id: string;
+          product_name: string;
+          quantity: number;
+          sale_id: string;
+          store_id: string;
+          unit_price_cents: number;
+        };
+        Insert: {
+          id?: string;
+          points: number;
+          position: number;
+          product_id: string;
+          product_name: string;
+          quantity: number;
+          sale_id: string;
+          store_id: string;
+          unit_price_cents: number;
+        };
+        Update: {
+          id?: string;
+          points?: number;
+          position?: number;
+          product_id?: string;
+          product_name?: string;
+          quantity?: number;
+          sale_id?: string;
+          store_id?: string;
+          unit_price_cents?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sale_items_product_fkey';
+            columns: ['store_id', 'product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'sale_items_sale_fkey';
+            columns: ['store_id', 'sale_id'];
+            isOneToOne: false;
+            referencedRelation: 'sales';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'sale_items_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      sales: {
+        Row: {
+          created_at: string;
+          customer_id: string | null;
+          id: string;
+          recorded_by: string;
+          status: string;
+          store_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          customer_id?: string | null;
+          id?: string;
+          recorded_by: string;
+          status?: string;
+          store_id: string;
+        };
+        Update: {
+          created_at?: string;
+          customer_id?: string | null;
+          id?: string;
+          recorded_by?: string;
+          status?: string;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sales_customer_fkey';
+            columns: ['store_id', 'customer_id'];
+            isOneToOne: false;
+            referencedRelation: 'customers';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'sales_store_id_fkey';
             columns: ['store_id'];
             isOneToOne: false;
             referencedRelation: 'stores';
@@ -243,6 +401,17 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      list_store_members: {
+        Args: never;
+        Returns: {
+          email: string;
+          user_id: string;
+        }[];
+      };
+      record_sale: {
+        Args: { p_customer_id: string; p_items: Json; p_payment_method: string };
+        Returns: string;
       };
       search_customers: {
         Args: { p_query: string };

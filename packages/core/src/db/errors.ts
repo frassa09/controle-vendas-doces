@@ -12,6 +12,11 @@ const businessCodes = new Set<CoreErrorCode>([
   'ALREADY_HAS_STORE',
   'INVITE_NOT_FOUND',
   'INVITE_ALREADY_USED',
+  'FORBIDDEN',
+  'INVALID_INPUT',
+  'CUSTOMER_NOT_FOUND',
+  'PRODUCT_NOT_FOUND',
+  'PRODUCT_INACTIVE',
 ]);
 
 /**

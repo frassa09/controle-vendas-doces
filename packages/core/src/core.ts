@@ -2,6 +2,7 @@ import { createAuthOperations, type AuthOperations } from './auth';
 import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
 import type { DbClient } from './db/client';
+import { createSaleOperations, type SaleOperations } from './sales';
 import { createStoreOperations, type StoreOperations } from './store';
 
 /**
@@ -14,6 +15,7 @@ export interface Core {
   store: StoreOperations;
   catalog: CatalogOperations;
   customers: CustomerOperations;
+  sales: SaleOperations;
 }
 
 export interface CoreDependencies {
@@ -27,5 +29,6 @@ export function createCore({ supabase }: CoreDependencies): Core {
     store: createStoreOperations(supabase),
     catalog: createCatalogOperations(supabase),
     customers: createCustomerOperations(supabase),
+    sales: createSaleOperations(supabase),
   };
 }

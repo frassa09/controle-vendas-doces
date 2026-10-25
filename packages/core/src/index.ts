@@ -36,4 +36,19 @@ export {
   type ProductField,
   type ProductInput,
 } from './catalog';
+export {
+  SALE_LIMITS,
+  unitPriceError,
+  type MemberRef,
+  type PaymentMethod,
+  type RecordSaleInput,
+  type RecordStatus,
+  type Sale,
+  type SaleField,
+  type SaleItem,
+  type SaleItemInput,
+  type SaleOperations,
+  type SalePayment,
+  type SalePaymentInput,
+} from './sales';
 export { formatCents, parseCents } from './money';

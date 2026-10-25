@@ -15,6 +15,8 @@ export type CoreErrorCode =
   | 'FORBIDDEN'
   | 'CUSTOMER_NOT_FOUND'
   | 'PRODUCT_NOT_FOUND'
+  | 'PRODUCT_INACTIVE'
+  | 'SALE_NOT_FOUND'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -30,6 +32,8 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   FORBIDDEN: 'Você não tem acesso a esses dados.',
   CUSTOMER_NOT_FOUND: 'Cliente não encontrado.',
   PRODUCT_NOT_FOUND: 'Produto não encontrado.',
+  PRODUCT_INACTIVE: 'Um dos produtos foi desativado. Atualize a lista e tente de novo.',
+  SALE_NOT_FOUND: 'Venda não encontrada.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };
