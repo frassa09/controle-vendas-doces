@@ -14,7 +14,7 @@ import { core } from '../core';
  * Onde a pessoa está no primeiro acesso:
  * - loading: lendo a sessão guardada;
  * - signedOut: precisa entrar ou criar conta;
- * - noStore: entrou, mas ainda não tem loja (cria uma; depois, ou entra com convite);
+ * - noStore: entrou, mas ainda não tem loja (cria uma ou entra com convite);
  * - ready: tem loja;
  * - unavailable: não deu para saber a loja (sem internet, servidor fora).
  */
@@ -31,6 +31,8 @@ interface SessionValue {
   signUp(credentials: Credentials): Promise<void>;
   signOut(): Promise<void>;
   createStore(input: StoreDetailsInput): Promise<void>;
+  /** Entra na loja de quem convidou, com o código digitado. */
+  joinWithInvite(code: string): Promise<void>;
   /** Tenta de novo ler a loja (depois de uma falha de conexão). */
   reload(): Promise<void>;
 }
@@ -84,6 +86,11 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       async createStore(input) {
         if (state.status !== 'noStore') return;
         const store = await core.store.createStore(input);
+        setState({ status: 'ready', member: state.member, store });
+      },
+      async joinWithInvite(code) {
+        if (state.status !== 'noStore') return;
+        const store = await core.store.joinWithInvite(code);
         setState({ status: 'ready', member: state.member, store });
       },
       async reload() {

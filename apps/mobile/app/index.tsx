@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar, Divider, List, Menu, Text } from 'react-native-paper';
@@ -11,6 +12,7 @@ export default function StoreHomeScreen() {
   const session = useSession();
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
 
   if (session.state.status !== 'ready') return null;
@@ -40,6 +42,14 @@ export default function StoreHomeScreen() {
         >
           <Menu.Item title={member.email} disabled />
           <Divider />
+          <Menu.Item
+            leadingIcon="cog-outline"
+            title="Configurações"
+            onPress={() => {
+              setMenuOpen(false);
+              router.push('/configuracoes');
+            }}
+          />
           <Menu.Item
             leadingIcon="logout"
             title="Sair"
