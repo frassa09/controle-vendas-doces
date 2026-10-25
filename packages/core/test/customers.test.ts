@@ -8,6 +8,15 @@ async function memberWithStore(name = 'Doces da Ana'): Promise<TestPerson> {
   return person;
 }
 
+// O limite de login do Supabase é compartilhado; testes que só leem o que eles
+// mesmos gravaram reaproveitam um membro (e uma loja). Os de busca e os que
+// conferem "nada foi gravado" têm loja própria.
+let shared: Promise<TestPerson> | undefined;
+function sharedMember(): Promise<TestPerson> {
+  shared ??= memberWithStore('Doces Compartilhados');
+  return shared;
+}
+
 async function failure(promise: Promise<unknown>): Promise<CoreError> {
   try {
     await promise;
@@ -20,7 +29,7 @@ async function failure(promise: Promise<unknown>): Promise<CoreError> {
 
 describe('cadastro de clientes', () => {
   it('cadastra o cliente com os dados normalizados e mostra o perfil', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
 
     const created = await member.core.customers.createCustomer({
       name: '  Júlia Martins ',
@@ -44,7 +53,7 @@ describe('cadastro de clientes', () => {
   });
 
   it('normaliza o WhatsApp digitado de vários jeitos', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
     const typedAs = async (whatsapp: string) =>
       (
         await member.core.customers.createCustomer({
@@ -136,7 +145,7 @@ describe('busca de clientes', () => {
 
 describe('edição de clientes', () => {
   it('troca o PIN e os demais dados', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
     const created = await member.core.customers.createCustomer({
       name: 'Carla',
       reference: 'Escola',
@@ -167,7 +176,7 @@ describe('edição de clientes', () => {
   });
 
   it('recusa PIN que não tem 4 números', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
     const created = await member.core.customers.createCustomer({
       name: 'Carla',
       whatsapp: '31 99876-5432',
@@ -191,7 +200,7 @@ describe('edição de clientes', () => {
   });
 
   it('registra a data do consentimento ao marcar e a mantém nas edições seguintes', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
     const details = { name: 'Carla', whatsapp: '31 99876-5432', pin: '4821' };
     const created = await member.core.customers.createCustomer({ ...details, consented: false });
 
@@ -217,7 +226,7 @@ describe('edição de clientes', () => {
   });
 
   it('avisa quando o cliente não existe', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
     const details = { name: 'Carla', whatsapp: '31 99876-5432', pin: '4821', consented: false };
 
     const missing = await failure(
@@ -249,7 +258,7 @@ describe('PIN e token do link', () => {
   });
 
   it('gera um token longo e diferente para cada cliente', async () => {
-    const member = await memberWithStore();
+    const member = await sharedMember();
     const details = { name: 'Carla', whatsapp: '31 99876-5432', pin: '4821', consented: false };
 
     const first = await member.core.customers.createCustomer(details);
