@@ -52,6 +52,14 @@ export function anonymousCore(): Core {
   return createCore({ supabase: newClient() });
 }
 
+/**
+ * Um cliente Supabase sem login, só com a chave pública: o que qualquer pessoa na
+ * internet tem. Serve para provar que nada vaza para anon.
+ */
+export function anonymousClient(): DbClient {
+  return newClient();
+}
+
 export function trackUserForCleanup(userId: string): void {
   createdUserIds.push(userId);
 }
