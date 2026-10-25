@@ -119,6 +119,58 @@ export type Database = {
           },
         ];
       };
+      points_ledger: {
+        Row: {
+          created_at: string;
+          customer_id: string;
+          id: string;
+          kind: string;
+          points: number;
+          sale_id: string | null;
+          store_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          customer_id: string;
+          id?: string;
+          kind: string;
+          points: number;
+          sale_id?: string | null;
+          store_id: string;
+        };
+        Update: {
+          created_at?: string;
+          customer_id?: string;
+          id?: string;
+          kind?: string;
+          points?: number;
+          sale_id?: string | null;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'points_ledger_customer_fkey';
+            columns: ['store_id', 'customer_id'];
+            isOneToOne: false;
+            referencedRelation: 'customers';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'points_ledger_sale_fkey';
+            columns: ['store_id', 'sale_id'];
+            isOneToOne: false;
+            referencedRelation: 'sales';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'points_ledger_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       products: {
         Row: {
           can_be_prize: boolean;
