@@ -35,6 +35,8 @@ interface SessionValue {
   joinWithInvite(code: string): Promise<void>;
   /** Tenta de novo ler a loja (depois de uma falha de conexão). */
   reload(): Promise<void>;
+  /** Troca a loja guardada na sessão pela versão salva agora (ex.: nova cor). */
+  storeUpdated(store: Store): void;
 }
 
 const SessionContext = createContext<SessionValue | null>(null);
@@ -92,6 +94,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
         if (state.status !== 'noStore') return;
         const store = await core.store.joinWithInvite(code);
         setState({ status: 'ready', member: state.member, store });
+      },
+      storeUpdated(store) {
+        if (state.status !== 'ready') return;
+        setState({ ...state, store });
       },
       async reload() {
         if (state.status === 'signedOut' || state.status === 'loading') return;

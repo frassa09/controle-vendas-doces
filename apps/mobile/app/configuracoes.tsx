@@ -2,7 +2,7 @@ import { isCoreError, type StoreInvite } from '@cvd/core';
 import { useCallback, useRef, useState } from 'react';
 import { ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, Button, List, Text } from 'react-native-paper';
+import { ActivityIndicator, Button, Divider, List, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../src/core';
 import { useSession } from '../src/session/SessionProvider';
@@ -96,6 +96,19 @@ export default function SettingsScreen() {
             },
           ]}
         >
+          <List.Item
+            title="Aparência da página"
+            description="Cor, boas-vindas e logo que o cliente vê"
+            onPress={() => {
+              router.push('/aparencia');
+            }}
+            left={(props) => <List.Icon {...props} icon="palette-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.menuTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.menuItem}
+          />
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
           <List.Item
             title="Texto da cobrança"
             description="A mensagem que vai no WhatsApp"
