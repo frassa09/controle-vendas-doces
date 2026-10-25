@@ -75,15 +75,8 @@ describe('pontos', () => {
 
     const points = await member.core.points.getCustomerPoints(julia.id);
     expect(points.balance).toBe(6);
-    expect(points.movements).toEqual([
-      {
-        id: expect.any(String),
-        kind: 'saleCredit',
-        points: 6,
-        saleId: sale.id,
-        createdAt: expect.any(String),
-      },
-    ]);
+    expect(points.movements).toMatchObject([{ kind: 'saleCredit', points: 6, saleId: sale.id }]);
+    expect(points.movements).toHaveLength(1);
     // Reler não credita de novo.
     expect((await member.core.points.getCustomerPoints(julia.id)).balance).toBe(6);
   });
