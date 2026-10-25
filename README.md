@@ -81,7 +81,12 @@ configuração nativa mora em `apps/mobile/app.config.js` e `apps/mobile/plugins
 
 ## Gerar o APK de release
 
-Com `JAVA_HOME` apontando para o JDK 17 e `ANDROID_HOME` para o Android SDK:
+Com `JAVA_HOME` apontando para o JDK 17 e `ANDROID_HOME` para o Android SDK, e com o
+**CMake 3.31.6** instalado no SDK (Android Studio > SDK Manager > SDK Tools > CMake, marque
+"Show Package Details"). O CMake padrão (3.22.1) falha no Windows com caminhos longos
+("Filename longer than 260 characters"); o plugin `plugins/withModernCmake.js` faz todos
+os módulos usarem o 3.31.6. No Windows, deixe também o suporte a caminhos longos ligado
+(`LongPathsEnabled=1` no registro) e `git config --global core.longpaths true`.
 
 ```bash
 npm run apk -w @cvd/mobile                # arm64-v8a (celulares)

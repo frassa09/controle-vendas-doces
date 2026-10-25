@@ -48,6 +48,7 @@ module.exports = ({ config }) => ({
       },
     ],
     './plugins/withReleaseSigning',
+    './plugins/withModernCmake',
   ],
   experiments: { typedRoutes: true },
   extra: {
