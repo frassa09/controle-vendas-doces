@@ -1,0 +1,11 @@
+node_modules
+dist
+.expo
+apps/mobile/android
+apps/mobile/ios
+prototipo
+.impeccable
+DESIGN.md
+PRODUCT.md
+package-lock.json
+supabase/.temp
