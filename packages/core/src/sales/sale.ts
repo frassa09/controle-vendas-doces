@@ -6,6 +6,9 @@ export type PaymentMethod = 'pix' | 'cash';
 /** Situação de uma venda ou pagamento. Cancelados continuam no histórico. */
 export type RecordStatus = 'active' | 'cancelled';
 
+/** Como a venda foi feita: paga na hora ou fiado. */
+export type SalePaymentType = 'paidNow' | 'fiado';
+
 /** O membro que registrou algo. `email` é null se a conta dele não existe mais. */
 export interface MemberRef {
   id: string;
@@ -45,6 +48,8 @@ export interface Sale {
   status: RecordStatus;
   recordedBy: MemberRef;
   createdAt: string;
+  /** Paga na hora ou fiado (fiado não tem pagamento ligado à venda). */
+  paymentType: SalePaymentType;
   /** Pagamentos ligados à venda (a venda paga na hora tem um, de mesmo valor). */
   payments: SalePayment[];
 }

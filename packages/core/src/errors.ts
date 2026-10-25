@@ -17,6 +17,7 @@ export type CoreErrorCode =
   | 'PRODUCT_NOT_FOUND'
   | 'PRODUCT_INACTIVE'
   | 'SALE_NOT_FOUND'
+  | 'PAYMENT_EXCEEDS_BALANCE'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -34,6 +35,7 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   PRODUCT_NOT_FOUND: 'Produto não encontrado.',
   PRODUCT_INACTIVE: 'Um dos produtos foi desativado. Atualize a lista e tente de novo.',
   SALE_NOT_FOUND: 'Venda não encontrada.',
+  PAYMENT_EXCEEDS_BALANCE: 'O valor passa do saldo devedor do cliente.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

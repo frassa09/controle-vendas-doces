@@ -386,6 +386,15 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      get_customer_balance: {
+        Args: { p_customer_id: string };
+        Returns: {
+          created_at: string;
+          paid_cents: number;
+          sale_id: string;
+          total_cents: number;
+        }[];
+      };
       join_store_with_invite: {
         Args: { p_code: string };
         Returns: {
@@ -408,6 +417,14 @@ export type Database = {
           email: string;
           user_id: string;
         }[];
+      };
+      record_payment: {
+        Args: {
+          p_amount_cents: number;
+          p_customer_id: string;
+          p_method: string;
+        };
+        Returns: string;
       };
       record_sale: {
         Args: { p_customer_id: string; p_items: Json; p_payment_method: string };

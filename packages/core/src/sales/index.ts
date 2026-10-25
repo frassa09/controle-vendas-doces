@@ -4,7 +4,15 @@ import { recordSale } from './recordSale';
 import type { Sale } from './sale';
 import type { RecordSaleInput } from './saleInput';
 
-export type { MemberRef, PaymentMethod, RecordStatus, Sale, SaleItem, SalePayment } from './sale';
+export type {
+  MemberRef,
+  PaymentMethod,
+  RecordStatus,
+  Sale,
+  SaleItem,
+  SalePayment,
+  SalePaymentType,
+} from './sale';
 export {
   SALE_LIMITS,
   unitPriceError,
@@ -15,7 +23,7 @@ export {
 } from './saleInput';
 
 export interface SaleOperations {
-  /** Registra uma venda paga na hora (com cliente ou avulsa) e o pagamento dela. */
+  /** Registra uma venda paga na hora (com cliente ou avulsa, gera o pagamento) ou fiado. */
   recordSale(input: RecordSaleInput): Promise<Sale>;
   /** O detalhe da venda: itens, pagamentos, quem registrou e quando. */
   getSale(id: string): Promise<Sale>;

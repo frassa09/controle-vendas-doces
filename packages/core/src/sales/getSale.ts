@@ -2,6 +2,7 @@ import type { DbClient } from '../db/client';
 import { fromDbError } from '../db/errors';
 import { isUuid } from '../db/ids';
 import { requireUserId } from '../db/session';
+import { memberEmails, toMemberRef } from './members';
 import type { MemberRef, PaymentMethod, RecordStatus, Sale } from './sale';
 import { saleNotFound } from './sale';
 
@@ -33,10 +34,7 @@ export async function getSale(db: DbClient, id: string): Promise<Sale> {
   if (error) throw fromDbError(error);
   if (!data) throw saleNotFound();
 
-  const member = (userId: string): MemberRef => ({
-    id: userId,
-    email: members.get(userId) ?? null,
-  });
+  const member = (userId: string): MemberRef => toMemberRef(members, userId);
   const items = data.sale_items.map((item) => ({
     productId: item.product_id,
     productName: item.product_name,
@@ -54,6 +52,8 @@ export async function getSale(db: DbClient, id: string): Promise<Sale> {
     status: data.status as RecordStatus,
     recordedBy: member(data.recorded_by),
     createdAt: data.created_at,
+    // Só a venda paga na hora tem pagamento ligado a ela (mesmo que cancelado depois).
+    paymentType: data.payments.length > 0 ? 'paidNow' : 'fiado',
     payments: data.payments.map((payment) => ({
       id: payment.id,
       amountCents: payment.amount_cents,
@@ -63,11 +63,4 @@ export async function getSale(db: DbClient, id: string): Promise<Sale> {
       createdAt: payment.created_at,
     })),
   };
-}
-
-/** E-mail de cada membro da loja, por id de usuário. */
-async function memberEmails(db: DbClient): Promise<Map<string, string>> {
-  const { data, error } = await db.rpc('list_store_members');
-  if (error) throw fromDbError(error);
-  return new Map(data.map((row) => [row.user_id, row.email]));
 }

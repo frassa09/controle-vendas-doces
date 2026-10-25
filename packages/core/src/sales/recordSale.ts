@@ -8,9 +8,10 @@ import type { Sale } from './sale';
 import { validateSale, type RecordSaleInput } from './saleInput';
 
 /**
- * Registra uma venda paga na hora: grava a venda, os itens (com cópia do nome,
- * do preço cobrado e dos pontos do produto) e um pagamento de mesmo valor, numa
- * só operação, em nome de quem está logado.
+ * Registra uma venda: grava a venda e os itens (com cópia do nome, do preço
+ * cobrado e dos pontos do produto) numa só operação, em nome de quem está logado.
+ * Paga na hora, grava junto um pagamento de mesmo valor; fiado, nenhum (a venda
+ * entra no saldo devedor do cliente).
  * Erros: INVALID_INPUT, NOT_AUTHENTICATED, FORBIDDEN (sem loja), CUSTOMER_NOT_FOUND,
  * PRODUCT_NOT_FOUND, PRODUCT_INACTIVE.
  */
@@ -32,7 +33,10 @@ export async function recordSale(db: DbClient, input: RecordSaleInput): Promise<
       quantity: item.quantity,
       unit_price_cents: item.unitPriceCents ?? null,
     })),
-    p_payment_method: input.payment.method,
+    // null = fiado (sem pagamento).
+    p_payment_method: (input.payment.type === 'paidNow'
+      ? input.payment.method
+      : null) as unknown as string,
   });
 
   if (error) throw fromDbError(error);

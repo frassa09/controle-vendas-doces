@@ -50,5 +50,18 @@ export {
   type SaleOperations,
   type SalePayment,
   type SalePaymentInput,
+  type SalePaymentType,
 } from './sales';
+export {
+  PAYMENT_LIMITS,
+  debtAgeDays,
+  type CustomerBalance,
+  type Payment,
+  type PaymentField,
+  type PaymentOperations,
+  type RecordPaymentInput,
+  type RecordedPayment,
+  type SaleStanding,
+  type SaleStandingStatus,
+} from './payments';
 export { formatCents, parseCents } from './money';

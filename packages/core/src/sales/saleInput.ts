@@ -9,11 +9,11 @@ export interface SaleItemInput {
   unitPriceCents?: number;
 }
 
-/** Como a venda é paga. Por enquanto só "pago agora", via Pix ou dinheiro. */
-export interface SalePaymentInput {
-  type: 'paidNow';
-  method: PaymentMethod;
-}
+/**
+ * Como a venda é paga: "pago agora" (Pix ou dinheiro, gera o pagamento junto) ou
+ * fiado (sem pagamento; entra no saldo devedor do cliente, por isso exige cliente).
+ */
+export type SalePaymentInput = { type: 'paidNow'; method: PaymentMethod } | { type: 'fiado' };
 
 export interface RecordSaleInput {
   /** null = venda avulsa (sem cliente). */
@@ -82,7 +82,10 @@ export function validateSale(input: RecordSaleInput): void {
     }
   }
 
-  if (!methods.includes(input.payment.method)) {
+  const { payment } = input;
+  if (payment.type === 'fiado') {
+    if (input.customerId === null) fieldErrors.payment = 'Escolha o cliente para vender fiado.';
+  } else if ((payment.type as string) !== 'paidNow' || !methods.includes(payment.method)) {
     fieldErrors.payment = 'Escolha Pix ou dinheiro.';
   }
 
