@@ -64,6 +64,12 @@ export {
   type SaleStanding,
   type SaleStandingStatus,
 } from './payments';
+export {
+  type CustomerPoints,
+  type PointsMovement,
+  type PointsMovementKind,
+  type PointsOperations,
+} from './points';
 export { formatCents, parseCents } from './money';
 export {
   COLLECTION_TEMPLATE_MAX,

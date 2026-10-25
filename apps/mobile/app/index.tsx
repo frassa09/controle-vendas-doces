@@ -8,7 +8,7 @@ import { PrimaryButton } from '../src/ui/PrimaryButton';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
 
-/** Tela inicial da loja: nova venda e atalhos para as áreas (cobrança depois). */
+/** Tela inicial da loja: nova venda e atalhos para as áreas. */
 export default function StoreHomeScreen() {
   const session = useSession();
   const theme = useAppTheme();
@@ -102,6 +102,19 @@ export default function StoreHomeScreen() {
               router.push('/clientes');
             }}
             left={(props) => <List.Icon {...props} icon="account-group-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.areaTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.area}
+          />
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+          <List.Item
+            title="Cobrança"
+            description="Quem está devendo, com o WhatsApp pronto"
+            onPress={() => {
+              router.push('/cobranca');
+            }}
+            left={(props) => <List.Icon {...props} icon="cash-clock" />}
             right={(props) => <List.Icon {...props} icon="chevron-right" />}
             titleStyle={styles.areaTitle}
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}

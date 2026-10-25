@@ -62,13 +62,13 @@ export function renderCollectionTemplate(
 ): string {
   const lines: string[] = [];
   for (const line of template.split('\n')) {
-    let blanked = false;
+    const state = { blanked: false };
     const rendered = line.replace(variablePattern, (whole, name: string) => {
       if (!isVariable(name)) return whole;
-      if (values[name] === '') blanked = true;
+      if (values[name] === '') state.blanked = true;
       return values[name];
     });
-    if (!blanked) lines.push(rendered);
+    if (!state.blanked) lines.push(rendered);
   }
   return lines
     .join('\n')

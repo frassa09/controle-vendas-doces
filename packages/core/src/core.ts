@@ -4,6 +4,7 @@ import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
 import type { DbClient } from './db/client';
 import { createPaymentOperations, type PaymentOperations } from './payments';
+import { createPointsOperations, type PointsOperations } from './points';
 import { createSaleOperations, type SaleOperations } from './sales';
 import { createStoreOperations, type StoreOperations } from './store';
 
@@ -20,6 +21,7 @@ export interface Core {
   sales: SaleOperations;
   payments: PaymentOperations;
   collections: CollectionOperations;
+  points: PointsOperations;
 }
 
 export interface CoreDependencies {
@@ -38,5 +40,6 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     sales: createSaleOperations(supabase),
     payments: createPaymentOperations(supabase),
     collections: createCollectionOperations(supabase, { customerPageUrl }),
+    points: createPointsOperations(supabase),
   };
 }

@@ -1,4 +1,4 @@
-import { formatCents, formatWhatsApp, type CustomerBalance } from '@cvd/core';
+import { formatCents, formatWhatsApp, type CustomerBalance, type CustomerPoints } from '@cvd/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
@@ -20,13 +20,18 @@ export default function CustomerProfileScreen() {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const load = useCallback(
-    () => Promise.all([core.customers.getCustomer(id), core.payments.getCustomerBalance(id)]),
+    () =>
+      Promise.all([
+        core.customers.getCustomer(id),
+        core.payments.getCustomerBalance(id),
+        core.points.getCustomerPoints(id),
+      ]),
     [id],
   );
   const query = useFocusQuery(load);
 
   if (!query.data) return <LoadingState query={query} />;
-  const [customer, balance] = query.data;
+  const [customer, balance, points] = query.data;
   const valueStyle = [styles.itemValue, { color: theme.colors.onSurface }];
   const divider = <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />;
 
@@ -59,6 +64,7 @@ export default function CustomerProfileScreen() {
         ) : null}
 
         <DebtCard balance={balance} customerId={customer.id} />
+        <PointsCard points={points} />
 
         <View
           style={[
@@ -196,6 +202,76 @@ function DebtCard({ balance, customerId }: { balance: CustomerBalance; customerI
           </PrimaryButton>
         </View>
       ) : null}
+    </View>
+  );
+}
+
+/** Saldo de pontos e o extrato (créditos por compra quitada), do mais novo ao mais antigo. */
+function PointsCard({ points }: { points: CustomerPoints }) {
+  const router = useRouter();
+  const theme = useAppTheme();
+  const muted = { color: theme.colors.onSurfaceVariant };
+  const unit = (n: number) => `${String(n)} ${Math.abs(n) === 1 ? 'ponto' : 'pontos'}`;
+
+  return (
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.colors.elevation.level1,
+          borderColor: theme.colors.outlineVariant,
+        },
+      ]}
+    >
+      <View style={styles.debtHeader}>
+        <Text variant="labelLarge" style={muted}>
+          Pontos
+        </Text>
+        <Text
+          variant="displaySmall"
+          accessibilityLabel={`Saldo de ${unit(points.balance)}`}
+          style={[styles.debtValue, { color: theme.colors.onSurface }]}
+        >
+          {points.balance}
+        </Text>
+        {points.movements.length === 0 ? (
+          <Text variant="bodyMedium" style={[styles.debtSince, muted]}>
+            Os pontos entram quando a compra é paga por inteiro.
+          </Text>
+        ) : null}
+      </View>
+
+      {points.movements.map((movement) => (
+        <View key={movement.id}>
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+          <List.Item
+            title="Compra paga"
+            description={dayFormat.format(new Date(movement.createdAt))}
+            right={() => (
+              <Text
+                variant="titleMedium"
+                style={[styles.openValue, { color: theme.colors.primary }]}
+              >
+                {movement.points > 0 ? '+' : ''}
+                {movement.points}
+              </Text>
+            )}
+            onPress={
+              movement.saleId === null
+                ? undefined
+                : () => {
+                    router.push({
+                      pathname: '/vendas/[id]',
+                      params: { id: movement.saleId ?? '' },
+                    });
+                  }
+            }
+            accessibilityLabel={`Compra paga em ${dayFormat.format(new Date(movement.createdAt))}, mais ${unit(movement.points)}`}
+            titleStyle={styles.itemTitle}
+            descriptionStyle={muted}
+          />
+        </View>
+      ))}
     </View>
   );
 }

@@ -54,5 +54,6 @@ module.exports = ({ config }) => ({
   extra: {
     supabaseUrl: process.env.SUPABASE_URL ?? '',
     supabaseAnonKey: process.env.SUPABASE_ANON_KEY ?? '',
+    customerPageUrl: process.env.CUSTOMER_PAGE_URL ?? '',
   },
 });
