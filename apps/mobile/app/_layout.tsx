@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -14,14 +14,20 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <SessionProvider>
-        {/* A cor da loja entra aqui quando a loja puder escolher a sua. */}
-        <ThemeProvider>
+        <StoreThemed>
           <StatusBar style="dark" />
           <Routes />
-        </ThemeProvider>
+        </StoreThemed>
       </SessionProvider>
     </SafeAreaProvider>
   );
+}
+
+/** O tema segue a cor escolhida pela loja (Aparência da página); sem loja, a cor padrão. */
+function StoreThemed({ children }: { children: ReactNode }) {
+  const { state } = useSession();
+  const seed = state.status === 'ready' ? (state.store.brandColor ?? undefined) : undefined;
+  return <ThemeProvider seedColor={seed}>{children}</ThemeProvider>;
 }
 
 /**
@@ -67,6 +73,7 @@ function Routes() {
       <Stack.Protected guard={status === 'ready'}>
         <Stack.Screen name="index" />
         <Stack.Screen name="configuracoes" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="aparencia" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="clientes/index" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="clientes/novo" options={{ animation: 'slide_from_bottom' }} />
         <Stack.Screen name="clientes/[id]/index" options={{ animation: 'slide_from_right' }} />

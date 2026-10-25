@@ -18,6 +18,7 @@ export type CoreErrorCode =
   | 'PRODUCT_INACTIVE'
   | 'SALE_NOT_FOUND'
   | 'PAYMENT_EXCEEDS_BALANCE'
+  | 'LINK_NOT_FOUND'
   | 'NO_DEBT'
   | 'SALE_CANCELLED'
   | 'PAYMENT_NOT_FOUND'
@@ -42,6 +43,7 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   PRODUCT_INACTIVE: 'Um dos produtos foi desativado. Atualize a lista e tente de novo.',
   SALE_NOT_FOUND: 'Venda não encontrada.',
   PAYMENT_EXCEEDS_BALANCE: 'O valor passa do saldo devedor do cliente.',
+  LINK_NOT_FOUND: 'Não encontramos este cantinho. Confira o link que a loja mandou.',
   NO_DEBT: 'Este cliente não deve nada.',
   SALE_CANCELLED: 'Esta venda foi cancelada e não pode mais ser alterada.',
   PAYMENT_NOT_FOUND: 'Pagamento não encontrado.',

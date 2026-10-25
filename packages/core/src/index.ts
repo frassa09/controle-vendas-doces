@@ -19,8 +19,11 @@ export {
   type CustomerSummary,
 } from './customers';
 export {
+  BRANDING_LIMITS,
   INVITE_CODE_LENGTH,
   STORE_LIMITS,
+  type StoreBrandingField,
+  type StoreBrandingInput,
   type InviteCodeField,
   type Store,
   type StoreDetailsField,
@@ -75,6 +78,13 @@ export {
   type PointsMovementKind,
   type PointsOperations,
 } from './points';
+export {
+  type CustomerPageOperations,
+  type CustomerView,
+  type CustomerViewEntry,
+  type CustomerViewItem,
+  type CustomerViewOpenSale,
+} from './customerPage';
 export { formatCents, parseCents } from './money';
 export {
   COLLECTION_TEMPLATE_MAX,

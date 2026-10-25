@@ -498,28 +498,37 @@ export type Database = {
       };
       stores: {
         Row: {
+          brand_color: string | null;
           city: string;
           collection_template: string | null;
           created_at: string;
           id: string;
+          logo_data: string | null;
           name: string;
           pix_key: string;
+          welcome_text: string | null;
         };
         Insert: {
+          brand_color?: string | null;
           city: string;
           collection_template?: string | null;
           created_at?: string;
           id?: string;
+          logo_data?: string | null;
           name: string;
           pix_key: string;
+          welcome_text?: string | null;
         };
         Update: {
+          brand_color?: string | null;
           city?: string;
           collection_template?: string | null;
           created_at?: string;
           id?: string;
+          logo_data?: string | null;
           name?: string;
           pix_key?: string;
+          welcome_text?: string | null;
         };
         Relationships: [];
       };
@@ -533,12 +542,15 @@ export type Database = {
       create_store: {
         Args: { p_city: string; p_name: string; p_pix_key: string };
         Returns: {
+          brand_color: string | null;
           city: string;
           collection_template: string | null;
           created_at: string;
           id: string;
+          logo_data: string | null;
           name: string;
           pix_key: string;
+          welcome_text: string | null;
         };
         SetofOptions: {
           from: '*';
@@ -573,15 +585,19 @@ export type Database = {
           total_cents: number;
         }[];
       };
+      get_customer_page: { Args: { p_token: string }; Returns: Json };
       join_store_with_invite: {
         Args: { p_code: string };
         Returns: {
+          brand_color: string | null;
           city: string;
           collection_template: string | null;
           created_at: string;
           id: string;
+          logo_data: string | null;
           name: string;
           pix_key: string;
+          welcome_text: string | null;
         };
         SetofOptions: {
           from: '*';

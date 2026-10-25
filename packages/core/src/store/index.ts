@@ -6,12 +6,16 @@ import { getOpenInvite } from './getOpenInvite';
 import type { StoreInvite } from './invite';
 import { joinWithInvite } from './joinWithInvite';
 import type { Store } from './store';
+import type { StoreBrandingInput } from './storeBranding';
 import type { StoreDetailsInput } from './storeDetails';
+import { getStoreLogo, setStoreLogo } from './storeLogo';
+import { updateStoreBranding } from './updateStoreBranding';
 import { updateStoreDetails } from './updateStoreDetails';
 
 export type { StoreInvite } from './invite';
 export { INVITE_CODE_LENGTH, type InviteCodeField } from './inviteCode';
 export type { Store } from './store';
+export { BRANDING_LIMITS, type StoreBrandingField, type StoreBrandingInput } from './storeBranding';
 export { STORE_LIMITS, type StoreDetailsField, type StoreDetailsInput } from './storeDetails';
 
 export interface StoreOperations {
@@ -21,6 +25,12 @@ export interface StoreOperations {
   getMyStore(): Promise<Store | null>;
   /** Altera nome, chave Pix e cidade da loja; qualquer membro pode. */
   updateStoreDetails(input: StoreDetailsInput): Promise<Store>;
+  /** Altera cor principal e texto de boas-vindas (null = padrão); qualquer membro pode. */
+  updateStoreBranding(input: StoreBrandingInput): Promise<Store>;
+  /** Troca o logo (data URL png/jpeg/webp pequeno) ou remove com null. */
+  setStoreLogo(logo: string | null): Promise<void>;
+  /** O logo da loja (data URL) ou null. */
+  getStoreLogo(): Promise<string | null>;
   /** Gera um código de convite de uso único (o anterior não usado deixa de valer). */
   createInvite(): Promise<StoreInvite>;
   /** O código de convite ainda não usado da loja, ou null. */
@@ -34,6 +44,9 @@ export function createStoreOperations(db: DbClient): StoreOperations {
     createStore: (input) => createStore(db, input),
     getMyStore: () => getMyStore(db),
     updateStoreDetails: (input) => updateStoreDetails(db, input),
+    updateStoreBranding: (input) => updateStoreBranding(db, input),
+    setStoreLogo: (logo) => setStoreLogo(db, logo),
+    getStoreLogo: () => getStoreLogo(db),
     createInvite: () => createInvite(db),
     getOpenInvite: () => getOpenInvite(db),
     joinWithInvite: (code) => joinWithInvite(db, code),
