@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Quermesse</title>
+<style>
+  :root{--loja:#D6336C;--milho:#F2B705;--folha:#1F7A4D;--branco:#FFFFFF;--madeira:#8B5A2B;--tinta:#2B1A12}
+  *{box-sizing:border-box;margin:0}
+  body{width:390px;height:844px;overflow:hidden;font-family:system-ui,Roboto,sans-serif;color:var(--tinta);
+    background:var(--loja);
+    background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.35) 0 7px,transparent 8px),
+      radial-gradient(circle at 70% 70%,rgba(242,183,5,.55) 0 9px,transparent 10px),
+      radial-gradient(circle at 75% 25%,rgba(31,122,77,.5) 0 5px,transparent 6px);background-size:60px 60px}
+  .varal{position:relative;height:70px}
+  .varal svg{position:absolute;inset:0;width:100%;height:100%}
+  .nome{margin:4px 24px 0;background:var(--branco);border-radius:10px;padding:12px;text-align:center;font:800 28px/1 Georgia,serif;color:var(--loja);
+    box-shadow:0 4px 0 var(--madeira)}
+  .ola{text-align:center;color:#fff;font-weight:700;margin-top:12px;font-size:16px}
+  .fichas{margin:16px 16px 0;background:var(--branco);border-radius:16px;padding:16px}
+  .fichas h2{font-size:15px;margin-bottom:10px}
+  .linha{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}
+  .fi{height:46px;border-radius:4px;background:var(--milho);display:grid;place-items:center;font-weight:800;font-size:13px;position:relative;
+    border-left:3px dotted var(--branco);border-right:3px dotted var(--branco)}
+  .fi.o{background:none;border:2px dashed #E0B8C6;color:#C69AAA}
+  .fichas p{margin-top:8px;font-weight:700}
+  .barracas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 16px 0}
+  .barraca{background:var(--branco);border-radius:0 0 14px 14px;overflow:hidden;text-align:center}
+  .barraca .teto{height:26px;background:repeating-linear-gradient(90deg,var(--folha) 0 18px,var(--branco) 18px 36px)}
+  .barraca b{display:block;padding:12px 6px 2px;font-size:16px}
+  .barraca span{display:block;padding:0 6px 12px;font-size:13px}
+  .divida{margin:14px 16px 0;background:var(--tinta);color:#fff;border-radius:12px;padding:12px 14px;display:flex;justify-content:space-between}
+</style></head><body>
+<div class="varal"><svg viewBox="0 0 390 70" preserveAspectRatio="none">
+  <path d="M0 14 Q195 40 390 14" stroke="#fff" stroke-width="2" fill="none"/>
+  <g><polygon points="20,16 44,19 32,44" fill="#F2B705"/><polygon points="60,21 84,24 72,50" fill="#1F7A4D"/><polygon points="100,25 124,27 112,54" fill="#fff"/><polygon points="140,27 164,28 152,56" fill="#F2B705"/><polygon points="180,28 204,28 192,57" fill="#1F7A4D"/><polygon points="220,28 244,27 232,56" fill="#fff"/><polygon points="260,26 284,25 272,54" fill="#F2B705"/><polygon points="300,23 324,21 312,50" fill="#1F7A4D"/><polygon points="340,19 364,17 352,44" fill="#fff"/></g>
+</svg></div>
+<div class="nome">Doces da Ana</div>
+<p class="ola">Oi, Júlia! Você tem 7 fichas</p>
+<div class="fichas"><h2>Suas fichas</h2>
+  <div class="linha"><div class="fi">1</div><div class="fi">1</div><div class="fi">1</div><div class="fi">1</div><div class="fi">1</div></div>
+  <div class="linha"><div class="fi">1</div><div class="fi">1</div><div class="fi o">·</div><div class="fi o">·</div><div class="fi o">·</div></div>
+  <p>faltam 3 pra prenda garantida</p></div>
+<div class="barracas">
+  <div class="barraca"><div class="teto"></div><b>Prenda garantida</b><span>um doce · 10 fichas</span></div>
+  <div class="barraca"><div class="teto"></div><b>Pescaria</b><span>tentar a sorte · 5 fichas</span></div>
+</div>
+<div class="divida"><span>Em aberto R$ 18,00</span><b>Copiar Pix</b></div>
+</body></html>

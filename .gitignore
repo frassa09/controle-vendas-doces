@@ -1,0 +1,14 @@
+# dependências e builds
+node_modules/
+dist/
+.expo/
+*.apk
+
+# segredos
+.env
+.env.*
+!.env.example
+
+# Impeccable: referências de terceiros e configuração local
+.impeccable/refs/
+.impeccable/config.local.json

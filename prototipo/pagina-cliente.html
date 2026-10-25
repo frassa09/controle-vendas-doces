@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cantinho da Júlia · Doces da Ana</title>
+<style>
+  @font-face{font-family:"Caprasimo";src:url(fonts/caprasimo.woff2) format("woff2");font-weight:400;font-display:swap}
+  @font-face{font-family:"Nunito";src:url(fonts/nunito.woff2) format("woff2");font-weight:400 800;font-display:swap}
+
+  :root{
+    --loja:#D6336C;
+    /* trava a luminosidade: texto branco legível mesmo com cor de loja clara */
+    --loja-forte:oklch(from color-mix(in oklab,var(--loja) 76%,#2a1410) min(l,.47) c h);
+    --loja-suave:color-mix(in oklab,var(--loja) 14%,#fff);
+    /* croma mínimo: a parede sempre tem cor, nunca vira creme com cores de loja claras */
+    --parede:oklch(from color-mix(in oklab,var(--loja) 13%,#fff) l max(c,.05) h);
+    --parede-sombra:oklch(from color-mix(in oklab,var(--loja) 22%,#fff) l max(c,.07) h);
+    --parede-desenho:oklch(from color-mix(in oklab,var(--loja) 34%,#fff) l max(c,.1) h);
+    --parede-desenho-forte:oklch(from color-mix(in oklab,var(--loja) 52%,#fff) min(l,.8) max(c,.12) h);
+    --cacau:#4A2E22;
+    --cacau-2:#6E4E40;
+    --menta:#CFE8DC;
+    --menta-2:#A8D2BE;
+    --rosa:#F7DEE5;
+    --madeira:#E6C196;
+    --madeira-2:#C38F5D;
+    --papel:#FFFEFB;
+    --brownie:#5A3020;
+    --brownie-topo:#7B4429;
+    --sucesso:#2F7D57;
+    --raio:18px;
+    --sombra:0 6px 18px -8px color-mix(in oklab,var(--cacau) 45%,transparent);
+    --mola:cubic-bezier(.34,1.56,.64,1);
+    --sai:cubic-bezier(.16,1,.3,1);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;min-height:100vh;font-family:"Nunito",system-ui,sans-serif;font-size:16px;line-height:1.45;color:var(--cacau);
+    background-color:var(--parede);
+  }
+  /* papel de parede: brownies e brigadeiros miúdos na cor da loja */
+  body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--parede-desenho);opacity:.55;
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect x='6' y='10' width='14' height='10' rx='2.5'/%3E%3Cpath d='M6 13h14v2l-3 1.6-2.5-1.6-3 1.6-2.5-1.6L6 16z' fill-opacity='.6'/%3E%3Ccircle cx='45' cy='40' r='5'/%3E%3Cpath d='M39 43h12l-1.6 6.5h-8.8z'/%3E%3Ccircle cx='50' cy='13' r='1.6'/%3E%3Ccircle cx='15' cy='48' r='1.6'/%3E%3C/svg%3E") 0 0/64px 64px;
+            mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect x='6' y='10' width='14' height='10' rx='2.5'/%3E%3Cpath d='M6 13h14v2l-3 1.6-2.5-1.6-3 1.6-2.5-1.6L6 16z' fill-opacity='.6'/%3E%3Ccircle cx='45' cy='40' r='5'/%3E%3Cpath d='M39 43h12l-1.6 6.5h-8.8z'/%3E%3Ccircle cx='50' cy='13' r='1.6'/%3E%3Ccircle cx='15' cy='48' r='1.6'/%3E%3C/svg%3E") 0 0/64px 64px}
+  ::selection{background:color-mix(in oklab,var(--loja) 35%,#fff);color:var(--cacau)}
+  :focus-visible{outline:3px solid var(--loja-forte);outline-offset:3px;border-radius:10px}
+  button{font:inherit;color:inherit}
+  h1,h2,h3{font-family:"Caprasimo",Georgia,serif;font-weight:400;margin:0;line-height:1.1;text-wrap:balance}
+  p{margin:0}
+
+  .pagina{max-width:440px;margin:0 auto;padding:max(14px,env(safe-area-inset-top)) 16px 40px}
+
+  /* topo */
+  .topo{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .marca{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px;letter-spacing:.01em}
+  .marca svg{width:28px;height:28px}
+  .saldo{display:flex;align-items:center;gap:6px;padding:4px;border-radius:14px;background:var(--papel);
+    box-shadow:0 0 0 1.5px var(--madeira-2),var(--sombra)}
+  .saldo b{display:block;min-width:2ch;padding:4px 10px;border-radius:10px;border:1.5px solid var(--madeira);
+    font-family:"Caprasimo",serif;font-weight:400;font-size:22px;line-height:1;text-align:center;font-variant-numeric:tabular-nums}
+  .saldo span{font-weight:700;font-size:14px;padding-right:8px}
+
+  /* quarto */
+  .quarto{margin:10px -6px 0;position:relative}
+  .quarto svg{display:block;width:100%;height:auto;overflow:visible}
+  .tocavel{cursor:pointer;outline:none}
+  .tocavel:focus-visible .contorno-foco{stroke:var(--loja-forte);stroke-width:3;stroke-dasharray:none}
+  .tocavel .contorno-foco{fill:none;stroke:transparent}
+  .tocavel:hover .presente-tampa,.tocavel:focus-visible .presente-tampa{transform:translateY(-4px)}
+  .presente-tampa{transition:transform .35s var(--mola);transform-box:fill-box}
+  .cai{animation:cai .9s var(--mola) .5s both}
+  @keyframes cai{0%{transform:translateY(-70px);opacity:0}35%{opacity:1}100%{transform:translateY(0);opacity:1}}
+  .some{animation:some .5s var(--sai) both}
+  @keyframes some{to{transform:translateY(-14px) scale(.6);opacity:0}}
+  .mais-um{animation:maisum 1.6s var(--sai) 1.2s both}
+  @keyframes maisum{0%{opacity:0;transform:translateY(6px)}20%{opacity:1;transform:none}75%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+
+  .titulo{margin-top:6px;text-align:center}
+  .titulo h1{font-size:clamp(30px,8.6vw,38px);color:var(--loja-forte)}
+  .titulo p{margin-top:6px;font-size:17px;font-weight:600;color:var(--cacau-2)}
+
+  /* placar */
+  .placar{margin-top:16px;display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px;border-radius:18px;background:var(--papel);
+    box-shadow:0 0 0 1.5px var(--madeira-2),var(--sombra)}
+  .placar strong{padding:6px 14px;border-radius:13px;border:1.5px solid var(--madeira);
+    font-family:"Caprasimo",serif;font-weight:400;font-size:26px;line-height:1.1;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .placar span{font-weight:700;line-height:1.3}
+  .placar small{display:block;font-size:14px;font-weight:600;color:var(--cacau-2)}
+
+  /* ações */
+  .acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+  .acoes .botao-largo{grid-column:1/-1}
+  .acoes .botao:not(.botao-largo){flex-direction:column;gap:2px;font-size:16px}
+  .acoes .botao:not(.botao-largo) svg{margin-bottom:2px}
+  .botao{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:12px 18px;border:0;border-radius:16px;
+    font-weight:800;font-size:17px;cursor:pointer;transition:transform .2s var(--mola),box-shadow .2s,background-color .2s}
+  .botao svg{width:22px;height:22px;flex:none}
+  .botao small{font-weight:700;font-size:14px;opacity:.9}
+  .botao:active{transform:scale(.97)}
+  .botao-principal{background:var(--loja-forte);color:#fff;box-shadow:0 8px 18px -8px var(--loja-forte)}
+  .botao-principal:hover{background:color-mix(in oklab,var(--loja-forte) 88%,#000)}
+  .botao-secundario{background:var(--papel);color:var(--cacau);box-shadow:0 0 0 1.5px var(--madeira-2)}
+  .botao-secundario:hover{background:#fff}
+  .botao[disabled]{cursor:not-allowed;background:color-mix(in oklab,var(--papel) 70%,var(--parede));color:var(--cacau-2);box-shadow:0 0 0 1.5px var(--madeira)}
+  .botao[disabled]:active{transform:none}
+  .botao[hidden],.secao[hidden]{display:none}
+
+  /* seções */
+  .secao{margin-top:28px}
+  .secao>h2{font-size:24px;margin-bottom:10px}
+
+  .bilhete{position:relative;background:var(--papel);border-radius:6px;padding:22px 18px 18px;transform:rotate(-.6deg);
+    box-shadow:0 10px 22px -12px color-mix(in oklab,var(--cacau) 55%,transparent)}
+  .itens li+li{border-top:1.5px dashed var(--madeira)}
+  .bilhete::before{content:"";position:absolute;top:-10px;left:50%;width:84px;height:22px;margin-left:-42px;transform:rotate(2deg);
+    background:color-mix(in oklab,var(--menta-2) 70%,transparent);border-radius:3px}
+  .bilhete h2{font-size:22px}
+  .valor{font-family:"Caprasimo",serif;font-size:40px;line-height:1.1;margin-top:4px;color:var(--loja-forte);font-variant-numeric:tabular-nums}
+  .itens{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px}
+  .itens li{display:flex;justify-content:space-between;gap:12px;font-weight:600;padding:6px 0}
+  .itens li span:first-child{color:var(--cacau-2)}
+  .bilhete .botao{width:100%;margin-top:14px}
+  .nota{margin-top:10px;font-size:14px;font-weight:600;color:var(--cacau-2)}
+
+  .cupom{display:flex;gap:14px;align-items:center;background:var(--papel);border-radius:var(--raio);padding:14px 16px;
+    box-shadow:0 0 0 2px var(--loja-suave),0 0 0 3.5px var(--madeira),var(--sombra)}
+  .cupom svg{width:52px;height:52px;flex:none}
+  .cupom strong{display:block;font-size:17px}
+  .cupom span{font-size:14px;font-weight:600;color:var(--cacau-2)}
+
+  .recados{list-style:none;margin:0;padding:0;background:var(--papel);border-radius:var(--raio);box-shadow:var(--sombra)}
+  .recados li{display:grid;grid-template-columns:36px 1fr auto;gap:12px;align-items:start;padding:14px 16px}
+  .recados li+li{border-top:1.5px dashed var(--madeira)}
+  .recados .icone{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:var(--loja-suave);color:var(--loja-forte)}
+  .recados .icone svg{width:20px;height:20px}
+  .recados strong{display:block;font-size:16px}
+  .recados span{font-size:14px;font-weight:600;color:var(--cacau-2)}
+  .recados time{font-size:13px;font-weight:700;color:var(--cacau-2);white-space:nowrap}
+  .ganho{color:var(--sucesso)!important}
+
+  /* painel do protótipo */
+  .proto{margin-top:36px;padding:14px 16px;border-radius:14px;border:1.5px dashed var(--cacau-2);background:color-mix(in oklab,var(--papel) 60%,transparent)}
+  .proto p{font-size:14px;font-weight:700}
+  .proto .linha{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .cor{width:34px;height:34px;border-radius:50%;border:3px solid var(--papel);box-shadow:0 0 0 1.5px var(--cacau-2);cursor:pointer;background:var(--c)}
+  .cor[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--cacau)}
+  .passo{min-width:44px;min-height:44px;border-radius:12px;border:1.5px solid var(--cacau-2);background:var(--papel);font-weight:800;font-size:18px;cursor:pointer}
+
+  /* folha (raspadinha / troca) */
+  dialog{border:0;padding:0;margin:auto auto 0;width:100%;max-width:440px;max-height:92vh;border-radius:26px 26px 0 0;background:var(--papel);color:var(--cacau);
+    box-shadow:0 -12px 40px -12px color-mix(in oklab,var(--cacau) 60%,transparent)}
+  dialog[open]{animation:sobe .45s var(--sai)}
+  @keyframes sobe{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+  dialog::backdrop{background:color-mix(in oklab,var(--cacau) 45%,transparent)}
+  .folha{padding:12px 20px max(22px,env(safe-area-inset-bottom))}
+  .alca{width:44px;height:5px;border-radius:3px;background:var(--madeira);margin:0 auto 14px}
+  .folha-topo{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .folha h2{font-size:26px}
+  .folha .sub{margin-top:4px;font-weight:600;color:var(--cacau-2)}
+  .fechar{min-width:44px;min-height:44px;border-radius:50%;border:0;background:var(--loja-suave);cursor:pointer;display:grid;place-items:center}
+  .fechar svg{width:20px;height:20px}
+  .etapa{margin-top:16px}
+  .etapa[hidden]{display:none}
+  .formatos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .formato{position:relative;display:block;border-radius:16px;padding:12px;background:#fff;box-shadow:0 0 0 1.5px var(--madeira);cursor:pointer}
+  .formato input{position:absolute;opacity:0;pointer-events:none}
+  .formato:has(input:checked){box-shadow:0 0 0 3px var(--loja-forte)}
+  .formato:has(input:focus-visible){outline:3px solid var(--loja-forte);outline-offset:3px}
+  .formato svg{width:100%;height:auto;display:block}
+  .formato strong{display:block;margin-top:8px}
+  .formato span{font-size:14px;font-weight:600;color:var(--cacau-2)}
+  .igual{margin-top:10px;font-size:14px;font-weight:700;color:var(--cacau-2);text-align:center}
+  .campo{display:grid;gap:6px;margin-top:4px}
+  .campo label{font-weight:800}
+  .pin{width:100%;min-height:60px;border-radius:14px;border:2px solid var(--madeira-2);background:#fff;text-align:center;
+    font:400 32px/1 "Caprasimo",serif;letter-spacing:.5em;padding-left:.5em;color:var(--cacau);caret-color:var(--loja-forte)}
+  .pin:focus{outline:none;border-color:var(--loja-forte);box-shadow:0 0 0 4px var(--loja-suave)}
+  .pin::placeholder{color:#A87447}
+  .erro{min-height:22px;font-size:14px;font-weight:700;color:#B3261E}
+  .ajuda{font-size:14px;font-weight:600;color:var(--cacau-2)}
+  .folha .botao{width:100%;margin-top:12px}
+
+  .raspas{display:grid;gap:10px;margin-top:4px}
+  .raspas.cinco{grid-template-columns:repeat(5,1fr)}
+  .raspas.tres{grid-template-columns:repeat(3,1fr)}
+  .casa{position:relative;aspect-ratio:1;border-radius:14px;background:#fff;box-shadow:0 0 0 1.5px var(--madeira);overflow:hidden;
+    display:grid;place-items:center;touch-action:none}
+  .casa svg{width:66%;height:66%}
+  .casa canvas{position:absolute;inset:0;width:100%;height:100%;cursor:grab}
+  .resultado{margin-top:14px;text-align:center;min-height:56px}
+  .resultado h3{font-size:26px;color:var(--loja-forte)}
+  .resultado p{font-weight:600;color:var(--cacau-2);margin-top:4px}
+  .escolhas{display:grid;gap:8px;margin-top:12px}
+  .escolha{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 14px;border-radius:14px;border:0;background:#fff;box-shadow:0 0 0 1.5px var(--madeira);cursor:pointer;font-weight:800;text-align:left}
+  .escolha svg{width:36px;height:36px;flex:none}
+  .escolha:hover{box-shadow:0 0 0 2.5px var(--loja-forte)}
+
+  .aviso{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+    background:var(--cacau);color:#fff;font-weight:700;padding:12px 18px;border-radius:14px;transition:opacity .3s,transform .4s var(--sai);z-index:10;max-width:calc(100% - 32px)}
+  .aviso.mostra{opacity:1;transform:translate(-50%,0)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="doce-brownie" viewBox="0 0 40 30">
+      <rect x="2" y="6" width="36" height="22" rx="5" fill="var(--brownie)" stroke="var(--cacau)" stroke-width="1.5"/>
+      <path d="M2 11 Q2 6 7 6 H33 Q38 6 38 11 V14 L33 17 L27 13 L20 17 L13 13 L7 17 L2 14 Z" fill="var(--brownie-topo)"/>
+      <path d="M10 9 L14 10 M23 8 L26 10 M30 11 L33 10" stroke="#9A5A38" stroke-width="1.4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="doce-brigadeiro" viewBox="0 0 40 40">
+      <path d="M6 22 L10 36 Q20 39 30 36 L34 22 Z" fill="var(--loja)" stroke="var(--cacau)" stroke-width="1.5"/>
+      <circle cx="20" cy="19" r="12" fill="var(--brownie)" stroke="var(--cacau)" stroke-width="1.5"/>
+      <g fill="#F3D9A4"><rect x="14" y="12" width="4" height="1.6" rx=".8" transform="rotate(30 16 13)"/><rect x="22" y="11" width="4" height="1.6" rx=".8" transform="rotate(-25 24 12)"/><rect x="25" y="18" width="4" height="1.6" rx=".8" transform="rotate(70 27 19)"/><rect x="12" y="20" width="4" height="1.6" rx=".8" transform="rotate(-40 14 21)"/><rect x="19" y="23" width="4" height="1.6" rx=".8"/><rect x="18" y="16" width="4" height="1.6" rx=".8" transform="rotate(85 20 17)"/></g>
+    </symbol>
+    <symbol id="doce-pote" viewBox="0 0 40 40">
+      <rect x="9" y="6" width="22" height="6" rx="2" fill="var(--loja)" stroke="var(--cacau)" stroke-width="1.5"/>
+      <path d="M10 12 H30 L28 35 Q20 37 12 35 Z" fill="#fff" stroke="var(--cacau)" stroke-width="1.5"/>
+      <path d="M11 17 H29 L28.6 22 H11.4 Z" fill="var(--brownie)"/><path d="M11.4 22 H28.6 L28.2 27 H11.8 Z" fill="#F6E7C8"/><path d="M11.8 27 H28.2 L27.9 31 H12.1 Z" fill="var(--brownie-topo)"/>
+    </symbol>
+    <symbol id="i-copiar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="3"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></g></symbol>
+    <symbol id="i-presente" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9" width="17" height="11" rx="2"/><path d="M2.5 9h19M12 9v11"/><path d="M12 9c-1.5-3-5-4-5.5-1.5S9 9 12 9c3 0 5.8.5 5.5-1.5S13.5 6 12 9z"/></g></symbol>
+    <symbol id="i-estante" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10h18M3 19h18"/><rect x="5" y="5" width="4" height="5" rx="1"/><rect x="11" y="6.5" width="4" height="3.5" rx="1"/><rect x="6" y="14" width="5" height="5" rx="1"/></g></symbol>
+    <symbol id="i-pix" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l4 4-4 4-4-4z"/><path d="M12 13l4 4-4 4-4-4z"/><path d="M3 12l4-4 4 4-4 4zM13 12l4-4 4 4-4 4z"/></g></symbol>
+    <symbol id="i-sacola" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1 12H6z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></g></symbol>
+    <symbol id="i-fechar" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<main class="pagina">
+  <header class="topo">
+    <div class="marca">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><use href="#doce-brigadeiro"/></svg>
+      <span id="nome-loja">Doces da Ana</span>
+    </div>
+    <div class="saldo" aria-live="polite"><b id="saldo-num">7</b><span>pontos</span></div>
+  </header>
+
+  <section class="quarto" aria-label="Seu cantinho na loja">
+    <svg viewBox="0 0 360 340" role="img" aria-labelledby="quarto-desc">
+      <desc id="quarto-desc">Um quartinho com uma estante de 10 lugares na parede. 7 lugares têm um brownie e 3 estão vazios. No chão, uma caixa de presente da raspadinha. Na geladeira, um bilhete com o valor em aberto.</desc>
+      <defs>
+        <!-- motivo: um brownie e um brigadeiro na forminha, desenhados grandes o bastante pra ler como doce -->
+        <g id="motivo">
+          <rect x="4" y="6" width="14" height="10" rx="2.5" style="fill:var(--parede-desenho-forte)"/>
+          <path d="M4 8.5Q4 6 6.5 6h9Q18 6 18 8.5V10l-2.4 1.4-2.3-1.4-2.3 1.4-2.3-1.4-2.3 1.4L4 10z" fill="#fff" opacity=".45"/>
+          <circle cx="29" cy="25" r="5" style="fill:var(--parede-desenho-forte)"/>
+          <path d="M23 27.5h12l-1.6 6.5h-8.8z" fill="#fff" opacity=".85"/>
+          <path d="M23 27.5h12l-1.6 6.5h-8.8z" fill="none" style="stroke:var(--parede-desenho-forte)" stroke-width="1.3"/>
+          <circle cx="27.5" cy="23" r=".9" fill="#fff" opacity=".8"/><circle cx="30.5" cy="24.5" r=".9" fill="#fff" opacity=".8"/>
+        </g>
+        <pattern id="papel-parede" width="40" height="40" patternUnits="userSpaceOnUse">
+          <rect width="40" height="40" style="fill:var(--parede)"/><use href="#motivo"/>
+        </pattern>
+        <pattern id="papel-parede-sombra" width="40" height="40" patternUnits="userSpaceOnUse">
+          <rect width="40" height="40" style="fill:var(--parede-sombra)"/><use href="#motivo"/>
+        </pattern>
+        <pattern id="embrulho" width="16" height="16" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+          <rect width="16" height="16" style="fill:var(--loja)"/>
+          <rect width="6" height="16" fill="#fff" opacity=".35"/>
+        </pattern>
+      </defs>
+
+      <!-- sombra do chão -->
+      <ellipse cx="180" cy="318" rx="150" ry="16" fill="var(--cacau)" opacity=".10"/>
+
+      <!-- piso -->
+      <g transform="matrix(1 .5 -1 .5 180 175)">
+        <rect x="0" y="0" width="150" height="150" style="fill:var(--menta)"/>
+        <g id="ladrilhos" style="fill:var(--rosa)"></g>
+        <rect x="0" y="0" width="150" height="150" fill="none" stroke="var(--madeira-2)" stroke-width="3"/>
+        <circle cx="92" cy="62" r="36" fill="#fff" opacity=".9"/>
+        <circle cx="92" cy="62" r="30" fill="none" style="stroke:var(--loja)" stroke-width="2" stroke-dasharray="5 5" opacity=".6"/>
+      </g>
+      <!-- borda do piso -->
+      <path d="M30 250 L180 325 L330 250 L330 258 L180 333 L30 258 Z" fill="var(--madeira-2)"/>
+
+      <!-- parede esquerda -->
+      <g transform="matrix(1 -.5 0 1 30 90)">
+        <rect x="0" y="0" width="150" height="160" fill="url(#papel-parede-sombra)"/>
+        <rect x="0" y="148" width="150" height="12" fill="var(--madeira)"/>
+        <rect x="0" y="-6" width="150" height="6" fill="var(--madeira-2)"/>
+        <!-- plaquinha da loja -->
+        <line x1="52" y1="4" x2="75" y2="12" stroke="var(--madeira-2)" stroke-width="1.5"/>
+        <line x1="98" y1="4" x2="75" y2="12" stroke="var(--madeira-2)" stroke-width="1.5"/>
+        <circle cx="75" cy="4" r="2" fill="var(--madeira-2)"/>
+        <rect x="30" y="12" width="90" height="25" rx="6" fill="var(--papel)" stroke="var(--cacau)" stroke-width="1.5"/>
+        <rect x="33" y="15" width="84" height="19" rx="4" fill="none" style="stroke:var(--loja)" stroke-width="1" stroke-dasharray="3 2"/>
+        <text id="placa-loja" x="75" y="29" text-anchor="middle" font-family="Caprasimo,serif" font-size="11" style="fill:var(--loja-forte)">Doces da Ana</text>
+        <!-- estante -->
+        <g id="estante-moldura">
+          <rect x="12" y="44" width="126" height="98" rx="4" fill="var(--madeira)" stroke="var(--madeira-2)" stroke-width="2"/>
+          <rect x="17" y="49" width="116" height="40" rx="2" style="fill:var(--parede-sombra)" opacity=".9"/>
+          <rect x="17" y="95" width="116" height="40" rx="2" style="fill:var(--parede-sombra)" opacity=".9"/>
+          <rect x="12" y="89" width="126" height="6" fill="var(--madeira-2)"/>
+          <rect x="12" y="135" width="126" height="7" fill="var(--madeira-2)"/>
+        </g>
+        <g id="estante"></g>
+      </g>
+
+      <!-- parede direita -->
+      <g transform="matrix(1 .5 0 1 180 15)">
+        <rect x="0" y="0" width="150" height="160" fill="url(#papel-parede)"/>
+        <rect x="0" y="148" width="150" height="12" fill="var(--madeira)"/>
+        <rect x="0" y="-6" width="150" height="6" fill="var(--madeira-2)"/>
+        <!-- janela -->
+        <path d="M18 100 V56 Q18 32 45 32 Q72 32 72 56 V100 Z" fill="#E3F2F8" stroke="var(--madeira-2)" stroke-width="4"/>
+        <path d="M45 34 V100 M18 70 H72" stroke="var(--madeira-2)" stroke-width="3"/>
+        <path d="M26 92 L38 60" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+        <rect x="12" y="100" width="66" height="7" rx="2" fill="var(--madeira-2)"/>
+      </g>
+      <line x1="180" y1="9" x2="180" y2="175" stroke="var(--madeira-2)" stroke-width="2" opacity=".5"/>
+
+      <!-- geladeira com bilhete (tocável) -->
+      <g class="tocavel" id="geladeira" role="button" tabindex="0" aria-label="Ver o bilhete: R$ 18,00 em aberto">
+        <path d="M280 130 L315 147.5 L293 158.5 L258 141 Z" fill="#fff" stroke="var(--cacau)" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M293 158.5 L315 147.5 L315 242.5 L293 253.5 Z" fill="#E4ECEA" stroke="var(--cacau)" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M258 141 L293 158.5 L293 253.5 L258 236 Z" fill="#F7FAF9" stroke="var(--cacau)" stroke-width="1.5" stroke-linejoin="round"/>
+        <g transform="matrix(1 .5 0 1 258 141)">
+          <line x1="0" y1="34" x2="35" y2="34" stroke="var(--cacau)" stroke-width="1.5"/>
+          <rect x="31" y="12" width="2.5" height="16" rx="1.2" fill="var(--madeira-2)"/>
+          <rect x="31" y="40" width="2.5" height="16" rx="1.2" fill="var(--madeira-2)"/>
+          <g id="nota-geladeira">
+            <rect class="contorno-foco" x="1" y="40" width="28" height="32" rx="2"/>
+            <rect x="2" y="42" width="26" height="28" rx="1.5" fill="var(--papel)" stroke="var(--cacau)" stroke-width="1"/>
+            <circle cx="15" cy="43" r="3" style="fill:var(--loja)" stroke="var(--cacau)" stroke-width=".8"/>
+            <text x="15" y="54" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="6" fill="var(--cacau-2)">devo</text>
+            <text x="15" y="63.5" text-anchor="middle" font-family="Caprasimo,serif" font-size="8.5" fill="var(--cacau)">R$18</text>
+          </g>
+        </g>
+      </g>
+
+      <!-- caixa de presente da raspadinha (tocável) -->
+      <g class="tocavel" id="caixa-presente" role="button" tabindex="0" aria-label="Raspar a sorte por 5 pontos">
+        <path class="contorno-foco" d="M184 216 L220 198 L256 216 L256 256 L220 274 L184 256 Z" stroke-dasharray="4 4"/>
+        <path d="M190 250 L220 265 L250 250 L250 222 L220 237 L190 222 Z" fill="url(#embrulho)" stroke="var(--cacau)" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M220 237 L220 265" stroke="var(--cacau)" stroke-width="1.5"/>
+        <path d="M190 222 L220 237 L220 265 L190 250 Z" fill="var(--cacau)" opacity=".12"/>
+        <path d="M205 229.5 V257.5 M235 229.5 V257.5" stroke="#fff" stroke-width="5"/>
+        <g class="presente-tampa">
+          <path d="M186 218 L220 201 L254 218 L220 235 Z" style="fill:var(--loja-forte)" stroke="var(--cacau)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M186 218 L220 235 L254 218 L254 223 L220 240 L186 223 Z" style="fill:var(--loja-forte)" stroke="var(--cacau)" stroke-width="1.5" stroke-linejoin="round"/>
+          <path d="M203 209.5 L237 226.5 M237 209.5 L203 226.5" stroke="#fff" stroke-width="5"/>
+          <path d="M220 218 C208 204 200 210 206 215 C210 219 220 218 220 218 C220 218 230 219 234 215 C240 210 232 204 220 218 Z" fill="#fff" stroke="var(--cacau)" stroke-width="1.5"/>
+          <circle cx="220" cy="217" r="3" fill="#fff" stroke="var(--cacau)" stroke-width="1.5"/>
+        </g>
+        <!-- etiqueta -->
+        <g transform="translate(246 258) rotate(-6)">
+          <path d="M0 0 H30 Q34 0 34 4 V16 Q34 20 30 20 H0 L-7 10 Z" fill="var(--papel)" stroke="var(--cacau)" stroke-width="1.5"/>
+          <circle cx="-1" cy="10" r="1.8" fill="var(--cacau)"/>
+          <text x="16" y="14.5" text-anchor="middle" font-family="Nunito,sans-serif" font-weight="800" font-size="11" fill="var(--cacau)">5 pts</text>
+        </g>
+      </g>
+
+      <!-- vasinho -->
+      <g transform="translate(70 252)">
+        <path d="M-12 -2 L12 -2 L9 18 L-9 18 Z" fill="var(--madeira-2)" stroke="var(--cacau)" stroke-width="1.5"/>
+        <path d="M0 -2 C-2 -16 -14 -22 -16 -30 C-6 -28 0 -18 0 -2 M0 -2 C2 -18 10 -26 18 -28 C16 -18 6 -12 0 -2 M0 -2 C0 -14 -2 -28 4 -38 C8 -26 4 -12 0 -2" style="fill:var(--sucesso)" stroke="var(--cacau)" stroke-width="1.2"/>
+      </g>
+    </svg>
+  </section>
+
+  <div class="titulo">
+    <h1>Cantinho da Júlia</h1>
+    <p id="frase">Mais 3 doces na estante e o próximo é por nossa conta.</p>
+  </div>
+
+  <div class="placar">
+    <strong id="na-estante">7 de 10</strong>
+    <span id="placar-texto">faltam 3 pro doce grátis<small>seus pontos valem até 23 jan</small></span>
+  </div>
+
+  <div class="acoes">
+    <button class="botao botao-principal botao-largo" id="btn-pagar" type="button">
+      <svg aria-hidden="true"><use href="#i-pix"/></svg>
+      <span>Pagar R$ 18,00</span><small>+2 na estante</small>
+    </button>
+    <button class="botao botao-secundario" id="btn-trocar" type="button" disabled aria-describedby="frase">
+      <svg aria-hidden="true"><use href="#i-estante"/></svg>
+      <span id="trocar-texto">Trocar por doce</span><small id="trocar-sub">faltam 3</small>
+    </button>
+    <button class="botao botao-secundario" id="btn-raspar" type="button">
+      <svg aria-hidden="true"><use href="#i-presente"/></svg>
+      <span>Raspar a sorte</span><small>5 pontos</small>
+    </button>
+  </div>
+
+  <section class="secao" id="secao-bilhete" aria-labelledby="t-bilhete">
+    <div class="bilhete">
+      <h2 id="t-bilhete">Ficou em aberto</h2>
+      <p class="valor">R$ 18,00</p>
+      <ul class="itens">
+        <li><span>15 out · 1 bolo de pote</span><span>R$ 12,00</span></li>
+        <li><span>15 out · 1 brownie</span><span>R$ 6,00</span></li>
+      </ul>
+      <button class="botao botao-secundario" id="btn-pix" type="button">
+        <svg aria-hidden="true"><use href="#i-copiar"/></svg><span>Copiar código Pix</span>
+      </button>
+      <p class="nota">Quando o pagamento cair, esses 2 doces vão pra sua estante.</p>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="t-premios">
+    <h2 id="t-premios">Seus prêmios</h2>
+    <div id="lista-cupons">
+      <div class="cupom">
+        <svg viewBox="0 0 40 40" aria-hidden="true"><use href="#doce-brigadeiro"/></svg>
+        <div><strong>1 brigadeiro esperando você</strong><span>Mostre esta tela na próxima compra.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" aria-labelledby="t-recados">
+    <h2 id="t-recados">Recadinhos da loja</h2>
+    <ul class="recados" id="recados">
+      <li><span class="icone"><svg aria-hidden="true"><use href="#i-pix"/></svg></span><div><strong>Recebemos seu Pix de R$ 12,00</strong><span class="ganho">+2 doces na estante</span></div><time datetime="2026-10-24">ontem</time></li>
+      <li><span class="icone"><svg aria-hidden="true"><use href="#i-sacola"/></svg></span><div><strong>1 bolo de pote e 1 brownie</strong><span>R$ 18,00 · ficou pra depois</span></div><time datetime="2026-10-15">15 out</time></li>
+      <li><span class="icone"><svg aria-hidden="true"><use href="#i-presente"/></svg></span><div><strong>Você ganhou na raspadinha</strong><span>1 brigadeiro guardado</span></div><time datetime="2026-10-12">12 out</time></li>
+      <li><span class="icone"><svg aria-hidden="true"><use href="#i-sacola"/></svg></span><div><strong>2 brownies</strong><span>R$ 12,00 · pago no Pix</span></div><time datetime="2026-10-08">8 out</time></li>
+    </ul>
+  </section>
+
+  <aside class="proto" aria-label="Controles do protótipo">
+    <p>Protótipo com dados fictícios (inclusive a validade dos pontos). Teste a cor da loja, os pontos e o pagamento:</p>
+    <div class="linha" id="cores">
+      <button class="cor" style="--c:#D6336C" data-cor="#D6336C" aria-label="Framboesa" aria-pressed="true"></button>
+      <button class="cor" style="--c:#E8590C" data-cor="#E8590C" aria-label="Laranja" aria-pressed="false"></button>
+      <button class="cor" style="--c:#2B8A3E" data-cor="#2B8A3E" aria-label="Verde" aria-pressed="false"></button>
+      <button class="cor" style="--c:#1971C2" data-cor="#1971C2" aria-label="Azul" aria-pressed="false"></button>
+      <button class="cor" style="--c:#7048E8" data-cor="#7048E8" aria-label="Roxo" aria-pressed="false"></button>
+      <button class="cor" style="--c:#8B5A3C" data-cor="#8B5A3C" aria-label="Caramelo" aria-pressed="false"></button>
+      <button class="cor" style="--c:#F2C94C" data-cor="#F2C94C" aria-label="Amarelo" aria-pressed="false"></button>
+    </div>
+    <div class="linha">
+      <button class="passo" id="simular-pagamento" type="button" style="padding:0 14px;font-size:15px">Simular: a loja confirmou o Pix</button>
+    </div>
+    <div class="linha">
+      <button class="passo" id="menos" type="button" aria-label="Tirar um ponto">−</button>
+      <button class="passo" id="mais" type="button" aria-label="Dar um ponto">+</button>
+      <span class="ajuda">Na raspadinha do protótipo a chance é 30%. Qualquer PIN de 4 números serve.</span>
+    </div>
+  </aside>
+</main>
+
+<dialog id="folha-raspar" aria-labelledby="t-raspar">
+  <div class="folha">
+    <div class="alca"></div>
+    <div class="folha-topo">
+      <div><h2 id="t-raspar">Raspar a sorte</h2><p class="sub" id="raspar-sub">Custa 5 pontos. Se ganhar, você escolhe o doce.</p></div>
+      <button class="fechar" type="button" data-fechar aria-label="Fechar"><svg aria-hidden="true"><use href="#i-fechar"/></svg></button>
+    </div>
+
+    <div class="etapa" id="etapa-formato">
+      <div class="formatos" role="radiogroup" aria-label="Jeito de raspar">
+        <label class="formato">
+          <input type="radio" name="formato" value="cinco" checked autofocus>
+          <svg viewBox="0 0 100 30" aria-hidden="true"><g fill="url(#embrulho)" stroke="var(--cacau)" stroke-width="1.2"><circle cx="12" cy="15" r="9"/><circle cx="31" cy="15" r="9"/><circle cx="50" cy="15" r="9"/><circle cx="69" cy="15" r="9"/><circle cx="88" cy="15" r="9"/></g></svg>
+          <strong>5 casinhas</strong><span>Um doce escondido em alguma</span>
+        </label>
+        <label class="formato">
+          <input type="radio" name="formato" value="tres">
+          <svg viewBox="0 0 100 30" aria-hidden="true"><g fill="url(#embrulho)" stroke="var(--cacau)" stroke-width="1.2"><rect x="8" y="2" width="26" height="26" rx="5"/><rect x="37" y="2" width="26" height="26" rx="5"/><rect x="66" y="2" width="26" height="26" rx="5"/></g></svg>
+          <strong>3 iguais</strong><span>Três doces iguais ganham</span>
+        </label>
+      </div>
+      <p class="igual">Os dois jeitos têm a mesma chance.</p>
+      <div class="campo" style="margin-top:14px">
+        <label for="pin">Seu PIN de 4 números</label>
+        <input class="pin" id="pin" inputmode="numeric" autocomplete="one-time-code" maxlength="4" pattern="[0-9]{4}" placeholder="••••" aria-describedby="pin-erro">
+        <p class="erro" id="pin-erro" role="alert"></p>
+      </div>
+      <button class="botao botao-principal" id="btn-confirmar-raspar" type="button"><span>Usar 5 pontos e raspar</span></button>
+    </div>
+
+    <div class="etapa" id="etapa-raspar" hidden>
+      <div class="raspas" id="raspas"></div>
+      <div class="resultado" id="resultado" aria-live="polite"><p>Passe o dedo pra raspar.</p></div>
+      <button class="botao botao-secundario" id="btn-revelar" type="button"><span>Revelar tudo</span></button>
+    </div>
+
+    <div class="etapa" id="etapa-escolha" hidden>
+      <div class="escolhas" id="escolhas"></div>
+    </div>
+  </div>
+</dialog>
+
+<div class="aviso" id="aviso" role="status"></div>
+
+<script>
+(() => {
+  const estado = { pontos: 7, meta: 10, custoRaspar: 5, custoTrocar: 10, divida: 18, pontosDaDivida: 2 };
+  const produtos = [
+    { id: "brownie", nome: "Brownie", simbolo: "doce-brownie", caixa: "0 0 40 30" },
+    { id: "brigadeiro", nome: "Brigadeiro", simbolo: "doce-brigadeiro", caixa: "0 0 40 40" },
+    { id: "pote", nome: "Bolo de pote", simbolo: "doce-pote", caixa: "0 0 40 40" },
+  ];
+  const $ = (s) => document.querySelector(s);
+  const NS = "http://www.w3.org/2000/svg";
+
+  // ladrilhos do piso
+  const ladrilhos = $("#ladrilhos");
+  for (let i = 0; i < 6; i++) for (let j = 0; j < 6; j++) if ((i + j) % 2) {
+    const r = document.createElementNS(NS, "rect");
+    r.setAttribute("x", i * 25); r.setAttribute("y", j * 25); r.setAttribute("width", 25); r.setAttribute("height", 25);
+    ladrilhos.appendChild(r);
+  }
+
+  // estante: 2 prateleiras de 5
+  const estante = $("#estante");
+  const vagas = [];
+  for (let k = 0; k < 10; k++) {
+    const linha = Math.floor(k / 5), col = k % 5;
+    vagas.push({ x: 19 + col * 23, y: linha === 0 ? 71 : 117 });
+  }
+  let primeiraVez = true;
+  function desenharEstante(animarNovo) {
+    estante.innerHTML = "";
+    const cheios = Math.min(estado.pontos, estado.meta);
+    vagas.forEach((v, k) => {
+      const g = document.createElementNS(NS, "g");
+      g.setAttribute("transform", `translate(${v.x} ${v.y})`);
+      if (k < cheios) {
+        const inner = document.createElementNS(NS, "g");
+        if (animarNovo && k === cheios - 1) inner.setAttribute("class", "cai");
+        const u = document.createElementNS(NS, "use");
+        u.setAttribute("href", "#doce-brownie"); u.setAttribute("width", 20); u.setAttribute("height", 15);
+        u.setAttribute("y", 3);
+        inner.appendChild(u); g.appendChild(inner);
+      } else {
+        const r = document.createElementNS(NS, "rect");
+        r.setAttribute("x", 1); r.setAttribute("y", 4); r.setAttribute("width", 18); r.setAttribute("height", 13); r.setAttribute("rx", 3);
+        r.setAttribute("fill", "none"); r.setAttribute("stroke", "var(--loja-forte)"); r.setAttribute("stroke-width", 1.4);
+        r.setAttribute("stroke-dasharray", "3 2.5"); r.setAttribute("opacity", ".75");
+        g.appendChild(r);
+      }
+      estante.appendChild(g);
+    });
+    if (animarNovo && cheios > 0) {
+      const v = vagas[cheios - 1];
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", v.x + 10); t.setAttribute("y", v.y - 2); t.setAttribute("text-anchor", "middle");
+      t.setAttribute("font-family", "Nunito,sans-serif"); t.setAttribute("font-weight", "800"); t.setAttribute("font-size", "10");
+      t.setAttribute("fill", "var(--sucesso)"); t.setAttribute("class", "mais-um"); t.textContent = "+1";
+      estante.appendChild(t);
+    }
+    if (estado.pontos > estado.meta) {
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", 125); t.setAttribute("y", 41); t.setAttribute("text-anchor", "end");
+      t.setAttribute("font-family", "Nunito,sans-serif"); t.setAttribute("font-weight", "800"); t.setAttribute("font-size", "10");
+      t.setAttribute("fill", "var(--cacau)"); t.textContent = `+${estado.pontos - estado.meta} guardados`;
+      estante.appendChild(t);
+    }
+  }
+
+  function atualizar(animarNovo = false) {
+    const p = estado.pontos;
+    $("#saldo-num").textContent = p;
+    $("#na-estante").textContent = `${Math.min(p, estado.meta)} de ${estado.meta}`;
+    const falta = Math.max(estado.custoTrocar - p, 0);
+    $("#frase").textContent = falta === 0
+      ? "Sua estante tá cheia: pode trocar por um doce grátis."
+      : falta === 1 ? "Mais 1 doce na estante e o próximo é por nossa conta."
+      : `Mais ${falta} doces na estante e o próximo é por nossa conta.`;
+    $("#placar-texto").firstChild.textContent = falta === 0 ? "estante cheia: troque por um doce" : `faltam ${falta} pro doce grátis`;
+
+    // o principal é sempre o caminho até o próximo doce: pagar o que está aberto, ou trocar
+    const temDivida = estado.divida > 0;
+    const pagar = $("#btn-pagar");
+    pagar.hidden = !temDivida;
+    pagar.querySelector("span").textContent = `Pagar R$ ${estado.divida.toFixed(2).replace(".", ",")}`;
+    pagar.querySelector("small").textContent = `+${estado.pontosDaDivida} na estante`;
+    $("#secao-bilhete").hidden = !temDivida;
+    $("#nota-geladeira").style.display = temDivida ? "" : "none";
+    $("#geladeira").setAttribute("aria-label", temDivida ? `Ver o bilhete: R$ ${estado.divida},00 em aberto` : "Geladeira");
+
+    const trocar = $("#btn-trocar");
+    trocar.disabled = falta > 0;
+    $("#trocar-sub").textContent = falta > 0 ? `faltam ${falta}` : "10 pontos";
+    const trocarPrincipal = !temDivida && falta === 0;
+    trocar.classList.toggle("botao-principal", trocarPrincipal);
+    trocar.classList.toggle("botao-secundario", !trocarPrincipal);
+    const raspar = $("#btn-raspar");
+    raspar.disabled = p < estado.custoRaspar;
+    raspar.querySelector("small").textContent = p < estado.custoRaspar ? `faltam ${estado.custoRaspar - p}` : "5 pontos";
+    desenharEstante(animarNovo);
+  }
+
+  // aviso
+  let avisoT;
+  function avisar(msg) {
+    const a = $("#aviso"); a.textContent = msg; a.classList.add("mostra");
+    clearTimeout(avisoT); avisoT = setTimeout(() => a.classList.remove("mostra"), 2600);
+  }
+
+  // Pix
+  const codigoPix = "00020126360014BR.GOV.BCB.PIX0114+5511999999999520400005303986540518.005802BR5911DOCES DA ANA6009SAO PAULO62070503***6304ABCD";
+  async function copiarPix() {
+    try { await navigator.clipboard.writeText(codigoPix); avisar("Pix copiado. É só colar no app do banco."); }
+    catch { avisar("Não deu pra copiar. Tente de novo."); }
+  }
+  $("#btn-pix").addEventListener("click", copiarPix);
+  // o topo carrega a ação; o bilhete mostra o detalhe e repete a cópia como secundária
+  $("#btn-pagar").addEventListener("click", copiarPix);
+
+  // geladeira leva ao bilhete
+  function ativar(el, fn) {
+    el.addEventListener("click", fn);
+    el.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fn(); } });
+  }
+  ativar($("#geladeira"), () => {
+    $("#secao-bilhete").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  });
+
+  // folha de raspar
+  const folha = $("#folha-raspar");
+  let modo = "raspar";
+  function abrirRaspar() {
+    if (estado.pontos < estado.custoRaspar) { avisar(`Faltam ${estado.custoRaspar - estado.pontos} pontos pra raspar.`); return; }
+    modo = "raspar";
+    $("#t-raspar").textContent = "Raspar a sorte";
+    $("#raspar-sub").textContent = "Custa 5 pontos. Se ganhar, você escolhe o doce.";
+    $("#etapa-formato").hidden = false; $("#etapa-raspar").hidden = true; $("#etapa-escolha").hidden = true;
+    $("#pin").value = ""; $("#pin-erro").textContent = "";
+    folha.showModal();
+  }
+  function abrirTrocar() {
+    modo = "trocar";
+    $("#t-raspar").textContent = "Trocar por um doce";
+    $("#raspar-sub").textContent = "Custa 10 pontos. Escolha o seu:";
+    $("#etapa-formato").hidden = true; $("#etapa-raspar").hidden = true;
+    montarEscolhas();
+    $("#etapa-escolha").hidden = false;
+    folha.showModal();
+  }
+  $("#btn-raspar").addEventListener("click", abrirRaspar);
+  ativar($("#caixa-presente"), abrirRaspar);
+  $("#btn-trocar").addEventListener("click", abrirTrocar);
+  folha.querySelector("[data-fechar]").addEventListener("click", () => folha.close());
+  folha.addEventListener("click", (e) => { if (e.target === folha) folha.close(); });
+
+  $("#pin").addEventListener("input", (e) => { e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4); $("#pin-erro").textContent = ""; });
+
+  let ganhou = false;
+  $("#btn-confirmar-raspar").addEventListener("click", () => {
+    if (!/^\d{4}$/.test($("#pin").value)) { $("#pin-erro").textContent = "Digite os 4 números do seu PIN."; $("#pin").focus(); return; }
+    estado.pontos -= estado.custoRaspar;
+    atualizar();
+    ganhou = Math.random() < 0.3; // no app real o sorteio acontece no servidor
+    const formato = document.querySelector('input[name="formato"]:checked').value;
+    montarRaspas(formato, ganhou);
+    $("#etapa-formato").hidden = true; $("#etapa-raspar").hidden = false;
+    $("#resultado").innerHTML = "<p>Passe o dedo pra raspar.</p>";
+    $("#btn-revelar").hidden = false;
+  });
+
+  function svgDoce(id) {
+    const p = produtos.find((x) => x.id === id);
+    return `<svg viewBox="${p.caixa}" aria-hidden="true"><use href="#${p.simbolo}"/></svg>`;
+  }
+  const VAZIO = `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="8" fill="none" stroke="var(--madeira-2)" stroke-width="2.5" stroke-dasharray="4 4"/></svg>`;
+
+  let casas = [], revelado = false;
+  function montarRaspas(formato, venceu) {
+    const box = $("#raspas");
+    box.className = "raspas " + formato;
+    box.innerHTML = "";
+    let conteudos;
+    if (formato === "cinco") {
+      const sorteada = Math.floor(Math.random() * 5);
+      conteudos = Array.from({ length: 5 }, (_, i) => (venceu && i === sorteada ? svgDoce("brownie") : VAZIO));
+    } else {
+      conteudos = venceu ? ["brownie", "brownie", "brownie"].map(svgDoce)
+        : ["brownie", "brownie", "pote"].sort(() => Math.random() - .5).map(svgDoce);
+    }
+    revelado = false;
+    casas = conteudos.map((html) => {
+      const casa = document.createElement("div");
+      casa.className = "casa"; casa.innerHTML = html;
+      const c = document.createElement("canvas");
+      casa.appendChild(c); box.appendChild(casa);
+      return { casa, c, limpo: 0 };
+    });
+    requestAnimationFrame(() => casas.forEach(pintarCobertura));
+  }
+
+  function pintarCobertura(item) {
+    const { c } = item;
+    const r = c.getBoundingClientRect(), d = devicePixelRatio || 1;
+    c.width = r.width * d; c.height = r.height * d;
+    const ctx = c.getContext("2d"); ctx.scale(d, d);
+    const cor = getComputedStyle(document.documentElement).getPropertyValue("--loja").trim();
+    ctx.fillStyle = cor; ctx.fillRect(0, 0, r.width, r.height);
+    ctx.save(); ctx.translate(r.width / 2, r.height / 2); ctx.rotate(-Math.PI / 5);
+    ctx.fillStyle = "rgba(255,255,255,.32)";
+    for (let x = -r.width; x < r.width; x += 14) ctx.fillRect(x, -r.height, 6, r.height * 2);
+    ctx.restore();
+    ctx.fillStyle = "rgba(255,255,255,.85)";
+    ctx.beginPath(); ctx.arc(r.width / 2, r.height / 2, Math.min(r.width, r.height) * .12, 0, Math.PI * 2); ctx.fill();
+    item.ctx = ctx; item.w = r.width; item.h = r.height;
+    let desenhando = false;
+    const raspar = (e) => {
+      if (!desenhando || revelado) return;
+      const b = c.getBoundingClientRect();
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.beginPath(); ctx.arc(e.clientX - b.left, e.clientY - b.top, Math.max(item.w * .16, 9), 0, Math.PI * 2); ctx.fill();
+      item.limpo++;
+      if (item.limpo > 14) { c.style.transition = "opacity .4s"; c.style.opacity = "0"; item.feito = true; conferir(); }
+    };
+    c.addEventListener("pointerdown", (e) => { desenhando = true; c.setPointerCapture(e.pointerId); raspar(e); });
+    c.addEventListener("pointermove", raspar);
+    c.addEventListener("pointerup", () => (desenhando = false));
+  }
+
+  function conferir() { if (casas.every((x) => x.feito)) revelar(); }
+  function revelar() {
+    if (revelado) return; revelado = true;
+    casas.forEach((x) => { x.c.style.transition = "opacity .4s"; x.c.style.opacity = "0"; });
+    $("#btn-revelar").hidden = true;
+    const res = $("#resultado");
+    if (ganhou) {
+      res.innerHTML = "<h3>Você ganhou um doce!</h3><p>Escolha qual vai querer:</p>";
+      montarEscolhas();
+      $("#etapa-escolha").hidden = false;
+    } else {
+      res.innerHTML = `<h3>Não foi dessa vez</h3><p>Seus outros ${estado.pontos} pontos continuam na estante.</p>`;
+    }
+  }
+  $("#btn-revelar").addEventListener("click", revelar);
+
+  function montarEscolhas() {
+    const box = $("#escolhas"); box.innerHTML = "";
+    produtos.forEach((p) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "escolha";
+      b.innerHTML = `${svgDoce(p.id)}<span>${p.nome}</span>`;
+      b.addEventListener("click", () => escolher(p));
+      box.appendChild(b);
+    });
+  }
+  function escolher(p) {
+    if (modo === "trocar") { estado.pontos -= estado.custoTrocar; atualizar(); }
+    const cupom = document.createElement("div");
+    cupom.className = "cupom"; cupom.style.marginTop = "10px";
+    cupom.innerHTML = `${svgDoce(p.id).replace('aria-hidden="true"', 'aria-hidden="true" width="52" height="52"')}<div><strong>1 ${p.nome.toLowerCase()} esperando você</strong><span>Mostre esta tela na próxima compra.</span></div>`;
+    $("#lista-cupons").prepend(cupom);
+    folha.close();
+    avisar(`Guardamos 1 ${p.nome.toLowerCase()} pra você.`);
+  }
+
+  // controles do protótipo
+  $("#cores").addEventListener("click", (e) => {
+    const b = e.target.closest(".cor"); if (!b) return;
+    document.documentElement.style.setProperty("--loja", b.dataset.cor);
+    document.querySelectorAll(".cor").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  });
+  $("#mais").addEventListener("click", () => { estado.pontos++; atualizar(true); });
+  $("#menos").addEventListener("click", () => { estado.pontos = Math.max(0, estado.pontos - 1); atualizar(); });
+  $("#simular-pagamento").addEventListener("click", () => {
+    if (!estado.divida) { avisar("Não tem nada em aberto."); return; }
+    const valor = estado.divida;
+    estado.pontos += estado.pontosDaDivida; estado.divida = 0;
+    atualizar(true);
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="icone"><svg aria-hidden="true"><use href="#i-pix"/></svg></span><div><strong>Recebemos seu Pix de R$ ${valor},00</strong><span class="ganho">+2 doces na estante</span></div><time>agora</time>`;
+    $("#recados").prepend(li);
+    window.scrollTo({ top: 0, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+    avisar("Pagamento confirmado: +2 doces na estante.");
+  });
+
+  atualizar(primeiraVez);
+  primeiraVez = false;
+
+  // atalhos para revisão: #cor=2B8A3E, #raspar
+  const hash = new URLSearchParams(location.hash.slice(1));
+  if (hash.get("cor")) document.documentElement.style.setProperty("--loja", "#" + hash.get("cor"));
+  if (hash.has("raspar")) abrirRaspar();
+})();
+</script>
+</body>
+</html>

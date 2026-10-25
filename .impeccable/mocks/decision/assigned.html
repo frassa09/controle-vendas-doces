@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Mesa de Doces</title>
+<style>
+  :root{--loja:#D6336C;--loja-esc:#9E1F4D;--ganache:#3B1F14;--glace:#FFFFFF;--ouro:#C9A227}
+  *{box-sizing:border-box;margin:0}
+  body{width:390px;height:844px;overflow:hidden;font-family:system-ui,Roboto,sans-serif;color:var(--ganache);
+    background:var(--loja) radial-gradient(circle,rgba(255,255,255,.22) 3px,transparent 3.5px) 0 0/26px 26px}
+  .placa{display:flex;flex-direction:column;align-items:center;padding-top:34px}
+  .placa .bandeira{background:var(--glace);padding:10px 26px 12px;border-radius:4px 18px 4px 18px;
+    font:800 30px/1 Georgia,serif;color:var(--loja-esc);letter-spacing:-.5px;transform:rotate(-3deg);box-shadow:0 3px 0 var(--loja-esc)}
+  .placa .palito{width:4px;height:34px;background:#E9D2A8;margin-top:-2px;border-radius:2px}
+  .ola{color:#fff;text-align:center;font-size:17px;margin-top:10px;font-weight:600}
+  .bandeja{margin:18px 16px 0;background:var(--glace);border-radius:28px;padding:22px 16px 18px;position:relative;
+    box-shadow:0 0 0 6px var(--glace),0 0 0 8px rgba(255,255,255,.5)}
+  .bandeja::before{content:"";position:absolute;inset:-14px;border-radius:36px;
+    background:radial-gradient(circle,var(--glace) 6px,transparent 6.5px) 0 0/16px 16px;z-index:-1}
+  .grade{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .f{aspect-ratio:1;display:grid;place-items:center}
+  .f svg{width:100%;height:100%}
+  .conta{display:flex;align-items:baseline;justify-content:space-between;margin-top:16px}
+  .conta b{font:800 44px/1 Georgia,serif;color:var(--loja-esc)}
+  .conta b small{font-size:20px;color:var(--ganache);opacity:.55}
+  .conta span{font-size:15px;font-weight:600;text-align:right;max-width:150px}
+  .acoes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 16px 0}
+  .btn{border-radius:18px;padding:14px 12px;font-weight:700;font-size:16px;text-align:center;line-height:1.2}
+  .btn small{display:block;font-weight:600;font-size:13px;opacity:.8;margin-top:3px}
+  .b1{background:var(--ganache);color:#fff}
+  .b2{background:var(--ouro);color:var(--ganache)}
+  .comanda{margin:16px 16px 0;background:var(--glace);border-radius:14px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;
+    border-top:3px dashed var(--loja-esc)}
+  .comanda p{font-size:15px}.comanda strong{font-size:22px;display:block}
+  .pix{background:var(--loja-esc);color:#fff;border-radius:12px;padding:10px 14px;font-weight:700}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <symbol id="cheia" viewBox="0 0 60 60">
+      <path d="M8 26 L14 52 Q30 57 46 52 L52 26 Z" fill="#9E1F4D"/>
+      <g stroke="#D6336C" stroke-width="2"><path d="M14 27 L18 51"/><path d="M22 27 L24 53"/><path d="M30 27 L30 54"/><path d="M38 27 L36 53"/><path d="M46 27 L42 51"/></g>
+      <ellipse cx="30" cy="26" rx="23" ry="5" fill="#C9A227"/>
+      <circle cx="30" cy="22" r="17" fill="#3B1F14"/>
+      <g fill="#C9A227"><rect x="22" y="12" width="5" height="2" rx="1" transform="rotate(30 24 13)"/><rect x="33" y="10" width="5" height="2" rx="1" transform="rotate(-20 35 11)"/><rect x="38" y="20" width="5" height="2" rx="1" transform="rotate(60 40 21)"/><rect x="19" y="23" width="5" height="2" rx="1" transform="rotate(-40 21 24)"/><rect x="29" y="27" width="5" height="2" rx="1"/><rect x="28" y="17" width="5" height="2" rx="1" transform="rotate(80 30 18)"/></g>
+    </symbol>
+    <symbol id="vazia" viewBox="0 0 60 60">
+      <path d="M8 26 L14 52 Q30 57 46 52 L52 26 Z" fill="none" stroke="#D6336C" stroke-width="2.5" stroke-dasharray="4 4"/>
+      <ellipse cx="30" cy="26" rx="22" ry="4.5" fill="none" stroke="#D6336C" stroke-width="2.5" stroke-dasharray="4 4"/>
+    </symbol>
+  </defs>
+</svg>
+<div class="placa"><div class="bandeira">Doces da Ana</div><div class="palito"></div></div>
+<p class="ola">Oi, Júlia! Sua bandeja tá quase cheia</p>
+<div class="bandeja">
+  <div class="grade">
+    <div class="f"><svg><use href="#cheia"/></svg></div><div class="f"><svg><use href="#cheia"/></svg></div><div class="f"><svg><use href="#cheia"/></svg></div><div class="f"><svg><use href="#cheia"/></svg></div><div class="f"><svg><use href="#cheia"/></svg></div>
+    <div class="f"><svg><use href="#cheia"/></svg></div><div class="f"><svg><use href="#cheia"/></svg></div><div class="f"><svg><use href="#vazia"/></svg></div><div class="f"><svg><use href="#vazia"/></svg></div><div class="f"><svg><use href="#vazia"/></svg></div>
+  </div>
+  <div class="conta"><b>7<small> /10</small></b><span>faltam 3 pra um doce grátis</span></div>
+</div>
+<div class="acoes">
+  <div class="btn b1">Trocar por um doce<small>10 pontos</small></div>
+  <div class="btn b2">Raspar a sorte<small>5 pontos</small></div>
+</div>
+<div class="comanda"><p>Em aberto<strong>R$ 18,00</strong></p><div class="pix">Copiar Pix</div></div>
+</body></html>

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Bombom Embrulhado</title>
+<style>
+  :root{--ganache:#2A140C;--loja:#D6336C;--ouro:#D4AF37;--glace:#FFFFFF}
+  *{box-sizing:border-box;margin:0}
+  body{width:390px;height:844px;overflow:hidden;font-family:system-ui,Roboto,sans-serif;color:#fff;background:var(--ganache)}
+  header{padding:30px 22px 0;display:flex;justify-content:space-between;align-items:center}
+  header h1{font:700 22px/1 Georgia,serif;color:var(--ouro);letter-spacing:.5px}
+  header span{font-size:14px;opacity:.7}
+  .bombom{margin:34px auto 0;width:300px;height:250px;position:relative;display:grid;place-items:center}
+  .bombom .corpo{width:200px;height:200px;border-radius:50%;
+    background:conic-gradient(from 20deg,#F06292,#9E1F4D,#D6336C,#FF8FB3,#9E1F4D,#D6336C,#F06292);
+    box-shadow:inset -18px -22px 40px rgba(0,0,0,.35),inset 14px 16px 30px rgba(255,255,255,.35);display:grid;place-items:center}
+  .bombom .selo{width:96px;height:96px;border-radius:50%;background:var(--ouro);color:var(--ganache);display:grid;place-items:center;
+    font:800 15px/1.1 Georgia,serif;text-align:center;border:3px dashed rgba(42,20,12,.4)}
+  .bombom .tor{position:absolute;top:50%;width:70px;height:90px;margin-top:-45px;
+    background:linear-gradient(90deg,#9E1F4D,#FF8FB3,#D6336C,#F06292,#9E1F4D)}
+  .tor.e{left:0;clip-path:polygon(0 0,100% 35%,100% 65%,0 100%,15% 50%)}
+  .tor.d{right:0;clip-path:polygon(100% 0,0 35%,0 65%,100% 100%,85% 50%)}
+  .txt{text-align:center;margin-top:16px}
+  .txt b{font:800 48px/1 Georgia,serif;color:var(--ouro)}
+  .txt p{font-size:16px;opacity:.85;margin-top:6px}
+  .fila{display:flex;justify-content:center;gap:8px;margin-top:20px}
+  .fila i{width:24px;height:24px;border-radius:50%;background:var(--loja);box-shadow:inset -4px -4px 6px rgba(0,0,0,.35)}
+  .fila i.o{background:none;border:2px solid rgba(255,255,255,.3);box-shadow:none}
+  .acoes{display:grid;gap:10px;margin:26px 22px 0}
+  .btn{border-radius:14px;padding:16px;font-weight:700;font-size:17px;text-align:center}
+  .b1{background:var(--ouro);color:var(--ganache)}
+  .b2{border:2px solid var(--ouro);color:var(--ouro)}
+  .divida{margin:18px 22px 0;padding:14px 0;border-top:1px solid rgba(255,255,255,.2);display:flex;justify-content:space-between;font-size:15px}
+</style></head><body>
+<header><h1>Doces da Ana</h1><span>Júlia</span></header>
+<div class="bombom"><div class="tor e"></div><div class="corpo"><div class="selo">7<br>pontos</div></div><div class="tor d"></div></div>
+<div class="txt"><b>faltam 3</b><p>pra desembrulhar um doce grátis</p></div>
+<div class="fila"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="o"></i><i class="o"></i><i class="o"></i></div>
+<div class="acoes"><div class="btn b1">Desembrulhar a sorte · 5 pts</div><div class="btn b2">Trocar por um doce · 10 pts</div></div>
+<div class="divida"><span>Em aberto: R$ 18,00</span><b>Copiar Pix</b></div>
+</body></html>

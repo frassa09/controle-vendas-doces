@@ -1,0 +1,626 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T04:46:57+00:00",
+  "title": "Design System: Controle de Vendas de Doces",
+  "extensions": {
+    "colorMeta": {
+      "loja": {
+        "role": "primary",
+        "displayName": "Cor da Loja (semente, padrão framboesa)",
+        "canonical": "var(--loja)",
+        "tonalRamp": [
+          "#200007",
+          "#4B001E",
+          "#7A0B37",
+          "#AF1752",
+          "#D74473",
+          "#F47697",
+          "#FDB1C1",
+          "#FFE8EC"
+        ],
+        "testedSeeds": [
+          "#D6336C",
+          "#E8590C",
+          "#2B8A3E",
+          "#1971C2",
+          "#7048E8",
+          "#8B5A3C",
+          "#F2C94C"
+        ],
+        "note": "Variável por loja. Os hex do frontmatter resolvem a semente padrão #D6336C; as receitas em canonical são normativas."
+      },
+      "loja-forte": {
+        "role": "primary",
+        "displayName": "Loja Forte",
+        "canonical": "oklch(from color-mix(in oklab,var(--loja) 76%,#2a1410) min(l,.47) c h)",
+        "tonalRamp": [
+          "#210006",
+          "#4A021D",
+          "#751A37",
+          "#A23253",
+          "#C95674",
+          "#E78298",
+          "#FFB0BF",
+          "#FEE8EC"
+        ]
+      },
+      "loja-forte-hover": {
+        "role": "primary",
+        "displayName": "Loja Forte Hover",
+        "canonical": "color-mix(in oklab,var(--loja-forte) 88%,#000)",
+        "tonalRamp": [
+          "#210006",
+          "#4A021D",
+          "#751A37",
+          "#A23253",
+          "#C95674",
+          "#E78298",
+          "#FFB0BF",
+          "#FEE8EC"
+        ]
+      },
+      "loja-suave": {
+        "role": "primary",
+        "displayName": "Loja Suave",
+        "canonical": "color-mix(in oklab,var(--loja) 14%,#fff)",
+        "tonalRamp": [
+          "#10090A",
+          "#2D2224",
+          "#4D3D40",
+          "#6F5B5F",
+          "#917C80",
+          "#B2A0A3",
+          "#D4C5C7",
+          "#F7EBED"
+        ]
+      },
+      "parede": {
+        "role": "secondary",
+        "displayName": "Parede",
+        "canonical": "oklch(from color-mix(in oklab,var(--loja) 13%,#fff) l max(c,.05) h)",
+        "tonalRamp": [
+          "#11080B",
+          "#2F2025",
+          "#4F3C42",
+          "#725A61",
+          "#947A82",
+          "#B59EA5",
+          "#D7C3C9",
+          "#F9EAEE"
+        ]
+      },
+      "parede-sombra": {
+        "role": "secondary",
+        "displayName": "Parede na Sombra",
+        "canonical": "oklch(from color-mix(in oklab,var(--loja) 22%,#fff) l max(c,.07) h)",
+        "tonalRamp": [
+          "#15060A",
+          "#341D24",
+          "#563840",
+          "#7B555F",
+          "#9E7580",
+          "#BE9AA3",
+          "#DFC0C7",
+          "#FFE8ED"
+        ]
+      },
+      "parede-desenho": {
+        "role": "secondary",
+        "displayName": "Desenho da Parede",
+        "canonical": "oklch(from color-mix(in oklab,var(--loja) 34%,#fff) l max(c,.1) h)",
+        "tonalRamp": [
+          "#190309",
+          "#3B1822",
+          "#60323E",
+          "#874D5D",
+          "#AB6E7E",
+          "#CA93A1",
+          "#EABBC6",
+          "#FFE8ED"
+        ]
+      },
+      "parede-desenho-forte": {
+        "role": "secondary",
+        "displayName": "Desenho Forte",
+        "canonical": "oklch(from color-mix(in oklab,var(--loja) 52%,#fff) min(l,.8) max(c,.12) h)",
+        "tonalRamp": [
+          "#1D0008",
+          "#421120",
+          "#69293B",
+          "#944358",
+          "#B96478",
+          "#D78C9C",
+          "#F5B5C2",
+          "#FFE8EC"
+        ]
+      },
+      "cacau": {
+        "role": "neutral",
+        "displayName": "Cacau",
+        "canonical": "oklch(33.2% 0.046 44)",
+        "tonalRamp": [
+          "#130804",
+          "#312019",
+          "#533C32",
+          "#775A4E",
+          "#997B6E",
+          "#BA9E93",
+          "#DBC4BA",
+          "#FDEAE2"
+        ]
+      },
+      "cacau-2": {
+        "role": "neutral",
+        "displayName": "Cacau Claro",
+        "canonical": "oklch(45.5% 0.049 45)",
+        "tonalRamp": [
+          "#140804",
+          "#322018",
+          "#543C31",
+          "#78594C",
+          "#9A7A6C",
+          "#BB9E92",
+          "#DCC3B9",
+          "#FDEAE2"
+        ]
+      },
+      "menta": {
+        "role": "tertiary",
+        "displayName": "Menta",
+        "canonical": "oklch(90.9% 0.031 165)",
+        "tonalRamp": [
+          "#060D0A",
+          "#1C2823",
+          "#36463F",
+          "#52675D",
+          "#73887E",
+          "#98AAA1",
+          "#BECDC6",
+          "#E6F2EC"
+        ]
+      },
+      "menta-2": {
+        "role": "tertiary",
+        "displayName": "Menta Escura",
+        "canonical": "oklch(82.8% 0.052 165)",
+        "tonalRamp": [
+          "#020F08",
+          "#142A21",
+          "#2D493C",
+          "#476A5A",
+          "#678C7B",
+          "#8EAE9E",
+          "#B6D0C4",
+          "#E0F4EA"
+        ]
+      },
+      "rosa": {
+        "role": "tertiary",
+        "displayName": "Rosa-claro",
+        "canonical": "oklch(92.3% 0.029 359)",
+        "tonalRamp": [
+          "#10090B",
+          "#2D2125",
+          "#4D3D42",
+          "#6F5B61",
+          "#917C82",
+          "#B29FA5",
+          "#D4C4C9",
+          "#F7EBEE"
+        ]
+      },
+      "madeira": {
+        "role": "neutral",
+        "displayName": "Madeira Clara",
+        "canonical": "oklch(83.3% 0.071 71)",
+        "tonalRamp": [
+          "#140800",
+          "#33210A",
+          "#553D1F",
+          "#795B36",
+          "#9C7C56",
+          "#BCA07F",
+          "#DCC5AA",
+          "#FEEBD6"
+        ]
+      },
+      "madeira-2": {
+        "role": "neutral",
+        "displayName": "Madeira Escura",
+        "canonical": "oklch(68.9% 0.092 64)",
+        "tonalRamp": [
+          "#180600",
+          "#381E01",
+          "#5C3913",
+          "#825628",
+          "#A6774A",
+          "#C59C76",
+          "#E5C2A2",
+          "#FFEBD9"
+        ]
+      },
+      "papel": {
+        "role": "neutral",
+        "displayName": "Papel",
+        "canonical": "oklch(99.7% 0.004 91)",
+        "tonalRamp": [
+          "#0B0B0A",
+          "#252524",
+          "#424240",
+          "#62615F",
+          "#838280",
+          "#A6A5A3",
+          "#CAC9C7",
+          "#EFEEED"
+        ]
+      },
+      "campo": {
+        "role": "neutral",
+        "displayName": "Campo (branco puro)",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "brownie": {
+        "role": "tertiary",
+        "displayName": "Brownie",
+        "canonical": "oklch(35.9% 0.067 41)",
+        "tonalRamp": [
+          "#160602",
+          "#361E14",
+          "#5A382C",
+          "#805546",
+          "#A37666",
+          "#C39B8C",
+          "#E3C1B4",
+          "#FFE9E2"
+        ]
+      },
+      "brownie-topo": {
+        "role": "tertiary",
+        "displayName": "Topo do Brownie",
+        "canonical": "oklch(44.8% 0.086 46)",
+        "tonalRamp": [
+          "#190500",
+          "#3A1C0C",
+          "#5F3622",
+          "#865239",
+          "#AA7359",
+          "#C99882",
+          "#E8BFAC",
+          "#FEEAE1"
+        ]
+      },
+      "sucesso": {
+        "role": "tertiary",
+        "displayName": "Sucesso",
+        "canonical": "oklch(53.1% 0.098 159)",
+        "tonalRamp": [
+          "#001005",
+          "#002E1A",
+          "#134E33",
+          "#2A714E",
+          "#4E936E",
+          "#7BB494",
+          "#A7D6BB",
+          "#D4F9E3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "display",
+        "purpose": "Nome do cantinho, em loja-forte, centralizado."
+      },
+      "display-valor": {
+        "displayName": "display-valor",
+        "purpose": "Valor em aberto no bilhete."
+      },
+      "headline": {
+        "displayName": "headline",
+        "purpose": "Títulos de seção (22px no bilhete)."
+      },
+      "headline-folha": {
+        "displayName": "headline-folha",
+        "purpose": "Título da folha e resultado da raspadinha."
+      },
+      "contador": {
+        "displayName": "contador",
+        "purpose": "Números do placar (26px), saldo (22px) e PIN (32px, espaçado .5em)."
+      },
+      "lead": {
+        "displayName": "lead",
+        "purpose": "Frase sob o título."
+      },
+      "body": {
+        "displayName": "body",
+        "purpose": "Texto corrido."
+      },
+      "label-botao": {
+        "displayName": "label-botao",
+        "purpose": "Rótulos de ação (16px nos botões em par)."
+      },
+      "label": {
+        "displayName": "label",
+        "purpose": "Descrições, notas e datas (13px, 700) em cacau-2."
+      }
+    },
+    "shadows": [
+      {
+        "name": "apoio",
+        "value": "0 6px 18px -8px color-mix(in oklab,var(--cacau) 45%,transparent)",
+        "purpose": "Placar, saldo, cupom e recadinhos."
+      },
+      {
+        "name": "papel-colado",
+        "value": "0 10px 22px -12px color-mix(in oklab,var(--cacau) 55%,transparent)",
+        "purpose": "Bilhete, girado -0.6deg."
+      },
+      {
+        "name": "brilho-acao",
+        "value": "0 8px 18px -8px var(--loja-forte)",
+        "purpose": "Só o botão principal."
+      },
+      {
+        "name": "folha",
+        "value": "0 -12px 40px -12px color-mix(in oklab,var(--cacau) 60%,transparent)",
+        "purpose": "Folha inferior; fundo atrás em cacau a 45%."
+      },
+      {
+        "name": "anel-caixinha",
+        "value": "0 0 0 1.5px var(--madeira-2)",
+        "purpose": "Contorno externo de caixinhas e botão secundário (borda, não elevação)."
+      },
+      {
+        "name": "anel-cupom",
+        "value": "0 0 0 2px var(--loja-suave),0 0 0 3.5px var(--madeira)",
+        "purpose": "Anel duplo do cupom."
+      }
+    ],
+    "motion": [
+      {
+        "name": "mola",
+        "value": "cubic-bezier(.34,1.56,.64,1)",
+        "purpose": "Assentar e levantar: doce na estante, tampa do presente, botão ao apertar."
+      },
+      {
+        "name": "sai",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Entrar e sumir: folha, aviso, +1."
+      },
+      {
+        "name": "doce-assenta",
+        "value": "cai .9s var(--mola) .5s both (translateY -70px para 0)",
+        "purpose": "O doce mais novo cai na estante."
+      },
+      {
+        "name": "mais-um",
+        "value": "maisum 1.6s var(--sai) 1.2s both",
+        "purpose": "+1 em sucesso sobe e some sobre a vaga."
+      },
+      {
+        "name": "tampa-levanta",
+        "value": "transform .35s var(--mola); translateY(-4px) em hover e foco",
+        "purpose": "Caixa de presente convida a tocar."
+      },
+      {
+        "name": "folha-sobe",
+        "value": "sobe .45s var(--sai) (translateY 40px, opacidade .4 para 1)",
+        "purpose": "Abertura do diálogo inferior."
+      },
+      {
+        "name": "botao-aperta",
+        "value": "transform .2s var(--mola); scale(.97) em :active",
+        "purpose": "Retorno tátil."
+      },
+      {
+        "name": "aviso",
+        "value": "opacity .3s, transform .4s var(--sai); 2.6s visível",
+        "purpose": "Toast."
+      },
+      {
+        "name": "cobertura-some",
+        "value": "opacity .4s",
+        "purpose": "Cobertura da casinha de raspar."
+      },
+      {
+        "name": "reduzir-movimento",
+        "value": "@media (prefers-reduced-motion:reduce) duração .01ms, sem atraso; rolagem auto",
+        "purpose": "Obrigatório."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "coluna",
+        "value": "440px",
+        "note": "Sem breakpoints; coluna única de até 440px, desenhada a 390px."
+      }
+    ],
+    "storeColor": {
+      "variable": "--loja",
+      "default": "#D6336C",
+      "testedSeeds": [
+        "#D6336C",
+        "#E8590C",
+        "#2B8A3E",
+        "#1971C2",
+        "#7048E8",
+        "#8B5A3C",
+        "#F2C94C"
+      ],
+      "guards": {
+        "loja-forte": "luminosidade OKLCH no máximo .47 (texto branco de 6.5:1 a 7.8:1 nas sementes testadas)",
+        "parede": "croma mínimo .05",
+        "parede-sombra": "croma mínimo .07",
+        "parede-desenho": "croma mínimo .1",
+        "parede-desenho-forte": "croma mínimo .12, luminosidade no máximo .8"
+      },
+      "rawSeedUse": "Só em objetos ilustrados: papel de presente, forminha do brigadeiro, tampa do pote, alfinete, tracejados decorativos, cobertura das casinhas."
+    },
+    "fonts": [
+      {
+        "family": "Caprasimo",
+        "file": "prototipo/fonts/caprasimo.woff2",
+        "weight": "400"
+      },
+      {
+        "family": "Nunito",
+        "file": "prototipo/fonts/nunito.woff2",
+        "weight": "400 800"
+      }
+    ],
+    "androidGuidance": "Não construído. Material 3 com --loja como semente; Caprasimo só em papéis de display; corpo Roboto (ou Nunito por continuidade); quarto isométrico exclusivo da página do cliente."
+  },
+  "components": [
+    {
+      "name": "Botão Principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A única ação principal da vez (pagar, ou trocar quando a estante enche).",
+      "html": "<button class=\"ds-botao ds-botao-principal\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l4 4-4 4-4-4z\"/><path d=\"M12 13l4 4-4 4-4-4z\"/><path d=\"M3 12l4-4 4 4-4 4zM13 12l4-4 4 4-4 4z\"/></g></svg><span>Pagar R$ 18,00</span><small>+2 na estante</small></button>",
+      "css": ".ds-botao{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:12px 18px;border:0;border-radius:16px;font:800 17px/1.2 \"Nunito\",system-ui,sans-serif;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),background-color .2s}.ds-botao svg{width:22px;height:22px}.ds-botao small{font-weight:700;font-size:14px;opacity:.9}.ds-botao:active{transform:scale(.97)}.ds-botao:focus-visible{outline:3px solid #9F234C;outline-offset:3px}.ds-botao-principal{background:#9F234C;color:#fff;box-shadow:0 8px 18px -8px #9F234C}.ds-botao-principal:hover{background:#851C3F}"
+    },
+    {
+      "name": "Botão Secundário",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Ações em par (Trocar, Raspar) e copiar Pix; ícone empilhado no par.",
+      "html": "<button class=\"ds-botao2\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3.5\" y=\"9\" width=\"17\" height=\"11\" rx=\"2\"/><path d=\"M2.5 9h19M12 9v11\"/><path d=\"M12 9c-1.5-3-5-4-5.5-1.5S9 9 12 9c3 0 5.8.5 5.5-1.5S13.5 6 12 9z\"/></g></svg><span>Raspar a sorte</span><small>5 pontos</small></button>",
+      "css": ".ds-botao2{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:56px;padding:12px 18px;border:0;border-radius:16px;background:#FFFEFB;color:#4A2E22;box-shadow:0 0 0 1.5px #C38F5D;font:800 16px/1.2 \"Nunito\",system-ui,sans-serif;cursor:pointer;transition:transform .2s cubic-bezier(.34,1.56,.64,1),background-color .2s}.ds-botao2 svg{width:22px;height:22px}.ds-botao2 small{font-weight:700;font-size:14px}.ds-botao2:hover{background:#fff}.ds-botao2:active{transform:scale(.97)}.ds-botao2:focus-visible{outline:3px solid #9F234C;outline-offset:3px}.ds-botao2:disabled{cursor:not-allowed;background:#FFEFF3;color:#6E4E40;box-shadow:0 0 0 1.5px #E6C196;transform:none}"
+    },
+    {
+      "name": "Placar (contador de borda dupla)",
+      "kind": "card",
+      "refersTo": "contador-placar",
+      "description": "Quanto falta pro doce grátis.",
+      "html": "<div class=\"ds-placar\"><strong>7 de 10</strong><span>faltam 3 pro doce grátis<small>seus pontos valem até 23 jan</small></span></div>",
+      "css": ".ds-placar{display:flex;align-items:center;gap:12px;padding:6px 14px 6px 6px;border-radius:18px;background:#FFFEFB;color:#4A2E22;font-family:\"Nunito\",system-ui,sans-serif;box-shadow:0 0 0 1.5px #C38F5D,0 6px 18px -8px rgba(74,46,34,.45)}.ds-placar strong{padding:6px 14px;border-radius:13px;border:1.5px solid #E6C196;font:400 26px/1.1 \"Caprasimo\",Georgia,serif;font-variant-numeric:tabular-nums;white-space:nowrap}.ds-placar span{font-weight:700;line-height:1.3}.ds-placar small{display:block;font-size:14px;font-weight:600;color:#6E4E40}"
+    },
+    {
+      "name": "Saldo do topo",
+      "kind": "chip",
+      "refersTo": "chip-saldo",
+      "description": "Pontos sempre visíveis no topo.",
+      "html": "<div class=\"ds-saldo\"><b>7</b><span>pontos</span></div>",
+      "css": ".ds-saldo{display:inline-flex;align-items:center;gap:6px;padding:4px;border-radius:14px;background:#FFFEFB;color:#4A2E22;font-family:\"Nunito\",system-ui,sans-serif;box-shadow:0 0 0 1.5px #C38F5D,0 6px 18px -8px rgba(74,46,34,.45)}.ds-saldo b{min-width:2ch;padding:4px 10px;border-radius:10px;border:1.5px solid #E6C196;font:400 22px/1 \"Caprasimo\",Georgia,serif;text-align:center}.ds-saldo span{font-weight:700;font-size:14px;padding-right:8px}"
+    },
+    {
+      "name": "Bilhete (dívida)",
+      "kind": "custom",
+      "refersTo": "bilhete",
+      "description": "Papel colado com fita: o que ficou em aberto.",
+      "html": "<div class=\"ds-bilhete\"><h2>Ficou em aberto</h2><p class=\"ds-valor\">R$ 18,00</p><ul><li><span>15 out · 1 bolo de pote</span><span>R$ 12,00</span></li><li><span>15 out · 1 brownie</span><span>R$ 6,00</span></li></ul></div>",
+      "css": ".ds-bilhete{position:relative;background:#FFFEFB;color:#4A2E22;border-radius:6px;padding:22px 18px 18px;transform:rotate(-.6deg);font-family:\"Nunito\",system-ui,sans-serif;box-shadow:0 10px 22px -12px rgba(74,46,34,.55)}.ds-bilhete::before{content:\"\";position:absolute;top:-10px;left:50%;width:84px;height:22px;margin-left:-42px;transform:rotate(2deg);background:rgba(168,210,190,.7);border-radius:3px}.ds-bilhete h2{font:400 22px/1.1 \"Caprasimo\",Georgia,serif;margin:0}.ds-valor{font:400 40px/1.1 \"Caprasimo\",Georgia,serif;color:#9F234C;margin:4px 0 0;font-variant-numeric:tabular-nums}.ds-bilhete ul{list-style:none;margin:10px 0 0;padding:0}.ds-bilhete li{display:flex;justify-content:space-between;gap:12px;font-weight:600;padding:6px 0}.ds-bilhete li+li{border-top:1.5px dashed #E6C196}.ds-bilhete li span:first-child{color:#6E4E40}"
+    },
+    {
+      "name": "Cupom",
+      "kind": "card",
+      "refersTo": "cupom",
+      "description": "Prêmio guardado esperando a próxima compra.",
+      "html": "<div class=\"ds-cupom\"><svg viewBox=\"0 0 40 40\" aria-hidden=\"true\"><path d=\"M6 22 L10 36 Q20 39 30 36 L34 22 Z\" fill=\"#D6336C\" stroke=\"#4A2E22\" stroke-width=\"1.5\"/><circle cx=\"20\" cy=\"19\" r=\"12\" fill=\"#5A3020\" stroke=\"#4A2E22\" stroke-width=\"1.5\"/></svg><div><strong>1 brigadeiro esperando você</strong><span>Mostre esta tela na próxima compra.</span></div></div>",
+      "css": ".ds-cupom{display:flex;gap:14px;align-items:center;background:#FFFEFB;color:#4A2E22;border-radius:18px;padding:14px 16px;font-family:\"Nunito\",system-ui,sans-serif;box-shadow:0 0 0 2px #FEE5E9,0 0 0 3.5px #E6C196,0 6px 18px -8px rgba(74,46,34,.45)}.ds-cupom svg{width:52px;height:52px;flex:none}.ds-cupom strong{display:block;font-size:17px}.ds-cupom span{font-size:14px;font-weight:600;color:#6E4E40}"
+    },
+    {
+      "name": "Recadinho",
+      "kind": "custom",
+      "refersTo": "recados",
+      "description": "Linha do histórico com ícone em quadradinho tingido.",
+      "html": "<ul class=\"ds-recados\"><li><span class=\"ds-icone\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 8h14l-1 12H6z\"/><path d=\"M9 10V7a3 3 0 0 1 6 0v3\"/></g></svg></span><div><strong>2 brownies</strong><span>R$ 12,00 · pago no Pix</span></div><time>8 out</time></li><li><span class=\"ds-icone\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><g fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 3l4 4-4 4-4-4z\"/><path d=\"M12 13l4 4-4 4-4-4z\"/><path d=\"M3 12l4-4 4 4-4 4zM13 12l4-4 4 4-4 4z\"/></g></svg></span><div><strong>Recebemos seu Pix de R$ 12,00</strong><span class=\"ds-ganho\">+2 doces na estante</span></div><time>ontem</time></li></ul>",
+      "css": ".ds-recados{list-style:none;margin:0;padding:0;background:#FFFEFB;color:#4A2E22;border-radius:18px;font-family:\"Nunito\",system-ui,sans-serif;box-shadow:0 6px 18px -8px rgba(74,46,34,.45)}.ds-recados li{display:grid;grid-template-columns:36px 1fr auto;gap:12px;padding:14px 16px}.ds-recados li+li{border-top:1.5px dashed #E6C196}.ds-icone{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#FEE5E9;color:#9F234C}.ds-icone svg{width:20px;height:20px}.ds-recados strong{display:block}.ds-recados span{font-size:14px;font-weight:600;color:#6E4E40}.ds-recados .ds-ganho{color:#2F7D57}.ds-recados time{font-size:13px;font-weight:700;color:#6E4E40}"
+    },
+    {
+      "name": "Campo PIN",
+      "kind": "input",
+      "refersTo": "campo-pin",
+      "description": "PIN de 4 números antes de raspar ou trocar.",
+      "html": "<input class=\"ds-pin\" inputmode=\"numeric\" maxlength=\"4\" placeholder=\"••••\" aria-label=\"Seu PIN de 4 números\">",
+      "css": ".ds-pin{width:100%;min-height:60px;border-radius:14px;border:2px solid #C38F5D;background:#fff;text-align:center;font:400 32px/1 \"Caprasimo\",Georgia,serif;letter-spacing:.5em;padding-left:.5em;color:#4A2E22;caret-color:#9F234C}.ds-pin:focus,.ds-pin:focus-visible{outline:none;border-color:#9F234C;box-shadow:0 0 0 4px #FEE5E9}"
+    },
+    {
+      "name": "Cartão de formato (rádio)",
+      "kind": "custom",
+      "refersTo": "formato-radio",
+      "description": "Escolha entre 5 casinhas e 3 iguais, mesma chance.",
+      "html": "<label class=\"ds-formato\"><input type=\"radio\" name=\"ds-f\" checked><strong>5 casinhas</strong><span>Um doce escondido em alguma</span></label>",
+      "css": ".ds-formato{position:relative;display:block;border-radius:16px;padding:12px;background:#fff;color:#4A2E22;font-family:\"Nunito\",system-ui,sans-serif;box-shadow:0 0 0 1.5px #E6C196;cursor:pointer}.ds-formato input{position:absolute;opacity:0}.ds-formato:has(input:checked){box-shadow:0 0 0 3px #9F234C}.ds-formato:has(input:focus-visible){outline:3px solid #9F234C;outline-offset:3px}.ds-formato strong{display:block;margin-top:8px;font-weight:800}.ds-formato span{font-size:14px;font-weight:600;color:#6E4E40}"
+    },
+    {
+      "name": "Aviso (toast)",
+      "kind": "custom",
+      "refersTo": "aviso",
+      "description": "Confirmação curta em cacau.",
+      "html": "<div class=\"ds-aviso\" role=\"status\">Pix copiado. É só colar no app do banco.</div>",
+      "css": ".ds-aviso{display:inline-block;background:#4A2E22;color:#fff;font:700 16px/1.45 \"Nunito\",system-ui,sans-serif;padding:12px 18px;border-radius:14px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "O Cantinho na Loja",
+    "overview": "Cada cliente tem um quartinho isométrico dentro da loja. A parede é de papel de parede pastel, tingido da cor da loja e estampado com brownies e brigadeiros miúdos; o piso é xadrez menta e rosa-claro; a moldura e a estante são de madeira clara. Os números da relação com a loja moram em objetos do quarto: a estante de 2 prateleiras com 5 vagas cada é a cartela de pontos, a caixa de presente no chão é a raspadinha, e o bilhete preso na geladeira é o que ficou em aberto. Nada é arrumado pelo cliente: o quarto reflete o estado real.\n\nA página inteira está dentro desse mundo. O fundo é sempre a parede (nunca creme, nunca branco liso), o texto é cacau, e tudo o que é objeto vira um adesivo com contorno macio cacau (1.5px). As superfícies de leitura são pedaços de papel quase branco apoiados na parede: placar, bilhete com fita, cupom, lista de recadinhos e a folha que sobe de baixo. A densidade é de celular, uma coluna, alvos grandes (56px), e o tom é carinhoso e caseiro, não de cassino nem de banco.\n\nA cor da loja é variável. O sistema não guarda uma paleta, guarda uma receita: a partir de `--loja` deriva todos os tons tingidos, com travas que garantem legibilidade e uma parede que nunca desbota. O mundo foi testado com sete cores de loja e precisa continuar funcionando com qualquer uma.",
+    "keyCharacteristics": [
+      "Quarto isométrico em SVG como primeira dobra (cerca de 55% da altura), estante 2x5 como cartela.",
+      "Cor da loja como semente única; todos os tons tingidos derivados por `color-mix` em oklab e cor relativa em oklch.",
+      "Objetos-adesivo: preenchimento chapado, contorno cacau 1.5px, sem gradiente.",
+      "Display Caprasimo para títulos e números; Nunito para todo o resto.",
+      "Contadores em caixinha de borda dupla (anel madeira-2 por fora, borda madeira por dentro).",
+      "Movimento com mola amortecida; respeita `prefers-reduced-motion`."
+    ],
+    "rules": [
+      {
+        "name": "The Receita, Não Paleta Rule",
+        "body": "Nenhum tom tingido pela loja é escrito em hex no código; todos derivam de `--loja` pelas receitas acima. Trocar a semente tem que retingir parede, motivos, ações e objetos de uma vez.",
+        "section": "colors"
+      },
+      {
+        "name": "The Parede Nunca Desbota Rule",
+        "body": "Os tons de parede têm croma mínimo (0.05, 0.07, 0.1, 0.12). Mesmo uma loja amarela ou caramelo ganha uma parede com cor, nunca creme.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cor Crua Veste Objetos Rule",
+        "body": "A semente `loja` sem trava só aparece em objetos ilustrados. Texto, botão e foco usam `loja-forte`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Caprasimo Só Fala Alto Rule",
+        "body": "Caprasimo é para títulos e números de destaque. Rótulos, botões, listas e frases ficam em Nunito.",
+        "section": "typography"
+      },
+      {
+        "name": "The Número Tabular Rule",
+        "body": "Todo número que muda (pontos, placar, valores) usa algarismos tabulares, para não pular quando atualiza.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sombra de Cacau Rule",
+        "body": "Toda sombra é cacau (ou `loja-forte`, no botão principal) com espalhamento negativo, macia e curta. Nada de preto puro.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** derivar todo tom tingido de `--loja` pelas receitas de `loja-forte`, `loja-suave` e parede, e testar qualquer mudança com as sete cores de loja registradas, incluindo amarelo #F2C94C e caramelo #8B5A3C.",
+      "**Do** usar a parede como fundo da página inteira, com o papel de parede de doces miúdos por cima.",
+      "**Do** desenhar objetos como adesivos: preenchimento chapado, contorno cacau 1.5px, junção arredondada.",
+      "**Do** colocar contadores em caixinha de borda dupla (anel `madeira-2`, borda interna `madeira`) com Caprasimo e algarismos tabulares.",
+      "**Do** usar o tracejado para o que ainda falta ou para separar itens (vagas vazias, divisórias, casinha vazia).",
+      "**Do** manter alvos de toque com no mínimo 44px e ações com 56px.",
+      "**Do** usar a mola `cubic-bezier(.34, 1.56, .64, 1)` para assentar e levantar, a curva de saída `cubic-bezier(.16, 1, .3, 1)` para entrar e sumir, e zerar animações sob `prefers-reduced-motion`."
+    ],
+    "donts": [
+      "**Don't** pôr texto branco sobre a cor crua da loja; texto branco vai sempre sobre `loja-forte`.",
+      "**Don't** usar fundo creme ou branco liso na página; o branco é dos papéis e campos, não do chão.",
+      "**Don't** voltar à cartela de círculos sobre fundo branco; os pontos são doces numa estante.",
+      "**Don't** usar sombra preta ou cinza; sombras são de cacau.",
+      "**Don't** usar Caprasimo em rótulos, botões, listas ou texto corrido.",
+      "**Don't** dar ao quarto cara de cassino (luzes piscando, contagem regressiva, moedas) ou de banco (cinza, tabela fria).",
+      "**Don't** herdar o painel \"Controles do protótipo\" (seletor de cores, botões de simulação, borda tracejada cacau) como componente; é andaime do protótipo."
+    ]
+  }
+}
