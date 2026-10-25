@@ -6,18 +6,23 @@ import { spacing } from '../theme/theme';
 
 /**
  * Tela de formulário em coluna única: respeita as áreas do sistema (edge-to-edge)
- * e o teclado, e rola quando o conteúdo não cabe.
+ * e o teclado, e rola quando o conteúdo não cabe. Telas empilhadas passam o
+ * `header` (ex.: BackHeader), que fica fixo acima da rolagem.
  */
-export function FormScreen({ children }: { children: ReactNode }) {
+export function FormScreen({ children, header }: { children: ReactNode; header?: ReactNode }) {
   const insets = useSafeAreaInsets();
   const theme = useAppTheme();
 
   return (
     <KeyboardAvoidingView style={[styles.flex, { backgroundColor: theme.colors.background }]}>
+      {header}
       <ScrollView
         contentContainerStyle={[
           styles.content,
-          { paddingTop: insets.top + spacing.fim, paddingBottom: insets.bottom + spacing.fim },
+          {
+            paddingTop: header ? spacing.gap : insets.top + spacing.fim,
+            paddingBottom: insets.bottom + spacing.fim,
+          },
         ]}
         keyboardShouldPersistTaps="handled"
       >
