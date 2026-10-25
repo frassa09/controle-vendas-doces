@@ -20,8 +20,13 @@ export function fromDbError(error: PostgrestLikeError): CoreError {
   if (error.code === '23514' || error.code === '23502') {
     return new CoreError('INVALID_INPUT', { cause: error });
   }
-  if (error.code === 'PGRST301' || error.code === '42501') {
+  // Token expirado ou inválido.
+  if (error.code === 'PGRST301' || error.code === 'PGRST303') {
     return new CoreError('NOT_AUTHENTICATED', { cause: error });
+  }
+  // Sem grant ou barrado pelo RLS.
+  if (error.code === '42501') {
+    return new CoreError('FORBIDDEN', { cause: error });
   }
   if (isNetworkFailure(error)) {
     return new CoreError('NETWORK', { cause: error });

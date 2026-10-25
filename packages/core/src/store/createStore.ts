@@ -1,5 +1,6 @@
 import type { DbClient } from '../db/client';
 import { fromDbError } from '../db/errors';
+import { requireUserId } from '../db/session';
 import { CoreError } from '../errors';
 import { toStore, type Store } from './store';
 import { validateStoreDetails, type StoreDetailsInput } from './storeDetails';
@@ -10,6 +11,7 @@ import { validateStoreDetails, type StoreDetailsInput } from './storeDetails';
  */
 export async function createStore(db: DbClient, input: StoreDetailsInput): Promise<Store> {
   const details = validateStoreDetails(input);
+  await requireUserId(db);
 
   const { data, error } = await db.rpc('create_store', {
     p_name: details.name,

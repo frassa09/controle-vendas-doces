@@ -1,6 +1,6 @@
 import type { DbClient } from '../db/client';
 import { fromDbError } from '../db/errors';
-import { CoreError } from '../errors';
+import { requireUserId } from '../db/session';
 import { storeColumns, toStore, type Store } from './store';
 
 /**
@@ -8,8 +8,7 @@ import { storeColumns, toStore, type Store } from './store';
  * (primeiro acesso: criar loja ou, depois, entrar com convite).
  */
 export async function getMyStore(db: DbClient): Promise<Store | null> {
-  const { data: session } = await db.auth.getSession();
-  if (!session.session) throw new CoreError('NOT_AUTHENTICATED');
+  await requireUserId(db);
 
   // O RLS só deixa ver as lojas das quais o usuário é membro, e cada usuário
   // pertence a no máximo uma loja (índice único em store_members.user_id).
