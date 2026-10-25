@@ -54,6 +54,7 @@ export {
   type SalePayment,
   type SalePaymentInput,
   type SalePaymentType,
+  type SaleVersion,
   type UpdateSaleInput,
 } from './sales';
 export {

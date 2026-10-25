@@ -242,6 +242,36 @@ export default function SaleDetailScreen() {
           ) : null}
         </View>
 
+        {sale.previousVersions.length > 0 ? (
+          <>
+            <Text variant="titleMedium" accessibilityRole="header" style={styles.sectionTitle}>
+              {sale.previousVersions.length === 1 ? 'Versão anterior' : 'Versões anteriores'}
+            </Text>
+            <View style={cardStyle}>
+              {sale.previousVersions.map((version, index) => (
+                <View key={version.revision}>
+                  {index > 0 ? divider : null}
+                  <List.Item
+                    title={`Até ${whenFormat.format(new Date(version.replacedAt))}`}
+                    description={`${version.items
+                      .map((item) => `${String(item.quantity)}× ${item.productName}`)
+                      .join(', ')} · corrigida por ${who(version.replacedBy)}`}
+                    descriptionNumberOfLines={3}
+                    left={(props) => <List.Icon {...props} icon="history" />}
+                    right={() => (
+                      <Text variant="titleMedium" style={[styles.itemTotal, muted]}>
+                        {formatCents(version.totalCents)}
+                      </Text>
+                    )}
+                    titleStyle={styles.labelTitle}
+                    descriptionStyle={muted}
+                  />
+                </View>
+              ))}
+            </View>
+          </>
+        ) : null}
+
         {just ? (
           <PrimaryButton
             icon="plus"

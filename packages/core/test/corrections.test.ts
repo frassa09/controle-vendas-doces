@@ -328,6 +328,59 @@ describe('editar venda', () => {
     expect(after.movements[0]).toMatchObject({ kind: 'saleAdjustment', points: -4 });
   });
 
+  it('cada edição guarda a versão anterior dos itens, com quem a substituiu', async () => {
+    const { member, julia, brownie, combo } = await shop();
+    const sale = await member.core.sales.recordSale({
+      customerId: julia.id,
+      items: [{ productId: brownie.id, quantity: 1, unitPriceCents: 250 }],
+      payment: { type: 'fiado' },
+    });
+    expect(sale.previousVersions).toEqual([]);
+
+    await member.core.sales.updateSale(sale.id, {
+      items: [
+        { productId: brownie.id, quantity: 2 },
+        { productId: combo.id, quantity: 1 },
+      ],
+    });
+    const edited = await member.core.sales.updateSale(sale.id, {
+      items: [{ productId: combo.id, quantity: 3 }],
+    });
+
+    expect(edited.totalCents).toBe(2400);
+    expect(edited.previousVersions).toMatchObject([
+      {
+        revision: 2,
+        replacedBy: { id: member.userId },
+        totalCents: 1300,
+        items: [
+          {
+            productId: brownie.id,
+            productName: 'Brownie',
+            quantity: 2,
+            unitPriceCents: 250,
+            points: 2,
+          },
+          {
+            productId: combo.id,
+            productName: '3 brownies',
+            quantity: 1,
+            unitPriceCents: 800,
+            points: 7,
+          },
+        ],
+      },
+      {
+        revision: 1,
+        replacedBy: { id: member.userId },
+        totalCents: 250,
+        items: [{ productName: 'Brownie', quantity: 1, unitPriceCents: 250, points: 2 }],
+      },
+    ]);
+    expect(edited.previousVersions[1]?.items).toHaveLength(1);
+    expect(edited.previousVersions[0]?.replacedAt).toEqual(expect.any(String));
+  });
+
   it('venda fiado quitada que passa a valer mais volta a ficar em aberto e estorna os pontos', async () => {
     const { member, julia, brownie } = await shop();
     const sale = await member.core.sales.recordSale({

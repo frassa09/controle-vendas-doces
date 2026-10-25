@@ -263,6 +263,66 @@ export type Database = {
           },
         ];
       };
+      sale_item_revisions: {
+        Row: {
+          id: string;
+          points: number;
+          position: number;
+          product_id: string;
+          product_name: string;
+          quantity: number;
+          replaced_at: string;
+          replaced_by: string;
+          revision: number;
+          sale_id: string;
+          store_id: string;
+          unit_price_cents: number;
+        };
+        Insert: {
+          id?: string;
+          points: number;
+          position: number;
+          product_id: string;
+          product_name: string;
+          quantity: number;
+          replaced_at?: string;
+          replaced_by: string;
+          revision: number;
+          sale_id: string;
+          store_id: string;
+          unit_price_cents: number;
+        };
+        Update: {
+          id?: string;
+          points?: number;
+          position?: number;
+          product_id?: string;
+          product_name?: string;
+          quantity?: number;
+          replaced_at?: string;
+          replaced_by?: string;
+          revision?: number;
+          sale_id?: string;
+          store_id?: string;
+          unit_price_cents?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'sale_item_revisions_sale_fkey';
+            columns: ['store_id', 'sale_id'];
+            isOneToOne: false;
+            referencedRelation: 'sales';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'sale_item_revisions_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       sale_items: {
         Row: {
           id: string;

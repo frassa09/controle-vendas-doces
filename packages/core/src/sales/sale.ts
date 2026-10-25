@@ -61,6 +61,19 @@ export interface Sale {
   paymentType: SalePaymentType;
   /** Pagamentos ligados à venda (a venda paga na hora tem um, de mesmo valor). */
   payments: SalePayment[];
+  /** Versões dos itens antes de cada edição, da mais recente para a mais antiga. */
+  previousVersions: SaleVersion[];
+}
+
+/** Os itens de uma venda como estavam antes de uma edição. */
+export interface SaleVersion {
+  /** 1 = como a venda foi registrada; cada edição guarda a versão que substituiu. */
+  revision: number;
+  /** Quando e por quem esta versão foi substituída. */
+  replacedAt: string;
+  replacedBy: MemberRef;
+  items: SaleItem[];
+  totalCents: number;
 }
 
 export function saleNotFound(): CoreError {

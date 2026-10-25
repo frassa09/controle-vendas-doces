@@ -16,6 +16,7 @@ export type {
   SaleItem,
   SalePayment,
   SalePaymentType,
+  SaleVersion,
 } from './sale';
 export type { CustomerHistoryEntry, CustomerHistoryPayment, CustomerHistorySale } from './history';
 export {
