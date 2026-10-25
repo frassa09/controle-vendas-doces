@@ -1,6 +1,6 @@
 import { formatWhatsApp, isCoreError, type CustomerSummary } from '@cvd/core';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, Divider, FAB, List, Searchbar, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -8,21 +8,8 @@ import { core } from '../../src/core';
 import { radii, spacing } from '../../src/theme/theme';
 import { useAppTheme } from '../../src/theme/ThemeProvider';
 import { BackHeader } from '../../src/ui/BackHeader';
+import { useDebounced } from '../../src/ui/useDebounced';
 import { useFocusQuery } from '../../src/ui/useFocusQuery';
-
-/** Espera a pessoa parar de digitar antes de buscar. */
-function useDebounced(value: string, delay = 250): string {
-  const [debounced, setDebounced] = useState(value);
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebounced(value);
-    }, delay);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-  return debounced;
-}
 
 /** Lista de clientes com busca por nome ou referência, para achar alguém no balcão. */
 export default function CustomersScreen() {

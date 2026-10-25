@@ -4,10 +4,11 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar, Divider, List, Menu, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSession } from '../src/session/SessionProvider';
+import { PrimaryButton } from '../src/ui/PrimaryButton';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
 
-/** Tela inicial da loja: atalhos para as áreas (clientes; vendas e cobrança depois). */
+/** Tela inicial da loja: nova venda e atalhos para as áreas (cobrança depois). */
 export default function StoreHomeScreen() {
   const session = useSession();
   const theme = useAppTheme();
@@ -74,6 +75,16 @@ export default function StoreHomeScreen() {
         <Text variant="bodyLarge" style={[styles.lead, { color: theme.colors.onSurfaceVariant }]}>
           Sua loja está pronta.
         </Text>
+
+        <PrimaryButton
+          icon="basket-plus-outline"
+          style={styles.sell}
+          onPress={() => {
+            router.push('/venda');
+          }}
+        >
+          Nova venda
+        </PrimaryButton>
 
         <View
           style={[
@@ -153,6 +164,7 @@ const styles = StyleSheet.create({
   },
   name: { lineHeight: 48 },
   lead: { marginTop: spacing.gap, fontWeight: '600' },
+  sell: { marginTop: spacing.secao },
   details: {
     marginTop: spacing.secao,
     borderRadius: radii.cartao,
