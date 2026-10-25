@@ -1,7 +1,8 @@
 import { isCoreError, type StoreInvite } from '@cvd/core';
 import { useCallback, useRef, useState } from 'react';
 import { ScrollView, Share, StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Button, Text } from 'react-native-paper';
+import { useRouter } from 'expo-router';
+import { ActivityIndicator, Button, List, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../src/core';
 import { useSession } from '../src/session/SessionProvider';
@@ -27,6 +28,7 @@ function messageOf(error: unknown): string {
 export default function SettingsScreen() {
   const session = useSession();
   const theme = useAppTheme();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   // Relido sempre que a tela ganha foco: o código some quando a pessoa o usa.
   const query = useFocusQuery(useCallback(() => core.store.getOpenInvite(), []));
@@ -85,10 +87,33 @@ export default function SettingsScreen() {
       <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.fim }]}
       >
+        <View
+          style={[
+            styles.menuCard,
+            {
+              backgroundColor: theme.colors.elevation.level1,
+              borderColor: theme.colors.outlineVariant,
+            },
+          ]}
+        >
+          <List.Item
+            title="Texto da cobrança"
+            description="A mensagem que vai no WhatsApp"
+            onPress={() => {
+              router.push('/texto-cobranca');
+            }}
+            left={(props) => <List.Icon {...props} icon="message-text-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.menuTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.menuItem}
+          />
+        </View>
+
         <Text
           variant="headlineSmall"
           accessibilityRole="header"
-          style={{ color: theme.colors.primary }}
+          style={[styles.invite, { color: theme.colors.primary }]}
         >
           Convidar quem vende com você
         </Text>
@@ -186,6 +211,10 @@ const styles = StyleSheet.create({
     maxWidth: 480,
     alignSelf: 'center',
   },
+  menuCard: { borderRadius: radii.cartao, borderWidth: 1.5, overflow: 'hidden' },
+  menuItem: { minHeight: 64 },
+  menuTitle: { fontSize: 17, fontWeight: '800' },
+  invite: { marginTop: spacing.secao },
   lead: { marginTop: spacing.gap, fontWeight: '600', lineHeight: 25 },
   card: {
     marginTop: spacing.secao,

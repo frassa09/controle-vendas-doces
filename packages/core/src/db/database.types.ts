@@ -8,6 +8,48 @@ export type Database = {
   };
   public: {
     Tables: {
+      collections: {
+        Row: {
+          amount_cents: number;
+          created_at: string;
+          customer_id: string;
+          id: string;
+          recorded_by: string;
+          store_id: string;
+        };
+        Insert: {
+          amount_cents: number;
+          created_at?: string;
+          customer_id: string;
+          id?: string;
+          recorded_by: string;
+          store_id: string;
+        };
+        Update: {
+          amount_cents?: number;
+          created_at?: string;
+          customer_id?: string;
+          id?: string;
+          recorded_by?: string;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'collections_store_id_customer_id_fkey';
+            columns: ['store_id', 'customer_id'];
+            isOneToOne: false;
+            referencedRelation: 'customers';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'collections_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       customers: {
         Row: {
           consent_at: string | null;
@@ -380,6 +422,7 @@ export type Database = {
         Row: {
           brand_color: string | null;
           city: string;
+          collection_template: string | null;
           created_at: string;
           id: string;
           logo_data: string | null;
@@ -390,6 +433,7 @@ export type Database = {
         Insert: {
           brand_color?: string | null;
           city: string;
+          collection_template?: string | null;
           created_at?: string;
           id?: string;
           logo_data?: string | null;
@@ -400,6 +444,7 @@ export type Database = {
         Update: {
           brand_color?: string | null;
           city?: string;
+          collection_template?: string | null;
           created_at?: string;
           id?: string;
           logo_data?: string | null;
@@ -419,6 +464,7 @@ export type Database = {
         Returns: {
           brand_color: string | null;
           city: string;
+          collection_template: string | null;
           created_at: string;
           id: string;
           logo_data: string | null;
@@ -465,6 +511,7 @@ export type Database = {
         Returns: {
           brand_color: string | null;
           city: string;
+          collection_template: string | null;
           created_at: string;
           id: string;
           logo_data: string | null;
@@ -479,11 +526,30 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      list_collection_queue: {
+        Args: never;
+        Returns: {
+          balance_cents: number;
+          customer_id: string;
+          debt_since: string;
+          last_collection_at: string;
+          name: string;
+          whatsapp: string;
+        }[];
+      };
       list_store_members: {
         Args: never;
         Returns: {
           email: string;
           user_id: string;
+        }[];
+      };
+      record_collection: {
+        Args: { p_customer_id: string };
+        Returns: {
+          amount_cents: number;
+          created_at: string;
+          id: string;
         }[];
       };
       record_payment: {

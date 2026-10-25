@@ -18,6 +18,7 @@ const businessCodes = new Set<CoreErrorCode>([
   'PRODUCT_NOT_FOUND',
   'PRODUCT_INACTIVE',
   'PAYMENT_EXCEEDS_BALANCE',
+  'NO_DEBT',
 ]);
 
 /**

@@ -19,6 +19,7 @@ export type CoreErrorCode =
   | 'SALE_NOT_FOUND'
   | 'PAYMENT_EXCEEDS_BALANCE'
   | 'LINK_NOT_FOUND'
+  | 'NO_DEBT'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -38,6 +39,7 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   SALE_NOT_FOUND: 'Venda não encontrada.',
   PAYMENT_EXCEEDS_BALANCE: 'O valor passa do saldo devedor do cliente.',
   LINK_NOT_FOUND: 'Não encontramos este cantinho. Confira o link que a loja mandou.',
+  NO_DEBT: 'Este cliente não deve nada.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

@@ -6,6 +6,7 @@ import { AppState } from 'react-native';
 interface Extra {
   supabaseUrl?: string;
   supabaseAnonKey?: string;
+  customerPageUrl?: string;
 }
 
 const extra = (Constants.expoConfig?.extra ?? {}) as Extra;
@@ -19,6 +20,7 @@ if (!extra.supabaseUrl || !extra.supabaseAnonKey) {
  * src/session), nunca o Supabase diretamente.
  */
 export const core: Core = createCore({
+  customerPageUrl: extra.customerPageUrl || undefined,
   supabase: createSupabaseClient({
     url: extra.supabaseUrl,
     anonKey: extra.supabaseAnonKey,
