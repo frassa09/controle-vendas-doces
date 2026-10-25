@@ -8,7 +8,7 @@ completa na issue #1; contexto de produto em [PRODUCT.md](PRODUCT.md) e sistema 
 ```
 packages/core   @cvd/core   operações de negócio (loja, auth...) e testes de comportamento
 apps/mobile     @cvd/mobile app Android (Expo SDK 58, expo-router, React Native Paper MD3)
-apps/web        @cvd/web    página do cliente (por enquanto só o esqueleto)
+apps/web        @cvd/web    página do cliente (o Cantinho)
 supabase/       migrações (a única fonte do schema) e config da CLI
 scripts/        aplicar migrações e gerar tipos a partir do projeto de testes
 ```
@@ -137,6 +137,24 @@ npm run build -w @cvd/web
 ```
 
 Usa `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (públicas) em `apps/web/.env.local`.
+O endereço da página é `<CUSTOMER_PAGE_URL>/c/<token do cliente>` (o mesmo que a cobrança
+manda); qualquer outro caminho mostra "Não achamos esse cantinho".
+
+A página não lê tabelas: tudo vem da edge function `customer-view`
+(`supabase/functions/customer-view`, `verify_jwt = false`), que recebe o token e chama
+`public.get_customer_page` com a service role. Ela precisa estar publicada no projeto
+(sem Docker, o bundle é feito no servidor):
+
+```bash
+# testes (necessário para npm test)
+npx supabase functions deploy customer-view --project-ref "$SUPABASE_TEST_PROJECT_REF" --use-api
+# produção (o integrador, depois de aplicar as migrações)
+npx supabase functions deploy customer-view --project-ref "$SUPABASE_PROJECT_REF" --use-api
+```
+
+Na Vercel: projeto com raiz `apps/web`, build `npm run build`, saída `dist`, variáveis
+`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` de produção. O `vercel.json` manda toda rota
+para o `index.html` e desliga indexação e Referer (o link carrega um segredo).
 
 ## CI
 
