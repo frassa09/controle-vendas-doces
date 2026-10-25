@@ -65,6 +65,8 @@ function Routes() {
       </Stack.Protected>
       <Stack.Protected guard={status === 'ready'}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="catalogo" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="produto" options={{ animation: 'slide_from_right' }} />
       </Stack.Protected>
     </Stack>
   );

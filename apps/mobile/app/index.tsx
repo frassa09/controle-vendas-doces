@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar, Divider, List, Menu, Text } from 'react-native-paper';
@@ -75,6 +76,30 @@ export default function StoreHomeScreen() {
           ]}
         >
           <List.Item
+            title="Cardápio"
+            description="Produtos e combos"
+            onPress={() => {
+              router.push('/catalogo');
+            }}
+            left={(props) => <List.Icon {...props} icon="cupcake" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.entryTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.entry}
+            accessibilityRole="button"
+          />
+        </View>
+
+        <View
+          style={[
+            styles.details,
+            {
+              backgroundColor: theme.colors.elevation.level1,
+              borderColor: theme.colors.outlineVariant,
+            },
+          ]}
+        >
+          <List.Item
             title="Chave Pix"
             description={store.pixKey}
             left={(props) => <List.Icon {...props} icon="key-outline" />}
@@ -114,5 +139,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   itemTitle: { fontSize: 14, fontWeight: '700' },
+  entry: { minHeight: 64, justifyContent: 'center' },
+  entryTitle: { fontSize: 17, fontWeight: '700' },
   itemValue: { fontSize: 17, marginTop: 2 },
 });
