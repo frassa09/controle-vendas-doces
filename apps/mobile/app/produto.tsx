@@ -7,18 +7,21 @@ import {
   type ProductField,
 } from '@cvd/core';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { ActivityIndicator, Appbar, Button, Switch, Text, TextInput } from 'react-native-paper';
+import { ActivityIndicator, Button, Switch, Text, TextInput } from 'react-native-paper';
 import { core } from '../src/core';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
+import { BackHeader } from '../src/ui/BackHeader';
 import { FormError } from '../src/ui/FormError';
 import { FormField, type FormFieldHandle } from '../src/ui/FormField';
 import { FormScreen } from '../src/ui/FormScreen';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
+import { LoadingState } from '../src/ui/LoadingState';
 import { ScreenHeader } from '../src/ui/ScreenHeader';
 import { useCoreForm } from '../src/ui/useCoreForm';
+import { useFocusQuery } from '../src/ui/useFocusQuery';
 
 /** "8,50" sem o "R$" (o campo já mostra o prefixo). */
 const priceText = (cents: number) => formatCents(cents).replace('R$ ', '');
@@ -33,63 +36,19 @@ const parsePoints = (text: string) => {
 /** Cadastro e edição de produto ou combo. Com `id`, edita; sem, cadastra. */
 export default function ProductFormScreen() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const editing = typeof id === 'string' && id !== '';
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!editing) return;
-    let active = true;
-    core.catalog.getProduct(id).then(
-      (found) => {
-        if (active) setProduct(found);
-      },
-      (error: unknown) => {
-        if (active) {
-          setLoadError(isCoreError(error) ? error.message : 'Algo deu errado. Tente de novo.');
-        }
-      },
-    );
-    return () => {
-      active = false;
-    };
-  }, [editing, id]);
-
-  if (editing && !product) {
-    return (
-      <FormScreen>
-        <BackButton />
-        {loadError ? (
-          <>
-            <ScreenHeader title="Não deu para abrir" lead={loadError} />
-            <PrimaryButton
-              onPress={() => {
-                router.back();
-              }}
-            >
-              Voltar ao cardápio
-            </PrimaryButton>
-          </>
-        ) : (
-          <ActivityIndicator style={styles.loading} accessibilityLabel="Carregando o produto" />
-        )}
-      </FormScreen>
-    );
-  }
-
-  return <ProductForm product={product} />;
+  return typeof id === 'string' && id !== '' ? (
+    <EditProduct id={id} />
+  ) : (
+    <ProductForm product={null} />
+  );
 }
 
-function BackButton() {
-  return (
-    <Appbar.BackAction
-      accessibilityLabel="Voltar"
-      onPress={() => {
-        router.back();
-      }}
-      style={styles.back}
-    />
-  );
+function EditProduct({ id }: { id: string }) {
+  const load = useCallback(() => core.catalog.getProduct(id), [id]);
+  // Lê uma vez só: voltar ao foco não pode apagar o que já foi digitado.
+  const query = useFocusQuery(load, { once: true });
+  if (!query.data) return <LoadingState query={query} />;
+  return <ProductForm product={query.data} />;
 }
 
 function ProductForm({ product }: { product: Product | null }) {
@@ -146,8 +105,7 @@ function ProductForm({ product }: { product: Product | null }) {
       : 'Novo produto';
 
   return (
-    <FormScreen>
-      <BackButton />
+    <FormScreen header={<BackHeader />}>
       <ScreenHeader
         title={title}
         lead={
@@ -303,8 +261,6 @@ function Option({
 }
 
 const styles = StyleSheet.create({
-  loading: { marginTop: spacing.fim },
-  back: { marginLeft: -spacing.gap, marginTop: -spacing.secao, marginBottom: spacing.sm },
   options: {
     borderRadius: radii.cartao,
     borderWidth: 1.5,

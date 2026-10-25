@@ -1,10 +1,9 @@
 import { formatCents, isCoreError, type Product } from '@cvd/core';
-import { router, useFocusEffect } from 'expo-router';
+import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
-  Appbar,
   Button,
   Divider,
   FAB,
@@ -17,12 +16,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../src/core';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
+import { BackHeader } from '../src/ui/BackHeader';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
-
-type Load =
-  | { status: 'loading' }
-  | { status: 'failed'; message: string }
-  | { status: 'loaded'; products: Product[] };
+import { useFocusQuery } from '../src/ui/useFocusQuery';
 
 const failMessage = (error: unknown) =>
   isCoreError(error) ? error.message : 'Algo deu errado. Tente de novo.';
@@ -31,29 +27,16 @@ const failMessage = (error: unknown) =>
 export default function CatalogScreen() {
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
-  const [load, setLoad] = useState<Load>({ status: 'loading' });
+  const listProducts = useCallback(() => core.catalog.listProducts(), []);
+  // Recarrega ao ganhar foco (ex.: ao voltar do formulário com o produto salvo).
+  const query = useFocusQuery(listProducts);
   const [refreshing, setRefreshing] = useState(false);
   const [toggling, setToggling] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
-  const fetchProducts = useCallback(async () => {
-    try {
-      setLoad({ status: 'loaded', products: await core.catalog.listProducts() });
-    } catch (error) {
-      setLoad({ status: 'failed', message: failMessage(error) });
-    }
-  }, []);
-
-  // Volta do formulário com o produto salvo: recarrega.
-  useFocusEffect(
-    useCallback(() => {
-      void fetchProducts();
-    }, [fetchProducts]),
-  );
-
   const refresh = async () => {
     setRefreshing(true);
-    await fetchProducts();
+    await query.reload();
     setRefreshing(false);
   };
 
@@ -69,7 +52,7 @@ export default function CatalogScreen() {
           ? `${updated.name} voltou para a venda.`
           : `${updated.name} saiu da venda. O histórico continua.`,
       );
-      await fetchProducts();
+      await query.reload();
     } catch (error) {
       setNotice(failMessage(error));
     } finally {
@@ -81,24 +64,13 @@ export default function CatalogScreen() {
     router.push('/produto');
   };
 
-  const products = load.status === 'loaded' ? load.products : [];
+  const products = query.data ?? [];
   const active = products.filter((product) => product.isActive);
   const inactive = products.filter((product) => !product.isActive);
 
   return (
     <View style={[styles.flex, { backgroundColor: theme.colors.background }]}>
-      <Appbar.Header
-        style={{ backgroundColor: theme.colors.background }}
-        statusBarHeight={insets.top}
-      >
-        <Appbar.BackAction
-          accessibilityLabel="Voltar"
-          onPress={() => {
-            router.back();
-          }}
-        />
-        <Appbar.Content title="" />
-      </Appbar.Header>
+      <BackHeader />
 
       <ScrollView
         contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 112 }]}
@@ -115,14 +87,14 @@ export default function CatalogScreen() {
           Produtos e combos que aparecem na hora de vender.
         </Text>
 
-        {load.status === 'loading' ? (
+        {query.status === 'loading' ? (
           <ActivityIndicator style={styles.state} accessibilityLabel="Carregando o cardápio" />
         ) : null}
 
-        {load.status === 'failed' ? (
+        {query.status === 'error' && products.length === 0 ? (
           <View style={styles.state}>
             <Text variant="bodyLarge" style={styles.stateText}>
-              {load.message}
+              {failMessage(query.error)}
             </Text>
             <Button mode="outlined" onPress={refresh} style={styles.retry}>
               Tentar de novo
@@ -130,7 +102,7 @@ export default function CatalogScreen() {
           </View>
         ) : null}
 
-        {load.status === 'loaded' && products.length === 0 ? (
+        {query.status === 'ready' && products.length === 0 ? (
           <View style={styles.state}>
             <Text variant="titleMedium" style={styles.stateText}>
               Nenhum produto ainda.
