@@ -8,6 +8,138 @@ export type Database = {
   };
   public: {
     Tables: {
+      customers: {
+        Row: {
+          consent_at: string | null;
+          consented: boolean;
+          created_at: string;
+          id: string;
+          link_token: string;
+          name: string;
+          notes: string | null;
+          pin: string;
+          reference: string | null;
+          store_id: string;
+          updated_at: string;
+          whatsapp: string;
+        };
+        Insert: {
+          consent_at?: string | null;
+          consented?: boolean;
+          created_at?: string;
+          id?: string;
+          link_token?: string;
+          name: string;
+          notes?: string | null;
+          pin: string;
+          reference?: string | null;
+          store_id: string;
+          updated_at?: string;
+          whatsapp: string;
+        };
+        Update: {
+          consent_at?: string | null;
+          consented?: boolean;
+          created_at?: string;
+          id?: string;
+          link_token?: string;
+          name?: string;
+          notes?: string | null;
+          pin?: string;
+          reference?: string | null;
+          store_id?: string;
+          updated_at?: string;
+          whatsapp?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'customers_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      products: {
+        Row: {
+          can_be_prize: boolean;
+          created_at: string;
+          id: string;
+          is_active: boolean;
+          is_combo: boolean;
+          name: string;
+          points: number;
+          price_cents: number;
+          store_id: string;
+        };
+        Insert: {
+          can_be_prize?: boolean;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          is_combo?: boolean;
+          name: string;
+          points?: number;
+          price_cents: number;
+          store_id: string;
+        };
+        Update: {
+          can_be_prize?: boolean;
+          created_at?: string;
+          id?: string;
+          is_active?: boolean;
+          is_combo?: boolean;
+          name?: string;
+          points?: number;
+          price_cents?: number;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'products_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      store_invites: {
+        Row: {
+          code: string;
+          created_at: string;
+          created_by: string | null;
+          store_id: string;
+          used_at: string | null;
+          used_by: string | null;
+        };
+        Insert: {
+          code: string;
+          created_at?: string;
+          created_by?: string | null;
+          store_id: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Update: {
+          code?: string;
+          created_at?: string;
+          created_by?: string | null;
+          store_id?: string;
+          used_at?: string | null;
+          used_by?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'store_invites_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       store_members: {
         Row: {
           created_at: string;
@@ -77,6 +209,62 @@ export type Database = {
           to: 'stores';
           isOneToOne: true;
           isSetofReturn: false;
+        };
+      };
+      create_store_invite: {
+        Args: never;
+        Returns: {
+          code: string;
+          created_at: string;
+          created_by: string | null;
+          store_id: string;
+          used_at: string | null;
+          used_by: string | null;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'store_invites';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      join_store_with_invite: {
+        Args: { p_code: string };
+        Returns: {
+          city: string;
+          created_at: string;
+          id: string;
+          name: string;
+          pix_key: string;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'stores';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
+      search_customers: {
+        Args: { p_query: string };
+        Returns: {
+          consent_at: string | null;
+          consented: boolean;
+          created_at: string;
+          id: string;
+          link_token: string;
+          name: string;
+          notes: string | null;
+          pin: string;
+          reference: string | null;
+          store_id: string;
+          updated_at: string;
+          whatsapp: string;
+        }[];
+        SetofOptions: {
+          from: '*';
+          to: 'customers';
+          isOneToOne: false;
+          isSetofReturn: true;
         };
       };
     };
