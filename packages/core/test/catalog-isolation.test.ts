@@ -80,8 +80,12 @@ describe('isolamento do catálogo entre lojas', () => {
     expect(await owner.core.catalog.listProducts()).toEqual([brownie]);
   });
 
-  it('quem não está em loja nenhuma não vê produtos', async () => {
+  it('quem não está em loja nenhuma não vê nem cadastra produtos', async () => {
     const outsider = await newSignedInPerson();
+
+    await expect(
+      outsider.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 }),
+    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
 
     expect(await outsider.core.catalog.listProducts()).toEqual([]);
     const read = await outsider.rawClient.from('products').select('*');

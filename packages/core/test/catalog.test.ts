@@ -120,18 +120,10 @@ describe('cadastrar produto', () => {
       anonymousCore().catalog.createProduct({ name: 'Brownie', priceCents: 300 }),
     ).rejects.toMatchObject({ code: 'NOT_AUTHENTICATED' });
   });
-
-  it('exige que a pessoa tenha loja', async () => {
-    const person = await newSignedInPerson();
-
-    await expect(
-      person.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 }),
-    ).rejects.toMatchObject({ code: 'FORBIDDEN' });
-  });
 });
 
-describe('editar produto', () => {
-  // Uma loja para as edições: cada teste mexe só no produto que criou.
+describe('editar, ativar e desativar produto', () => {
+  // Uma loja para as alterações: cada teste mexe só no produto que criou.
   let member: TestPerson;
   beforeAll(async () => {
     member = await memberWithStore();
@@ -196,31 +188,23 @@ describe('editar produto', () => {
       member.core.catalog.deactivateProduct('00000000-0000-4000-8000-000000000000'),
     ).rejects.toMatchObject({ code: 'PRODUCT_NOT_FOUND' });
   });
-});
 
-describe('ativar e desativar produto', () => {
   it('desativado sai da venda mas continua no catálogo; ativado volta à venda', async () => {
-    const member = await memberWithStore();
     const brownie = await member.core.catalog.createProduct({ name: 'Brownie', priceCents: 300 });
-    const brigadeiro = await member.core.catalog.createProduct({
-      name: 'Brigadeiro',
-      priceCents: 250,
-    });
 
     const off = await member.core.catalog.deactivateProduct(brownie.id);
 
     expect(off).toEqual({ ...brownie, isActive: false });
-    expect(await member.core.catalog.listProducts({ activeOnly: true })).toEqual([brigadeiro]);
-    expect(await member.core.catalog.listProducts()).toEqual([brigadeiro, off]);
+    expect(await member.core.catalog.listProducts({ activeOnly: true })).not.toContainEqual(
+      expect.objectContaining({ id: brownie.id }),
+    );
+    expect(await member.core.catalog.listProducts()).toContainEqual(off);
     expect(await member.core.catalog.getProduct(brownie.id)).toEqual(off);
 
     const on = await member.core.catalog.activateProduct(brownie.id);
 
     expect(on).toEqual(brownie);
-    expect(await member.core.catalog.listProducts({ activeOnly: true })).toEqual([
-      brigadeiro,
-      brownie,
-    ]);
+    expect(await member.core.catalog.listProducts({ activeOnly: true })).toContainEqual(brownie);
   });
 });
 
