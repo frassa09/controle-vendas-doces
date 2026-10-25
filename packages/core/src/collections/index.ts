@@ -15,7 +15,7 @@ import { recordCollection, type Collection } from './recordCollection';
 
 export { buildWhatsAppUrl, type CollectionMessage } from './collectionMessage';
 export type { CollectionTemplate } from './collectionTemplate';
-export { buildPixCopyAndPaste, crc16, type PixField, type PixInput } from './pix';
+export { buildPixCopyAndPaste, crc16, normalizePixKey, type PixField, type PixInput } from './pix';
 export {
   collectionRangeOf,
   type CollectionQueueItem,

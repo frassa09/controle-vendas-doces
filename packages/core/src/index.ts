@@ -79,6 +79,7 @@ export {
   buildWhatsAppUrl,
   collectionRangeOf,
   crc16,
+  normalizePixKey,
   type Collection,
   type CollectionMessage,
   type CollectionOperations,

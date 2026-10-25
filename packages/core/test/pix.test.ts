@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildPixCopyAndPaste, crc16, isCoreError } from '../src';
+import { buildPixCopyAndPaste, crc16, isCoreError, normalizePixKey } from '../src';
 
 describe('Pix copia-e-cola estático (BR Code)', () => {
   it('o CRC16 bate com o valor de referência e com os exemplos oficiais do Banco Central', () => {
@@ -79,5 +79,38 @@ describe('Pix copia-e-cola estático (BR Code)', () => {
         amountCents: 'Informe um valor maior que zero.',
       });
     }
+  });
+});
+
+describe('chave Pix no formato do Banco Central', () => {
+  it('normaliza telefone, CPF, CNPJ, e-mail e chave aleatória como cadastrados pela loja', () => {
+    const cases: [string, string][] = [
+      ['(61) 91234-5678', '+5561912345678'],
+      ['61912345678', '+5561912345678'],
+      ['6133334444', '+556133334444'],
+      ['5561912345678', '+5561912345678'],
+      ['+55 61 91234-5678', '+5561912345678'],
+      ['529.982.247-25', '52998224725'],
+      ['52998224725', '52998224725'],
+      ['11.222.333/0001-81', '11222333000181'],
+      [' Loja@Exemplo.com ', 'loja@exemplo.com'],
+      ['123E4567-E12B-12D1-A456-426655440000', '123e4567-e12b-12d1-a456-426655440000'],
+    ];
+    for (const [cadastrada, esperada] of cases) {
+      expect(normalizePixKey(cadastrada), cadastrada).toBe(esperada);
+    }
+  });
+
+  it('o copia-e-cola usa a chave normalizada', () => {
+    expect(
+      buildPixCopyAndPaste({
+        key: '(61) 91234-5678',
+        name: 'Doces da Júlia',
+        city: 'São Paulo',
+        amountCents: 1550,
+      }),
+    ).toBe(
+      '00020126360014br.gov.bcb.pix0114+5561912345678520400005303986540515.505802BR5914DOCES DA JULIA6009SAO PAULO62070503***6304D0CB',
+    );
   });
 });

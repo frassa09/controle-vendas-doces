@@ -2,7 +2,7 @@ import { CoreError, type FieldErrors } from '../errors';
 
 /** O que o Pix copia-e-cola estático precisa: a chave e o nome/cidade do recebedor. */
 export interface PixInput {
-  /** Chave Pix da loja, como cadastrada (telefone com +55, e-mail, CPF/CNPJ, aleatória). */
+  /** Chave Pix da loja como cadastrada; vai ao BR Code normalizada por `normalizePixKey`. */
   key: string;
   /** Nome do recebedor (a loja). Vira maiúsculas sem acento, até 25 caracteres. */
   name: string;
@@ -40,6 +40,41 @@ function field(id: string, value: string): string {
   return `${id}${value.length.toString().padStart(2, '0')}${value}`;
 }
 
+function isValidCpf(digits: string): boolean {
+  if (!/^\d{11}$/.test(digits) || /^(\d)\1{10}$/.test(digits)) return false;
+  const check = (length: number): number => {
+    let sum = 0;
+    for (let i = 0; i < length; i++) sum += Number(digits[i]) * (length + 1 - i);
+    const rest = (sum * 10) % 11;
+    return rest === 10 ? 0 : rest;
+  };
+  return check(9) === Number(digits[9]) && check(10) === Number(digits[10]);
+}
+
+/**
+ * Leva a chave cadastrada ao formato que o BCB exige no BR Code: e-mail e chave
+ * aleatória em minúsculas, CPF/CNPJ só dígitos, telefone como +55DDDNÚMERO.
+ * 11 dígitos é CPF quando os dígitos verificadores batem; senão, celular.
+ */
+export function normalizePixKey(raw: string): string {
+  const key = raw.trim();
+  if (key.includes('@')) return key.toLowerCase();
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(key)) {
+    return key.toLowerCase();
+  }
+  if (!/^\+?[\d\s().\-/]+$/.test(key)) return key;
+
+  const digits = key.replace(/\D/g, '');
+  if (key.startsWith('+')) return `+${digits}`;
+  if (digits.length === 14) return digits;
+  if (digits.length === 11 && isValidCpf(digits)) return digits;
+  if (digits.length === 10 || digits.length === 11) return `+55${digits}`;
+  if ((digits.length === 12 || digits.length === 13) && digits.startsWith('55')) {
+    return `+${digits}`;
+  }
+  return key;
+}
+
 /** Sem acento, só letras/números/espaço, maiúsculas, cortado em `max`. */
 function normalizeText(text: string, max: number): string {
   return text
@@ -59,7 +94,7 @@ function normalizeText(text: string, max: number): string {
  * Erros: INVALID_INPUT com mensagem por campo.
  */
 export function buildPixCopyAndPaste(input: PixInput): string {
-  const key = input.key.trim();
+  const key = normalizePixKey(input.key);
   const name = normalizeText(input.name, MAX_NAME);
   const city = normalizeText(input.city, MAX_CITY);
   const txid = (input.txid ?? '***').trim();
