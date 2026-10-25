@@ -1,11 +1,18 @@
-import { formatCents, formatWhatsApp, type CustomerBalance, type CustomerPoints } from '@cvd/core';
+import {
+  formatCents,
+  formatWhatsApp,
+  type CustomerBalance,
+  type CustomerHistoryEntry,
+  type CustomerPoints,
+  type PointsMovementKind,
+} from '@cvd/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar, Divider, List, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../../../src/core';
-import { dayFormat, debtSinceText } from '../../../src/payments/debt';
+import { dayFormat, debtSinceText, methodLabel } from '../../../src/payments/debt';
 import { radii, spacing } from '../../../src/theme/theme';
 import { useAppTheme } from '../../../src/theme/ThemeProvider';
 import { BackHeader } from '../../../src/ui/BackHeader';
@@ -13,7 +20,7 @@ import { LoadingState } from '../../../src/ui/LoadingState';
 import { PrimaryButton } from '../../../src/ui/PrimaryButton';
 import { useFocusQuery } from '../../../src/ui/useFocusQuery';
 
-/** Perfil do cliente: saldo devedor, contato, PIN e consentimento. */
+/** Perfil do cliente: saldo devedor, pontos, histórico, contato, PIN e consentimento. */
 export default function CustomerProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
@@ -25,13 +32,14 @@ export default function CustomerProfileScreen() {
         core.customers.getCustomer(id),
         core.payments.getCustomerBalance(id),
         core.points.getCustomerPoints(id),
+        core.sales.listCustomerHistory(id),
       ]),
     [id],
   );
   const query = useFocusQuery(load);
 
   if (!query.data) return <LoadingState query={query} />;
-  const [customer, balance, points] = query.data;
+  const [customer, balance, points, history] = query.data;
   const valueStyle = [styles.itemValue, { color: theme.colors.onSurface }];
   const divider = <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />;
 
@@ -65,6 +73,7 @@ export default function CustomerProfileScreen() {
 
         <DebtCard balance={balance} customerId={customer.id} />
         <PointsCard points={points} />
+        <HistoryCard history={history} />
 
         <View
           style={[
@@ -206,7 +215,14 @@ function DebtCard({ balance, customerId }: { balance: CustomerBalance; customerI
   );
 }
 
-/** Saldo de pontos e o extrato (créditos por compra quitada), do mais novo ao mais antigo. */
+const kindLabel: Record<PointsMovementKind, string> = {
+  saleCredit: 'Compra paga',
+  saleReversal: 'Estorno de compra',
+  saleAdjustment: 'Ajuste de compra',
+  redemption: 'Resgate',
+};
+
+/** Saldo de pontos (pode ser negativo depois de um estorno) e o extrato, do mais novo ao mais antigo. */
 function PointsCard({ points }: { points: CustomerPoints }) {
   const router = useRouter();
   const theme = useAppTheme();
@@ -245,12 +261,18 @@ function PointsCard({ points }: { points: CustomerPoints }) {
         <View key={movement.id}>
           <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
           <List.Item
-            title="Compra paga"
+            title={kindLabel[movement.kind]}
             description={dayFormat.format(new Date(movement.createdAt))}
             right={() => (
               <Text
                 variant="titleMedium"
-                style={[styles.openValue, { color: theme.colors.primary }]}
+                style={[
+                  styles.openValue,
+                  {
+                    color:
+                      movement.points > 0 ? theme.colors.primary : theme.colors.onSurfaceVariant,
+                  },
+                ]}
               >
                 {movement.points > 0 ? '+' : ''}
                 {movement.points}
@@ -266,12 +288,102 @@ function PointsCard({ points }: { points: CustomerPoints }) {
                     });
                   }
             }
-            accessibilityLabel={`Compra paga em ${dayFormat.format(new Date(movement.createdAt))}, mais ${unit(movement.points)}`}
+            accessibilityLabel={`${kindLabel[movement.kind]} em ${dayFormat.format(new Date(movement.createdAt))}, ${movement.points > 0 ? 'mais' : 'menos'} ${unit(Math.abs(movement.points))}`}
             titleStyle={styles.itemTitle}
             descriptionStyle={muted}
           />
         </View>
       ))}
+    </View>
+  );
+}
+
+/** Compras e pagamentos de dívida, do mais novo ao mais antigo; cancelados aparecem riscados. */
+function HistoryCard({ history }: { history: CustomerHistoryEntry[] }) {
+  const router = useRouter();
+  const theme = useAppTheme();
+  const muted = { color: theme.colors.onSurfaceVariant };
+
+  return (
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.colors.elevation.level1,
+          borderColor: theme.colors.outlineVariant,
+        },
+      ]}
+    >
+      <View style={styles.debtHeader}>
+        <Text variant="labelLarge" style={muted} accessibilityRole="header">
+          Histórico
+        </Text>
+        {history.length === 0 ? (
+          <Text variant="bodyMedium" style={[styles.debtSince, muted]}>
+            Nenhuma compra ainda.
+          </Text>
+        ) : null}
+      </View>
+
+      {history.map((entry) => {
+        const cancelled = entry.status === 'cancelled';
+        const day = dayFormat.format(new Date(entry.createdAt));
+        let title: string;
+        let detail: string;
+        let cents: number;
+        if (entry.type === 'sale') {
+          title = `Compra de ${day}${cancelled ? ' · cancelada' : ''}`;
+          detail = `${entry.units === 1 ? '1 item' : `${String(entry.units)} itens`} · ${
+            entry.paymentType === 'fiado' ? 'fiado' : 'paga na hora'
+          }`;
+          cents = entry.totalCents;
+        } else {
+          title = `Pagamento de ${day}${cancelled ? ' · cancelado' : ''}`;
+          detail = methodLabel[entry.method];
+          cents = entry.amountCents;
+        }
+        const valueColor = cancelled
+          ? theme.colors.onSurfaceVariant
+          : entry.type === 'payment'
+            ? theme.colors.primary
+            : theme.colors.onSurface;
+        return (
+          <View key={`${entry.type}-${entry.id}`}>
+            <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+            <List.Item
+              title={title}
+              description={detail}
+              left={(props) => (
+                <List.Icon
+                  {...props}
+                  icon={entry.type === 'sale' ? 'basket-outline' : 'cash-check'}
+                />
+              )}
+              right={() => (
+                <Text
+                  variant="titleMedium"
+                  style={[
+                    styles.openValue,
+                    { color: valueColor },
+                    cancelled ? styles.struck : null,
+                  ]}
+                >
+                  {formatCents(cents)}
+                </Text>
+              )}
+              onPress={() => {
+                if (entry.type === 'sale') {
+                  router.push({ pathname: '/vendas/[id]', params: { id: entry.id } });
+                } else {
+                  router.push({ pathname: '/pagamentos/[id]', params: { id: entry.id } });
+                }
+              }}
+              titleStyle={[styles.itemTitle, cancelled ? muted : null]}
+              descriptionStyle={muted}
+            />
+          </View>
+        );
+      })}
     </View>
   );
 }
@@ -297,6 +409,7 @@ const styles = StyleSheet.create({
   debtValue: { lineHeight: 52, marginTop: spacing.xs },
   debtSince: { fontWeight: '600' },
   openValue: { alignSelf: 'center', fontWeight: '800' },
+  struck: { textDecorationLine: 'line-through' },
   debtAction: { padding: spacing.margem, paddingTop: spacing.xs },
   itemValue: { fontSize: 17, marginTop: 2 },
   pin: {

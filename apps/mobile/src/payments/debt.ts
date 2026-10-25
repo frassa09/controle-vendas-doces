@@ -24,3 +24,12 @@ export function debtSinceText(balance: CustomerBalance): string | null {
 
 /** "12,34", para preencher um campo de valor que já mostra o prefixo R$. */
 export const centsText = (cents: number) => (cents / 100).toFixed(2).replace('.', ',');
+
+/** "25/10/2026, 14:30". */
+export const whenFormat = new Intl.DateTimeFormat('pt-BR', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+});

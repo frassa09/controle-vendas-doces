@@ -77,7 +77,8 @@ function Routes() {
         <Stack.Screen name="catalogo" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="produto" options={{ animation: 'slide_from_right' }} />
         <Stack.Screen name="venda" options={{ animation: 'slide_from_bottom' }} />
-        <Stack.Screen name="vendas/[id]" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="vendas/[id]/index" options={{ animation: 'slide_from_right' }} />
+        <Stack.Screen name="pagamentos/[id]" options={{ animation: 'slide_from_right' }} />
       </Stack.Protected>
     </Stack>
   );

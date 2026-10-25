@@ -7,8 +7,9 @@ import {
   type CustomerSummary,
   type PaymentMethod,
   type Product,
+  type Sale,
 } from '@cvd/core';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import {
@@ -33,7 +34,9 @@ import { debtSinceText } from '../src/payments/debt';
 import { radii, spacing } from '../src/theme/theme';
 import { useAppTheme } from '../src/theme/ThemeProvider';
 import { BackHeader } from '../src/ui/BackHeader';
+import { ConfirmDialog } from '../src/ui/ConfirmDialog';
 import { FormField } from '../src/ui/FormField';
+import { LoadingState } from '../src/ui/LoadingState';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
 import { useDebounced } from '../src/ui/useDebounced';
 import { useFocusQuery } from '../src/ui/useFocusQuery';
@@ -56,23 +59,56 @@ const failMessage = (error: unknown) =>
 /** 1234 → "12,34", para começar a edição do preço já preenchida. */
 const priceText = (cents: number) => (cents / 100).toFixed(2).replace('.', ',');
 
+/** Os itens de uma venda já registrada, como linhas editáveis (com as cópias da época). */
+function linesOf(sale: Sale): Line[] {
+  return sale.items.map((item) => ({
+    product: {
+      id: item.productId,
+      name: item.productName,
+      priceCents: item.unitPriceCents,
+      points: item.points,
+      canBePrize: false,
+      isActive: true,
+      isCombo: false,
+      createdAt: sale.createdAt,
+    },
+    quantity: item.quantity,
+    unitPriceCents: item.unitPriceCents,
+  }));
+}
+
 /**
  * Venda no balcão: cliente opcional (sem cliente = avulsa), um toque no produto
  * soma uma unidade, toque longo ajusta quantidade e preço, e o total acompanha ao
- * vivo até finalizar no Pix, no dinheiro ou fiado (só com cliente).
+ * vivo até finalizar no Pix, no dinheiro ou fiado (só com cliente). Com
+ * `?editar=<id>`, a mesma tela corrige os itens de uma venda já registrada.
  */
 export default function SaleScreen() {
+  const { editar } = useLocalSearchParams<{ editar?: string }>();
+  return editar ? <EditSale id={editar} /> : <SaleBuilder original={null} />;
+}
+
+function EditSale({ id }: { id: string }) {
+  const load = useCallback(() => core.sales.getSale(id), [id]);
+  // Uma leitura só: voltar à tela não pode desfazer o que já foi corrigido.
+  const sale = useFocusQuery(load, { once: true });
+  if (!sale.data) return <LoadingState query={sale} />;
+  return <SaleBuilder original={sale.data} />;
+}
+
+function SaleBuilder({ original }: { original: Sale | null }) {
   const router = useRouter();
   const theme = useAppTheme();
   const insets = useSafeAreaInsets();
   const loadProducts = useCallback(() => core.catalog.listProducts({ activeOnly: true }), []);
   const products = useFocusQuery(loadProducts);
   const [customer, setCustomer] = useState<CustomerSummary | null>(null);
-  const [lines, setLines] = useState<Line[]>([]);
+  const [lines, setLines] = useState<Line[]>(() => (original ? linesOf(original) : []));
   const [settlement, setSettlement] = useState<Settlement>('pix');
   const [editing, setEditing] = useState<Line | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   const total = lines.reduce((sum, line) => sum + line.quantity * line.unitPriceCents, 0);
   const units = lines.reduce((sum, line) => sum + line.quantity, 0);
@@ -131,37 +167,68 @@ export default function SaleScreen() {
 
   const fiado = settlement === 'fiado';
 
+  const items = () =>
+    lines.map((line) => ({
+      productId: line.product.id,
+      quantity: line.quantity,
+      unitPriceCents: line.unitPriceCents,
+    }));
+
+  const fail = (error: unknown) => {
+    setSubmitting(false);
+    if (isCoreError(error) && error.code === 'PRODUCT_INACTIVE') void products.reload();
+    const fieldErrors = isCoreError(error) ? Object.values(error.fieldErrors) : [];
+    setNotice(fieldErrors[0] ?? failMessage(error));
+  };
+
+  const saveCorrection = async () => {
+    if (!original || submitting) return;
+    setSubmitting(true);
+    try {
+      await core.sales.updateSale(original.id, { items: items() });
+      setConfirming(false);
+      router.back();
+    } catch (error) {
+      setConfirming(false);
+      fail(error);
+    }
+  };
+
   const finish = async () => {
     if (submitting || lines.length === 0) return;
+    if (original) {
+      setConfirming(true);
+      return;
+    }
     setSubmitting(true);
     try {
       const sale = await core.sales.recordSale({
         customerId: customer?.id ?? null,
-        items: lines.map((line) => ({
-          productId: line.product.id,
-          quantity: line.quantity,
-          unitPriceCents: line.unitPriceCents,
-        })),
+        items: items(),
         payment:
           settlement === 'fiado' ? { type: 'fiado' } : { type: 'paidNow', method: settlement },
       });
       router.replace({ pathname: '/vendas/[id]', params: { id: sale.id, nova: '1' } });
     } catch (error) {
-      setSubmitting(false);
-      if (isCoreError(error) && error.code === 'PRODUCT_INACTIVE') void products.reload();
-      const fieldErrors = isCoreError(error) ? Object.values(error.fieldErrors) : [];
-      setNotice(fieldErrors[0] ?? failMessage(error));
+      fail(error);
     }
   };
+
+  // Na correção, a forma de pagamento não muda: o pago na hora acompanha o novo total.
+  const paidNow = original?.payments.find((payment) => payment.status === 'active') ?? null;
 
   const productList = products.data ?? [];
 
   return (
     <View style={[styles.flex, { backgroundColor: theme.colors.background }]}>
-      <BackHeader title="Nova venda" />
+      <BackHeader title={original ? 'Corrigir venda' : 'Nova venda'} />
 
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <CustomerPicker customer={customer} onChange={chooseCustomer} />
+        {original ? (
+          <FixedCustomer sale={original} />
+        ) : (
+          <CustomerPicker customer={customer} onChange={chooseCustomer} />
+        )}
 
         <Text variant="titleMedium" accessibilityRole="header" style={styles.sectionTitle}>
           Produtos
@@ -278,33 +345,70 @@ export default function SaleScreen() {
             {formatCents(total)}
           </Text>
         </View>
-        <SegmentedButtons
-          value={settlement}
-          onValueChange={(value) => {
-            setSettlement(value);
-          }}
-          buttons={[
-            { value: 'pix', label: 'Pix', icon: 'qrcode' },
-            { value: 'cash', label: 'Dinheiro', icon: 'cash' },
-            {
-              value: 'fiado',
-              label: 'Fiado',
-              icon: 'notebook-outline',
-              disabled: !customer,
-              accessibilityLabel: customer ? 'Fiado' : 'Fiado: escolha o cliente primeiro',
-            },
-          ]}
-          style={styles.methods}
-        />
+        {original ? (
+          <Text
+            variant="bodyMedium"
+            style={[styles.payNote, { color: theme.colors.onSurfaceVariant }]}
+          >
+            {paidNow
+              ? `Pago na hora no ${paidNow.method === 'pix' ? 'Pix' : 'dinheiro'}: o pagamento passa a ser do novo total.`
+              : original.customer
+                ? `Na conta de ${original.customer.name}: o saldo devedor acompanha o novo total.`
+                : 'O total da venda muda.'}
+          </Text>
+        ) : (
+          <SegmentedButtons
+            value={settlement}
+            onValueChange={(value) => {
+              setSettlement(value);
+            }}
+            buttons={[
+              { value: 'pix', label: 'Pix', icon: 'qrcode' },
+              { value: 'cash', label: 'Dinheiro', icon: 'cash' },
+              {
+                value: 'fiado',
+                label: 'Fiado',
+                icon: 'notebook-outline',
+                disabled: !customer,
+                accessibilityLabel: customer ? 'Fiado' : 'Fiado: escolha o cliente primeiro',
+              },
+            ]}
+            style={styles.methods}
+          />
+        )}
         <PrimaryButton
-          icon={fiado ? 'notebook-outline' : 'check'}
+          icon={original ? 'content-save-outline' : fiado ? 'notebook-outline' : 'check'}
           onPress={finish}
           loading={submitting}
           disabled={submitting || lines.length === 0}
         >
-          {fiado ? 'Fiado · anotar na conta' : 'Pago agora · finalizar'}
+          {original
+            ? 'Salvar correção'
+            : fiado
+              ? 'Fiado · anotar na conta'
+              : 'Pago agora · finalizar'}
         </PrimaryButton>
       </View>
+
+      {original ? (
+        <ConfirmDialog
+          visible={confirming}
+          title="Salvar a correção?"
+          message={
+            original.totalCents === total
+              ? 'Os itens da venda serão trocados por estes. O total continua o mesmo.'
+              : `O total passa de ${formatCents(original.totalCents)} para ${formatCents(total)}. Se a compra já tinha dado pontos, eles são recalculados.`
+          }
+          confirmLabel="Salvar"
+          dismissLabel="Voltar"
+          tone="default"
+          busy={submitting}
+          onConfirm={() => void saveCorrection()}
+          onDismiss={() => {
+            setConfirming(false);
+          }}
+        />
+      ) : null}
 
       <LineEditor
         line={editing}
@@ -324,6 +428,36 @@ export default function SaleScreen() {
       >
         {notice ?? ''}
       </Snackbar>
+    </View>
+  );
+}
+
+/** Na correção, o cliente da venda não muda. */
+function FixedCustomer({ sale }: { sale: Sale }) {
+  const theme = useAppTheme();
+  return (
+    <View
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.colors.elevation.level1,
+          borderColor: theme.colors.outlineVariant,
+        },
+      ]}
+    >
+      <List.Item
+        title={sale.customer ? sale.customer.name : 'Venda avulsa'}
+        description={`Venda de ${formatCents(sale.totalCents)}. Mude os itens, as quantidades ou os preços.`}
+        left={(props) => (
+          <List.Icon
+            {...props}
+            icon={sale.customer ? 'account-check-outline' : 'storefront-outline'}
+          />
+        )}
+        titleStyle={styles.customerName}
+        descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+        descriptionNumberOfLines={2}
+      />
     </View>
   );
 }
@@ -743,6 +877,7 @@ const styles = StyleSheet.create({
   },
   totalRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   methods: { marginBottom: spacing.xs },
+  payNote: { fontWeight: '600' },
   dialog: { borderRadius: radii.cartao },
   stepper: {
     flexDirection: 'row',
