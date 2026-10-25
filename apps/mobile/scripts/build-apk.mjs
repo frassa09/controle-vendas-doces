@@ -28,10 +28,11 @@ function run(command, args, cwd) {
 }
 
 run('npx', ['expo', 'prebuild', '--platform', 'android', '--clean', '--no-install'], appDir);
+const androidDir = join(appDir, 'android');
 run(
-  windows ? 'gradlew.bat' : './gradlew',
+  join(androidDir, windows ? 'gradlew.bat' : 'gradlew'),
   ['assembleRelease', `-PreactNativeArchitectures=${architectures}`],
-  join(appDir, 'android'),
+  androidDir,
 );
 
 console.log(`\nAPK: ${join(appDir, 'android/app/build/outputs/apk/release/app-release.apk')}`);
