@@ -13,17 +13,14 @@ export async function requireUserId(db: DbClient): Promise<string> {
 }
 
 /**
- * A loja de quem está logado, para gravar o store_id de um registro novo.
- * Lança NOT_AUTHENTICATED sem sessão e FORBIDDEN se a pessoa não tem loja.
+ * Garante que quem está logado é membro de uma loja e devolve o id dela, para as
+ * operações que gravam dados da loja. Quem ainda não tem loja recebe FORBIDDEN.
  */
 export async function requireStoreId(db: DbClient): Promise<string> {
-  const userId = await requireUserId(db);
-  const { data, error } = await db
-    .from('store_members')
-    .select('store_id')
-    .eq('user_id', userId)
-    .maybeSingle();
+  await requireUserId(db);
+  // O RLS só mostra a loja da qual o usuário é membro (no máximo uma).
+  const { data, error } = await db.from('stores').select('id').maybeSingle();
   if (error) throw fromDbError(error);
-  if (!data) throw new CoreError('FORBIDDEN');
-  return data.store_id;
+  if (!data) throw new CoreError('FORBIDDEN', { message: 'Crie ou entre numa loja primeiro.' });
+  return data.id;
 }
