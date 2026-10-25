@@ -67,3 +67,22 @@ export function trackUserForCleanup(userId: string): void {
 function newClient(): DbClient {
   return createSupabaseClient({ url: testEnv.url, anonKey: testEnv.anonKey });
 }
+
+/**
+ * Lança no livro de pontos um débito de resgate como se o cliente tivesse gastado
+ * os pontos (o resgate ainda não existe no core). Só para montar o cenário de
+ * estorno com saldo já gasto; usa a chave de serviço.
+ */
+export async function simulatePointsSpent(
+  storeId: string,
+  customerId: string,
+  points: number,
+): Promise<void> {
+  const { error } = await admin.from('points_ledger').insert({
+    store_id: storeId,
+    customer_id: customerId,
+    kind: 'redemption',
+    points: -points,
+  });
+  if (error) throw error;
+}

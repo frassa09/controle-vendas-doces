@@ -28,15 +28,21 @@ export interface CustomerBalance {
   sales: SaleStanding[];
 }
 
-/** Um pagamento recebido de um cliente. */
+/** Um pagamento recebido (de dívida, ou o pago na hora de uma venda). */
 export interface Payment {
   id: string;
-  customerId: string;
+  /** null só no pagamento de venda avulsa. */
+  customerId: string | null;
+  /** A venda paga na hora que gerou o pagamento; null no pagamento de dívida. */
+  saleId: string | null;
   amountCents: number;
   method: PaymentMethod;
   status: RecordStatus;
   recordedBy: MemberRef;
   createdAt: string;
+  /** Quando foi cancelado (null se ativo), e por quem. */
+  cancelledAt: string | null;
+  cancelledBy: MemberRef | null;
 }
 
 /** O pagamento registrado e como ficou o saldo do cliente depois dele. */

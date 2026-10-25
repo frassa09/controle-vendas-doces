@@ -4,9 +4,8 @@ import { isUuid } from '../db/ids';
 import { requireUserId } from '../db/session';
 import { CoreError } from '../errors';
 import { formatCents } from '../money';
-import { memberEmails, toMemberRef } from '../sales/members';
-import type { PaymentMethod, RecordStatus } from '../sales/sale';
 import { getCustomerBalance } from './getCustomerBalance';
+import { getPayment } from './getPayment';
 import type { RecordedPayment } from './payment';
 import { validatePayment, type PaymentField, type RecordPaymentInput } from './paymentInput';
 
@@ -35,28 +34,13 @@ export async function recordPayment(
     throw failure;
   }
 
-  const [paymentResult, members, balance] = await Promise.all([
-    db
-      .from('payments')
-      .select('id, amount_cents, method, status, recorded_by, created_at')
-      .eq('id', paymentId)
-      .single(),
-    memberEmails(db),
+  const [payment, balance] = await Promise.all([
+    getPayment(db, paymentId),
     getCustomerBalance(db, input.customerId),
   ]);
-  const { data, error: readError } = paymentResult;
-  if (readError) throw fromDbError(readError);
 
   return {
-    payment: {
-      id: data.id,
-      customerId: input.customerId,
-      amountCents: data.amount_cents,
-      method: data.method as PaymentMethod,
-      status: data.status as RecordStatus,
-      recordedBy: toMemberRef(members, data.recorded_by),
-      createdAt: data.created_at,
-    },
+    payment,
     balance,
   };
 }

@@ -36,6 +36,9 @@ export interface SalePayment {
   status: RecordStatus;
   recordedBy: MemberRef;
   createdAt: string;
+  /** Quando foi cancelado (null se ativo), e por quem. */
+  cancelledAt: string | null;
+  cancelledBy: MemberRef | null;
 }
 
 /** Uma venda, como o detalhe da venda a mostra. */
@@ -48,6 +51,12 @@ export interface Sale {
   status: RecordStatus;
   recordedBy: MemberRef;
   createdAt: string;
+  /** Última edição dos itens (null se nunca foi editada). */
+  editedAt: string | null;
+  editedBy: MemberRef | null;
+  /** Quando foi cancelada (null se ativa), e por quem. */
+  cancelledAt: string | null;
+  cancelledBy: MemberRef | null;
   /** Paga na hora ou fiado (fiado não tem pagamento ligado à venda). */
   paymentType: SalePaymentType;
   /** Pagamentos ligados à venda (a venda paga na hora tem um, de mesmo valor). */

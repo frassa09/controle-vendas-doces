@@ -39,6 +39,9 @@ export {
 export {
   SALE_LIMITS,
   unitPriceError,
+  type CustomerHistoryEntry,
+  type CustomerHistoryPayment,
+  type CustomerHistorySale,
   type MemberRef,
   type PaymentMethod,
   type RecordSaleInput,
@@ -51,6 +54,7 @@ export {
   type SalePayment,
   type SalePaymentInput,
   type SalePaymentType,
+  type UpdateSaleInput,
 } from './sales';
 export {
   PAYMENT_LIMITS,

@@ -7,10 +7,10 @@ import type { MemberRef, PaymentMethod, RecordStatus, Sale } from './sale';
 import { saleNotFound } from './sale';
 
 const saleColumns = `
-  id, recorded_by, status, created_at,
+  id, recorded_by, status, created_at, edited_at, edited_by, cancelled_at, cancelled_by,
   customer:customers!sales_customer_fkey (id, name),
   sale_items (position, product_id, product_name, quantity, unit_price_cents, points),
-  payments (id, amount_cents, method, status, recorded_by, created_at)
+  payments (id, amount_cents, method, status, recorded_by, created_at, cancelled_at, cancelled_by)
 `;
 
 /** Uma venda da loja com itens, pagamentos e quem registrou. Erros: SALE_NOT_FOUND. */
@@ -52,6 +52,10 @@ export async function getSale(db: DbClient, id: string): Promise<Sale> {
     status: data.status as RecordStatus,
     recordedBy: member(data.recorded_by),
     createdAt: data.created_at,
+    editedAt: data.edited_at,
+    editedBy: data.edited_by === null ? null : member(data.edited_by),
+    cancelledAt: data.cancelled_at,
+    cancelledBy: data.cancelled_by === null ? null : member(data.cancelled_by),
     // Só a venda paga na hora tem pagamento ligado a ela (mesmo que cancelado depois).
     paymentType: data.payments.length > 0 ? 'paidNow' : 'fiado',
     payments: data.payments.map((payment) => ({
@@ -61,6 +65,8 @@ export async function getSale(db: DbClient, id: string): Promise<Sale> {
       status: payment.status as RecordStatus,
       recordedBy: member(payment.recorded_by),
       createdAt: payment.created_at,
+      cancelledAt: payment.cancelled_at,
+      cancelledBy: payment.cancelled_by === null ? null : member(payment.cancelled_by),
     })),
   };
 }

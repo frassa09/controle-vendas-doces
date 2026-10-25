@@ -19,6 +19,11 @@ export type CoreErrorCode =
   | 'SALE_NOT_FOUND'
   | 'PAYMENT_EXCEEDS_BALANCE'
   | 'NO_DEBT'
+  | 'SALE_CANCELLED'
+  | 'PAYMENT_NOT_FOUND'
+  | 'PAYMENT_CANCELLED'
+  | 'PAYMENTS_EXCEED_DEBT'
+  | 'WALK_IN_SALE_PAYMENT'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -38,6 +43,12 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   SALE_NOT_FOUND: 'Venda não encontrada.',
   PAYMENT_EXCEEDS_BALANCE: 'O valor passa do saldo devedor do cliente.',
   NO_DEBT: 'Este cliente não deve nada.',
+  SALE_CANCELLED: 'Esta venda foi cancelada e não pode mais ser alterada.',
+  PAYMENT_NOT_FOUND: 'Pagamento não encontrado.',
+  PAYMENT_CANCELLED: 'Este pagamento já foi cancelado.',
+  PAYMENTS_EXCEED_DEBT:
+    'Um pagamento de dívida do cliente já cobre esta compra. Cancele esse pagamento antes e registre de novo o valor certo.',
+  WALK_IN_SALE_PAYMENT: 'Este pagamento é de uma venda avulsa. Para desfazer, cancele a venda.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

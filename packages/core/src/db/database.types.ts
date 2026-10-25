@@ -106,6 +106,8 @@ export type Database = {
       payments: {
         Row: {
           amount_cents: number;
+          cancelled_at: string | null;
+          cancelled_by: string | null;
           created_at: string;
           customer_id: string | null;
           id: string;
@@ -117,6 +119,8 @@ export type Database = {
         };
         Insert: {
           amount_cents: number;
+          cancelled_at?: string | null;
+          cancelled_by?: string | null;
           created_at?: string;
           customer_id?: string | null;
           id?: string;
@@ -128,6 +132,8 @@ export type Database = {
         };
         Update: {
           amount_cents?: number;
+          cancelled_at?: string | null;
+          cancelled_by?: string | null;
           created_at?: string;
           customer_id?: string | null;
           id?: string;
@@ -317,24 +323,36 @@ export type Database = {
       };
       sales: {
         Row: {
+          cancelled_at: string | null;
+          cancelled_by: string | null;
           created_at: string;
           customer_id: string | null;
+          edited_at: string | null;
+          edited_by: string | null;
           id: string;
           recorded_by: string;
           status: string;
           store_id: string;
         };
         Insert: {
+          cancelled_at?: string | null;
+          cancelled_by?: string | null;
           created_at?: string;
           customer_id?: string | null;
+          edited_at?: string | null;
+          edited_by?: string | null;
           id?: string;
           recorded_by: string;
           status?: string;
           store_id: string;
         };
         Update: {
+          cancelled_at?: string | null;
+          cancelled_by?: string | null;
           created_at?: string;
           customer_id?: string | null;
+          edited_at?: string | null;
+          edited_by?: string | null;
           id?: string;
           recorded_by?: string;
           status?: string;
@@ -450,6 +468,8 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      cancel_payment: { Args: { p_payment_id: string }; Returns: undefined };
+      cancel_sale: { Args: { p_sale_id: string }; Returns: undefined };
       create_store: {
         Args: { p_city: string; p_name: string; p_pix_key: string };
         Returns: {
@@ -570,6 +590,10 @@ export type Database = {
           isOneToOne: false;
           isSetofReturn: true;
         };
+      };
+      update_sale: {
+        Args: { p_items: Json; p_sale_id: string };
+        Returns: undefined;
       };
     };
     Enums: {

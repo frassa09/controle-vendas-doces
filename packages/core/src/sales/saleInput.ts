@@ -22,6 +22,15 @@ export interface RecordSaleInput {
   payment: SalePaymentInput;
 }
 
+/** A correção de uma venda: a nova lista completa de itens. */
+export interface UpdateSaleInput {
+  /**
+   * Itens que já estavam na venda mantêm nome e pontos da época e, sem
+   * unitPriceCents, o preço cobrado na época; itens novos usam o cardápio atual.
+   */
+  items: SaleItemInput[];
+}
+
 export type SaleField = 'items' | 'payment';
 
 /** Limites espelhados nas constraints de sale_items e na função record_sale. */
@@ -50,8 +59,28 @@ export function unitPriceError(cents: number): string | null {
 /** Valida a venda antes de ir ao servidor. Lança INVALID_INPUT com mensagens por campo. */
 export function validateSale(input: RecordSaleInput): void {
   const fieldErrors: FieldErrors<SaleField> = {};
-  const { items } = input;
+  checkItems(input.items, fieldErrors);
 
+  const { payment } = input;
+  if (payment.type === 'fiado') {
+    if (input.customerId === null) fieldErrors.payment = 'Escolha o cliente para vender fiado.';
+  } else if ((payment.type as string) !== 'paidNow' || !methods.includes(payment.method)) {
+    fieldErrors.payment = 'Escolha Pix ou dinheiro.';
+  }
+
+  if (Object.keys(fieldErrors).length > 0) {
+    throw new CoreError<SaleField>('INVALID_INPUT', { fieldErrors });
+  }
+}
+
+/** Valida os itens de uma correção de venda. Lança INVALID_INPUT com mensagens por campo. */
+export function validateSaleItems(items: SaleItemInput[]): void {
+  const fieldErrors: FieldErrors<SaleField> = {};
+  checkItems(items, fieldErrors);
+  if (fieldErrors.items) throw new CoreError<SaleField>('INVALID_INPUT', { fieldErrors });
+}
+
+function checkItems(items: SaleItemInput[], fieldErrors: FieldErrors<SaleField>): void {
   if (items.length === 0) {
     fieldErrors.items = 'Toque em pelo menos um produto.';
   } else if (items.length > SALE_LIMITS.maxItems) {
@@ -80,16 +109,5 @@ export function validateSale(input: RecordSaleInput): void {
     if (!fieldErrors.items && total > SALE_LIMITS.maxTotalCents) {
       fieldErrors.items = 'O total passa de R$ 100.000,00. Divida em mais de uma venda.';
     }
-  }
-
-  const { payment } = input;
-  if (payment.type === 'fiado') {
-    if (input.customerId === null) fieldErrors.payment = 'Escolha o cliente para vender fiado.';
-  } else if ((payment.type as string) !== 'paidNow' || !methods.includes(payment.method)) {
-    fieldErrors.payment = 'Escolha Pix ou dinheiro.';
-  }
-
-  if (Object.keys(fieldErrors).length > 0) {
-    throw new CoreError<SaleField>('INVALID_INPUT', { fieldErrors });
   }
 }
