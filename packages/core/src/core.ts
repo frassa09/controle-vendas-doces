@@ -1,6 +1,7 @@
 import { createAuthOperations, type AuthOperations } from './auth';
 import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
+import { createCustomerPageOperations, type CustomerPageOperations } from './customerPage';
 import type { DbClient } from './db/client';
 import { createPaymentOperations, type PaymentOperations } from './payments';
 import { createPointsOperations, type PointsOperations } from './points';
@@ -20,6 +21,8 @@ export interface Core {
   sales: SaleOperations;
   payments: PaymentOperations;
   points: PointsOperations;
+  /** Página pública do cliente (sem login, pelo token do link). */
+  customerPage: CustomerPageOperations;
 }
 
 export interface CoreDependencies {
@@ -36,5 +39,6 @@ export function createCore({ supabase }: CoreDependencies): Core {
     sales: createSaleOperations(supabase),
     payments: createPaymentOperations(supabase),
     points: createPointsOperations(supabase),
+    customerPage: createCustomerPageOperations(supabase),
   };
 }
