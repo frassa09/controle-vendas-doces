@@ -220,6 +220,7 @@ const kindLabel: Record<PointsMovementKind, string> = {
   saleReversal: 'Estorno de compra',
   saleAdjustment: 'Ajuste de compra',
   redemption: 'Resgate',
+  scratch: 'Raspadinha',
   expiration: 'Pontos vencidos',
 };
 
