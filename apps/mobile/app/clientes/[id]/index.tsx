@@ -1,15 +1,16 @@
 import {
   formatCents,
   formatWhatsApp,
+  isCoreError,
   type CustomerBalance,
   type CustomerHistoryEntry,
   type CustomerPoints,
   type PointsMovementKind,
 } from '@cvd/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
-import { Appbar, Divider, List, Text } from 'react-native-paper';
+import { useCallback, useState } from 'react';
+import { Linking, ScrollView, StyleSheet, View } from 'react-native';
+import { Appbar, Button, Divider, List, Snackbar, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { core } from '../../../src/core';
 import { dayFormat, debtSinceText, methodLabel } from '../../../src/payments/debt';
@@ -37,6 +38,22 @@ export default function CustomerProfileScreen() {
     [id],
   );
   const query = useFocusQuery(load);
+  const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Manda o link da página e o PIN pelo WhatsApp do cliente.
+  const resendAccess = async () => {
+    if (sending) return;
+    setSending(true);
+    try {
+      const message = await core.receipts.buildAccessMessage(id);
+      await Linking.openURL(message.whatsappUrl);
+    } catch (error) {
+      setNotice(isCoreError(error) ? error.message : 'Não deu para abrir o WhatsApp.');
+    } finally {
+      setSending(false);
+    }
+  };
 
   if (!query.data) return <LoadingState query={query} />;
   const [customer, balance, points, history] = query.data;
@@ -100,6 +117,17 @@ export default function CustomerProfileScreen() {
             titleStyle={styles.itemTitle}
             descriptionStyle={[styles.pin, { color: theme.colors.onSurface }]}
           />
+          <Button
+            mode="outlined"
+            icon="whatsapp"
+            style={styles.resend}
+            contentStyle={styles.resendContent}
+            loading={sending}
+            disabled={sending}
+            onPress={() => void resendAccess()}
+          >
+            Reenviar link e PIN
+          </Button>
           {divider}
           <List.Item
             title="Consentimento (LGPD)"
@@ -132,6 +160,17 @@ export default function CustomerProfileScreen() {
           ) : null}
         </View>
       </ScrollView>
+
+      <Snackbar
+        visible={notice !== null}
+        onDismiss={() => {
+          setNotice(null);
+        }}
+        duration={5000}
+        style={{ backgroundColor: theme.colors.inverseSurface, marginBottom: insets.bottom }}
+      >
+        {notice ?? ''}
+      </Snackbar>
     </View>
   );
 }
@@ -409,6 +448,12 @@ const styles = StyleSheet.create({
   debtValue: { lineHeight: 52, marginTop: spacing.xs },
   debtSince: { fontWeight: '600' },
   openValue: { alignSelf: 'center', fontWeight: '800' },
+  resend: {
+    marginHorizontal: spacing.margem,
+    marginBottom: spacing.gap,
+    borderRadius: radii.botao,
+  },
+  resendContent: { minHeight: 48 },
   struck: { textDecorationLine: 'line-through' },
   debtAction: { padding: spacing.margem, paddingTop: spacing.xs },
   itemValue: { fontSize: 17, marginTop: 2 },

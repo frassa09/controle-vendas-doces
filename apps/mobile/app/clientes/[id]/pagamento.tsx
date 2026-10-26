@@ -1,5 +1,6 @@
 import {
   formatCents,
+  isCoreError,
   parseCents,
   type Customer,
   type CustomerBalance,
@@ -9,8 +10,15 @@ import {
 } from '@cvd/core';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { HelperText, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { Linking, StyleSheet, View } from 'react-native';
+import {
+  Button,
+  HelperText,
+  SegmentedButtons,
+  Snackbar,
+  Text,
+  TextInput,
+} from 'react-native-paper';
 import { core } from '../../../src/core';
 import { centsText, debtSinceText, methodLabel } from '../../../src/payments/debt';
 import { radii, spacing } from '../../../src/theme/theme';
@@ -162,6 +170,22 @@ function Recorded({ customer, recorded }: { customer: Customer; recorded: Record
   const theme = useAppTheme();
   const { payment, balance } = recorded;
   const settled = balance.balanceCents === 0;
+  const [sending, setSending] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // Opcional: a pessoa decide se manda o recibo pelo WhatsApp do cliente.
+  const sendReceipt = async () => {
+    if (sending) return;
+    setSending(true);
+    try {
+      const receipt = await core.receipts.buildPaymentReceipt(payment.id);
+      await Linking.openURL(receipt.whatsappUrl);
+    } catch (error) {
+      setNotice(isCoreError(error) ? error.message : 'Não deu para abrir o WhatsApp.');
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <FormScreen header={<BackHeader title="Pagamento registrado" />}>
@@ -199,6 +223,18 @@ function Recorded({ customer, recorded }: { customer: Customer; recorded: Record
         )}
       </View>
 
+      <Button
+        mode="outlined"
+        icon="whatsapp"
+        style={styles.receipt}
+        contentStyle={styles.receiptContent}
+        loading={sending}
+        disabled={sending}
+        onPress={() => void sendReceipt()}
+      >
+        Enviar recibo
+      </Button>
+
       <PrimaryButton
         icon="account-outline"
         style={styles.done}
@@ -208,6 +244,16 @@ function Recorded({ customer, recorded }: { customer: Customer; recorded: Record
       >
         Voltar ao perfil
       </PrimaryButton>
+      <Snackbar
+        visible={notice !== null}
+        onDismiss={() => {
+          setNotice(null);
+        }}
+        duration={5000}
+        style={{ backgroundColor: theme.colors.inverseSurface }}
+      >
+        {notice ?? ''}
+      </Snackbar>
     </FormScreen>
   );
 }
@@ -226,5 +272,7 @@ const styles = StyleSheet.create({
     gap: spacing.xs,
   },
   balance: { marginTop: spacing.xs },
-  done: { marginTop: spacing.secao },
+  receipt: { marginTop: spacing.secao, borderRadius: radii.botao },
+  receiptContent: { minHeight: 48 },
+  done: { marginTop: spacing.gap },
 });

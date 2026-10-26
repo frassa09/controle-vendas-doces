@@ -88,6 +88,7 @@ export {
   type CustomerViewItem,
   type CustomerViewOpenSale,
 } from './customerPage';
+export { type PaymentReceipt, type ReceiptOperations, type WhatsAppMessage } from './receipts';
 export { formatCents, parseCents } from './money';
 export {
   COLLECTION_TEMPLATE_MAX,
