@@ -8,6 +8,7 @@ import type { DbClient } from './db/client';
 import { createMetricsOperations, type MetricsOperations } from './metrics';
 import { createPaymentOperations, type PaymentOperations } from './payments';
 import { createPointsOperations, type PointsOperations } from './points';
+import { createReceiptOperations, type ReceiptOperations } from './receipts';
 import { createSaleOperations, type SaleOperations } from './sales';
 import { createScratchOperations, type ScratchOperations } from './scratch';
 import { createStoreOperations, type StoreOperations } from './store';
@@ -26,6 +27,8 @@ export interface Core {
   payments: PaymentOperations;
   collections: CollectionOperations;
   points: PointsOperations;
+  /** Mensagens de WhatsApp: recibo de pagamento e reenvio de link e PIN. */
+  receipts: ReceiptOperations;
   /** Métricas de vendas, produtos e clientes por período. */
   metrics: MetricsOperations;
   /** Prêmios a entregar (resgate direto e raspadinha). */
@@ -53,6 +56,7 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     payments: createPaymentOperations(supabase),
     collections: createCollectionOperations(supabase, { customerPageUrl }),
     points: createPointsOperations(supabase),
+    receipts: createReceiptOperations(supabase, { customerPageUrl }),
     metrics: createMetricsOperations(supabase),
     coupons: createCouponOperations(supabase),
     scratch: createScratchOperations(supabase),

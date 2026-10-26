@@ -104,6 +104,7 @@ export {
   type ScratchFormat,
   type ScratchPlayResult,
 } from './customerPage';
+export { type PaymentReceipt, type ReceiptOperations, type WhatsAppMessage } from './receipts';
 export {
   scratchAverageCost,
   type ListScratchPlaysOptions,
