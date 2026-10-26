@@ -2,6 +2,7 @@ import type { CustomerView } from '@cvd/core';
 import { useRef, useState } from 'react';
 import { Bilhete } from './Bilhete';
 import { Premios } from './Premios';
+import { RaspadinhaFolha } from './RaspadinhaFolha';
 import { Recados } from './Recados';
 import { Room, SHELF_SLOTS } from './Room';
 import { Use } from './Symbols';
@@ -40,6 +41,8 @@ export function Cantinho({ token, view, onChanged, arrivedSinceLastVisit }: Cant
   const bilheteRef = useRef<HTMLDivElement>(null);
   const [pixFailed, setPixFailed] = useState(false);
   const [trocando, setTrocando] = useState(false);
+  // Folha da raspadinha aberta: jogada nova, ou a escolha do prêmio de uma ganha antes.
+  const [raspando, setRaspando] = useState<{ pendingPlayId?: string } | null>(null);
 
   const balance = points.balance;
   const filled = Math.max(0, Math.min(balance, SHELF_SLOTS));
@@ -102,13 +105,22 @@ export function Cantinho({ token, view, onChanged, arrivedSinceLastVisit }: Cant
     }
     setTrocando(true);
   };
-  // A raspadinha chega no próximo passo; os pontos ficam guardados.
   const scratch = () => {
+    const win = view.unclaimedScratchWins[0];
+    if (win) {
+      // Prêmio ganho e ainda não escolhido vem antes de uma jogada nova.
+      setRaspando({ pendingPlayId: win.playId });
+      return;
+    }
     if (missingScratch > 0) {
       aviso.show(`Faltam ${pontosText(missingScratch)} pra raspar.`);
       return;
     }
-    aviso.show('A raspadinha chega logo. Seus pontos estão guardados.');
+    if (view.prizes.length === 0) {
+      aviso.show('A loja ainda não separou os doces de prêmio. Pergunte por lá.');
+      return;
+    }
+    setRaspando({});
   };
 
   return (
@@ -212,7 +224,13 @@ export function Cantinho({ token, view, onChanged, arrivedSinceLastVisit }: Cant
           />
         ) : null}
 
-        <Premios coupons={view.coupons} />
+        <Premios
+          coupons={view.coupons}
+          wins={view.unclaimedScratchWins}
+          onChooseWin={(playId) => {
+            setRaspando({ pendingPlayId: playId });
+          }}
+        />
 
         <Recados history={view.history} />
 
@@ -225,6 +243,17 @@ export function Cantinho({ token, view, onChanged, arrivedSinceLastVisit }: Cant
           onChanged={onChanged}
           onClose={() => {
             setTrocando(false);
+          }}
+        />
+      ) : null}
+      {raspando ? (
+        <RaspadinhaFolha
+          token={token}
+          view={view}
+          pendingPlayId={raspando.pendingPlayId}
+          onChanged={onChanged}
+          onClose={() => {
+            setRaspando(null);
           }}
         />
       ) : null}

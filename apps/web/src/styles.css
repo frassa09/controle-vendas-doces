@@ -597,6 +597,18 @@ p {
   color: var(--cacau-2);
 }
 
+.cupom-escolher {
+  align-items: flex-start;
+}
+.cupom-escolher > div {
+  flex: 1;
+}
+.cupom-escolher .botao {
+  width: 100%;
+  margin-top: 12px;
+  min-height: 48px;
+}
+
 /* folha (trocar e raspar) */
 dialog.folha {
   border: 0;
@@ -779,6 +791,136 @@ dialog.folha::backdrop {
   font-weight: 600;
   color: var(--cacau-2);
   text-align: center;
+}
+
+/* raspadinha: formatos, casinhas e resultado */
+.formatos {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.formato {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  padding: 12px;
+  background: var(--campo);
+  box-shadow: 0 0 0 1.5px var(--madeira);
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.formato input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.formato:hover {
+  box-shadow: 0 0 0 2.5px var(--madeira-2);
+}
+.formato:has(input:checked) {
+  box-shadow: 0 0 0 3px var(--loja-forte);
+}
+.formato:has(input:focus-visible) {
+  outline: 3px solid var(--loja-forte);
+  outline-offset: 3px;
+}
+.formato svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.formato strong {
+  display: block;
+  margin-top: 8px;
+  font-weight: 800;
+}
+.formato span {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--cacau-2);
+}
+.igual {
+  margin: 10px 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--cacau-2);
+  text-align: center;
+}
+.raspas {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+.raspas.cinco {
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.raspas.tres {
+  grid-template-columns: repeat(3, 1fr);
+}
+.casa {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  background: var(--campo);
+  box-shadow: 0 0 0 1.5px var(--madeira);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+}
+.casa > svg {
+  width: 66%;
+  height: 66%;
+}
+.casa canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  transition: opacity 0.4s var(--sai);
+}
+.casa.limpa canvas {
+  opacity: 0;
+  pointer-events: none;
+}
+.casa.limpa > svg {
+  animation: aparece 0.5s var(--sai);
+}
+@keyframes aparece {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: none;
+  }
+}
+.resultado {
+  margin: 14px 0 12px;
+  text-align: center;
+  min-height: 56px;
+}
+.resultado h3 {
+  font-size: 26px;
+  color: var(--loja-forte);
+  text-wrap: balance;
+}
+.resultado p {
+  font-weight: 600;
+  color: var(--cacau-2);
+  margin-top: 4px;
+}
+.premio-form .campo {
+  margin-bottom: 4px;
+}
+.botao.pronto {
+  margin-top: 16px;
 }
 
 /* aviso */
