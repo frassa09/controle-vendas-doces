@@ -1,14 +1,20 @@
 import type { CustomerView } from '@cvd/core';
 import { useRef, useState } from 'react';
 import { Bilhete } from './Bilhete';
+import { Premios } from './Premios';
 import { Recados } from './Recados';
 import { Room, SHELF_SLOTS } from './Room';
 import { Use } from './Symbols';
+import { TrocaFolha } from './TrocaFolha';
 import { docesText, money, pontosText, shortDate } from './text';
 import { useAviso } from './useAviso';
 
 interface CantinhoProps {
+  /** Token do link (as trocas com PIN vão por ele). */
+  token: string;
   view: CustomerView;
+  /** Relê a visão sem tirar a página da tela (depois de uma troca). */
+  onChanged: () => void;
   /** Doces que chegaram desde a última visita; null na primeira visita. */
   arrivedSinceLastVisit: number | null;
 }
@@ -28,11 +34,12 @@ function scrollBehavior(): ScrollBehavior {
 }
 
 /** A página do cliente: o quartinho, o placar, o caminho até o próximo doce e o histórico. */
-export function Cantinho({ view, arrivedSinceLastVisit }: CantinhoProps) {
+export function Cantinho({ token, view, onChanged, arrivedSinceLastVisit }: CantinhoProps) {
   const { store, customer, points, debt } = view;
   const aviso = useAviso();
   const bilheteRef = useRef<HTMLDivElement>(null);
   const [pixFailed, setPixFailed] = useState(false);
+  const [trocando, setTrocando] = useState(false);
 
   const balance = points.balance;
   const filled = Math.max(0, Math.min(balance, SHELF_SLOTS));
@@ -84,14 +91,18 @@ export function Cantinho({ view, arrivedSinceLastVisit }: CantinhoProps) {
     }
   };
 
-  // Troca e raspadinha pela página chegam nos próximos passos; os pontos ficam guardados.
   const redeem = () => {
     if (missing > 0) {
       aviso.show(`Faltam ${pontosText(missing)} pra trocar por um doce.`);
       return;
     }
-    aviso.show('Logo dá pra trocar por aqui. Por enquanto, peça na loja.');
+    if (view.prizes.length === 0) {
+      aviso.show('A loja ainda não separou os doces de prêmio. Pergunte por lá.');
+      return;
+    }
+    setTrocando(true);
   };
+  // A raspadinha chega no próximo passo; os pontos ficam guardados.
   const scratch = () => {
     if (missingScratch > 0) {
       aviso.show(`Faltam ${pontosText(missingScratch)} pra raspar.`);
@@ -201,10 +212,22 @@ export function Cantinho({ view, arrivedSinceLastVisit }: CantinhoProps) {
           />
         ) : null}
 
+        <Premios coupons={view.coupons} />
+
         <Recados history={view.history} />
 
         <p className="rodape">Este link é só seu. Guarde e não compartilhe.</p>
       </main>
+      {trocando ? (
+        <TrocaFolha
+          token={token}
+          view={view}
+          onChanged={onChanged}
+          onClose={() => {
+            setTrocando(false);
+          }}
+        />
+      ) : null}
       <div className={`aviso${aviso.visible ? ' mostra' : ''}`} role="status" aria-live="polite">
         {aviso.message}
       </div>

@@ -76,8 +76,8 @@ async function fromActionError(error: FunctionsHttpError): Promise<CoreError> {
     const left = body.attemptsLeft ?? 0;
     const message =
       left === 1
-        ? 'PIN errado. Você tem mais 1 tentativa antes de uma pausa.'
-        : `PIN errado. Você tem mais ${String(left)} tentativas antes de uma pausa.`;
+        ? 'PIN errado. Resta 1 tentativa antes da pausa.'
+        : `PIN errado. Restam ${String(left)} tentativas antes da pausa.`;
     return new CoreError<PinActionField>(code, {
       message,
       fieldErrors: { pin: message },

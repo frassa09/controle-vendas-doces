@@ -561,6 +561,226 @@ p {
   color: var(--cacau-2);
 }
 
+/* cupons ("Seus prêmios") */
+.cupons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 14px;
+}
+.cupom {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: var(--papel);
+  border-radius: var(--raio);
+  padding: 14px 16px;
+  box-shadow:
+    0 0 0 2px var(--loja-suave),
+    0 0 0 3.5px var(--madeira),
+    var(--sombra);
+}
+.cupom svg {
+  flex: none;
+}
+.cupom strong {
+  display: block;
+  font-size: 17px;
+  line-height: 1.3;
+}
+.cupom span {
+  display: block;
+  margin-top: 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cacau-2);
+}
+
+/* folha (trocar e raspar) */
+dialog.folha {
+  border: 0;
+  padding: 0;
+  margin: auto auto 0;
+  width: 100%;
+  max-width: 440px;
+  max-height: 92vh;
+  max-height: 92dvh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: 26px 26px 0 0;
+  background: var(--papel);
+  color: var(--cacau);
+  box-shadow: 0 -12px 40px -12px color-mix(in oklab, var(--cacau) 60%, transparent);
+}
+dialog.folha[open] {
+  animation: sobe 0.45s var(--sai);
+}
+dialog.folha::backdrop {
+  background: color-mix(in oklab, var(--cacau) 45%, transparent);
+}
+@keyframes sobe {
+  from {
+    transform: translateY(40px);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.folha-papel {
+  padding: 12px 20px max(22px, env(safe-area-inset-bottom));
+}
+.alca {
+  width: 44px;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--madeira);
+  margin: 0 auto 14px;
+}
+.folha-topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.folha-topo h2 {
+  font-size: 26px;
+  text-wrap: balance;
+}
+.folha-sub {
+  margin-top: 4px;
+  font-weight: 600;
+  color: var(--cacau-2);
+}
+.fechar {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--loja-suave);
+  color: var(--loja-forte);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.fechar svg {
+  width: 20px;
+  height: 20px;
+}
+.etapa {
+  margin-top: 16px;
+}
+.etapa .botao {
+  width: 100%;
+}
+.escolhas {
+  border: 0;
+  margin: 0 0 16px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.escolha {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 8px 14px;
+  border-radius: 14px;
+  background: var(--campo);
+  box-shadow: 0 0 0 1.5px var(--madeira);
+  cursor: pointer;
+  font-weight: 800;
+  transition: box-shadow 0.2s;
+}
+.escolha input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.escolha svg {
+  flex: none;
+}
+.escolha:hover {
+  box-shadow: 0 0 0 2.5px var(--madeira-2);
+}
+.escolha:has(input:checked) {
+  box-shadow: 0 0 0 3px var(--loja-forte);
+}
+.escolha:has(input:checked)::after {
+  content: '';
+  margin-left: auto;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--loja-forte);
+  box-shadow:
+    inset 0 0 0 6px var(--loja-forte),
+    inset 0 0 0 9px #fff;
+}
+.escolha:has(input:focus-visible) {
+  outline: 3px solid var(--loja-forte);
+  outline-offset: 3px;
+}
+.campo {
+  display: grid;
+  gap: 6px;
+}
+.campo label {
+  font-weight: 800;
+}
+.pin {
+  width: 100%;
+  min-height: 60px;
+  border-radius: 14px;
+  border: 2px solid var(--madeira-2);
+  background: var(--campo);
+  text-align: center;
+  font:
+    400 32px/1 'Caprasimo',
+    Georgia,
+    serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
+  color: var(--cacau);
+  caret-color: var(--loja-forte);
+}
+.pin:focus {
+  outline: none;
+  border-color: var(--loja-forte);
+  box-shadow: 0 0 0 4px var(--loja-suave);
+}
+.pin[aria-invalid='true'] {
+  border-color: #b3261e;
+}
+.pin::placeholder {
+  color: #a87447;
+}
+.erro {
+  min-height: 22px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #b3261e;
+}
+.erro-folha:empty {
+  min-height: 0;
+}
+.erro-folha {
+  margin-bottom: 8px;
+}
+.folha-nota {
+  margin: 14px 0 16px;
+  font-weight: 600;
+  color: var(--cacau-2);
+  text-align: center;
+}
+
 /* aviso */
 .aviso {
   position: fixed;

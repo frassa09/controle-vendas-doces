@@ -51,6 +51,30 @@ export function Symbols() {
             <rect x="18" y="16" width="4" height="1.6" rx=".8" transform="rotate(85 20 17)" />
           </g>
         </symbol>
+        <symbol id="doce-pote" viewBox="0 0 40 40">
+          <rect
+            x="9"
+            y="6"
+            width="22"
+            height="6"
+            rx="2"
+            fill="var(--loja)"
+            stroke="var(--cacau)"
+            strokeWidth="1.5"
+          />
+          <path
+            d="M10 12 H30 L28 35 Q20 37 12 35 Z"
+            fill="#fff"
+            stroke="var(--cacau)"
+            strokeWidth="1.5"
+          />
+          <path d="M11 17 H29 L28.6 22 H11.4 Z" fill="var(--brownie)" />
+          <path d="M11.4 22 H28.6 L28.2 27 H11.8 Z" fill="#F6E7C8" />
+          <path d="M11.8 27 H28.2 L27.9 31 H12.1 Z" fill="var(--brownie-topo)" />
+        </symbol>
+        <Icon id="i-fechar">
+          <path d="M6 6l12 12M18 6L6 18" />
+        </Icon>
         <Icon id="i-copiar">
           <rect x="8" y="8" width="12" height="12" rx="3" />
           <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />

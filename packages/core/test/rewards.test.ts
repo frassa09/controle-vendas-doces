@@ -185,7 +185,7 @@ describe('resgate direto', () => {
 
     expect(error.code).toBe('PIN_INVALID');
     expect(error.fieldErrors).toEqual({
-      pin: 'PIN errado. Você tem mais 4 tentativas antes de uma pausa.',
+      pin: 'PIN errado. Restam 4 tentativas antes da pausa.',
     });
     const view = await page.getCustomerView(s.julia.linkToken);
     expect(view.points.balance).toBe(10);
@@ -229,10 +229,10 @@ describe('resgate direto', () => {
       messages.push((await attempt(pin)).fieldErrors.pin);
     }
     expect(messages).toEqual([
-      'PIN errado. Você tem mais 4 tentativas antes de uma pausa.',
-      'PIN errado. Você tem mais 3 tentativas antes de uma pausa.',
-      'PIN errado. Você tem mais 2 tentativas antes de uma pausa.',
-      'PIN errado. Você tem mais 1 tentativa antes de uma pausa.',
+      'PIN errado. Restam 4 tentativas antes da pausa.',
+      'PIN errado. Restam 3 tentativas antes da pausa.',
+      'PIN errado. Restam 2 tentativas antes da pausa.',
+      'PIN errado. Resta 1 tentativa antes da pausa.',
     ]);
 
     const fifth = await attempt('5555');
@@ -267,9 +267,7 @@ describe('resgate direto', () => {
     await julia('4821');
 
     const again = await errorOf(julia('0000'));
-    expect(again.fieldErrors.pin).toBe(
-      'PIN errado. Você tem mais 4 tentativas antes de uma pausa.',
-    );
+    expect(again.fieldErrors.pin).toBe('PIN errado. Restam 4 tentativas antes da pausa.');
   });
 
   it('ninguém chama o resgate direto no banco nem lê cupons com a chave pública', async () => {

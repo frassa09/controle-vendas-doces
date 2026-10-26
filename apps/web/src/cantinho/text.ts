@@ -65,6 +65,12 @@ export function methodText(method: PaymentMethod): string {
   return method === 'pix' ? 'no Pix' : 'em dinheiro';
 }
 
+/** "1 brownie" / "1 bolo de pote" / "3 brownies" (nome que já começa com número). */
+export function premioText(name: string): string {
+  if (/^\d/.test(name)) return name;
+  return `1 ${name.charAt(0).toLowerCase()}${name.slice(1)}`;
+}
+
 /** "1 doce" / "3 doces". */
 export function docesText(count: number): string {
   return count === 1 ? '1 doce' : `${String(count)} doces`;
