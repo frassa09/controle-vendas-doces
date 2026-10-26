@@ -28,7 +28,7 @@ export const couponColumns =
   'id, customer_id, product_id, product_name, origin, status, created_at, delivered_at, delivered_by, customer:customers!coupons_customer_fkey(name)';
 
 export function toCoupon(
-  row: Omit<CouponRow, 'store_id'>,
+  row: Omit<CouponRow, 'store_id' | 'scratch_play_id'>,
   customerName: string,
   deliveredBy: MemberRef | null,
 ): Coupon {

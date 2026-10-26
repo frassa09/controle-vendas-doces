@@ -8,6 +8,7 @@ import type { DbClient } from './db/client';
 import { createPaymentOperations, type PaymentOperations } from './payments';
 import { createPointsOperations, type PointsOperations } from './points';
 import { createSaleOperations, type SaleOperations } from './sales';
+import { createScratchOperations, type ScratchOperations } from './scratch';
 import { createStoreOperations, type StoreOperations } from './store';
 
 /**
@@ -26,6 +27,8 @@ export interface Core {
   points: PointsOperations;
   /** Prêmios a entregar (resgate direto e raspadinha). */
   coupons: CouponOperations;
+  /** Jogadas da raspadinha (leitura do app; jogar é pela página do cliente). */
+  scratch: ScratchOperations;
   /** Página pública do cliente (sem login, pelo token do link). */
   customerPage: CustomerPageOperations;
 }
@@ -48,6 +51,7 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     collections: createCollectionOperations(supabase, { customerPageUrl }),
     points: createPointsOperations(supabase),
     coupons: createCouponOperations(supabase),
+    scratch: createScratchOperations(supabase),
     customerPage: createCustomerPageOperations(supabase),
   };
 }

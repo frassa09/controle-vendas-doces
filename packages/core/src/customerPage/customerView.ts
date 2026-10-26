@@ -31,6 +31,48 @@ export interface RedeemRewardResult {
   balance: number;
 }
 
+/** Jeito de raspar: 5 casinhas (um doce escondido) ou 3 iguais. Só muda a encenação. */
+export type ScratchFormat = 'five_spots' | 'match_three';
+
+/** Pedido de uma jogada da raspadinha. */
+export interface PlayScratchInput {
+  token: string;
+  pin: string;
+  format: ScratchFormat;
+}
+
+/** A jogada já sorteada e gravada no servidor; a página só encena o resultado. */
+export interface ScratchPlayResult {
+  play: {
+    id: string;
+    format: ScratchFormat;
+    won: boolean;
+    createdAt: string;
+  };
+  /** Saldo de pontos depois do débito da jogada. */
+  balance: number;
+}
+
+/** Escolha do prêmio de uma jogada ganha. */
+export interface ClaimScratchPrizeInput {
+  token: string;
+  pin: string;
+  playId: string;
+  /** Um dos `prizes` da visão. */
+  productId: string;
+}
+
+/** O cupom criado com o prêmio escolhido. */
+export interface ClaimScratchPrizeResult {
+  coupon: CustomerViewCoupon;
+}
+
+/** Uma jogada ganha cujo prêmio o cliente ainda não escolheu. */
+export interface CustomerViewScratchWin {
+  playId: string;
+  createdAt: string;
+}
+
 /** Um item como a página do cliente o mostra (nome copiado na hora da venda). */
 export interface CustomerViewItem {
   name: string;
@@ -102,6 +144,8 @@ export interface CustomerView {
   prizes: CustomerViewPrize[];
   /** Cupons pendentes (prêmios a retirar na loja), do mais antigo para o mais novo. */
   coupons: CustomerViewCoupon[];
+  /** Raspadinhas ganhas sem prêmio escolhido (a página fechou antes da escolha). */
+  unclaimedScratchWins: CustomerViewScratchWin[];
   debt: {
     balanceCents: number;
     /** Pontos que entram na estante quando o que está em aberto for pago. */

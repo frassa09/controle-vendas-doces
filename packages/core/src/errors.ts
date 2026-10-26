@@ -31,6 +31,9 @@ export type CoreErrorCode =
   | 'INSUFFICIENT_POINTS'
   | 'COUPON_NOT_FOUND'
   | 'COUPON_ALREADY_DELIVERED'
+  | 'NO_PRIZES_AVAILABLE'
+  | 'SCRATCH_PLAY_NOT_FOUND'
+  | 'PRIZE_ALREADY_CLAIMED'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -63,6 +66,9 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   INSUFFICIENT_POINTS: 'Ainda não há pontos suficientes para essa troca.',
   COUPON_NOT_FOUND: 'Cupom não encontrado.',
   COUPON_ALREADY_DELIVERED: 'Este cupom já foi entregue.',
+  NO_PRIZES_AVAILABLE: 'A loja ainda não separou os doces de prêmio. Pergunte por lá.',
+  SCRATCH_PLAY_NOT_FOUND: 'Não encontramos essa raspadinha premiada.',
+  PRIZE_ALREADY_CLAIMED: 'O prêmio dessa raspadinha já foi escolhido.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

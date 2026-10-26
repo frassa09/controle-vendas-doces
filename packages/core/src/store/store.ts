@@ -13,6 +13,10 @@ export interface Store {
   welcomeText: string | null;
   /** Pontos de um resgate direto (produto grátis). */
   redeemCost: number;
+  /** Pontos de uma jogada da raspadinha. */
+  scratchCost: number;
+  /** Chance de prêmio por jogada da raspadinha, em % (0 a 100). */
+  scratchWinPercent: number;
   /** Dias até os pontos vencerem sem compra paga, ou null se não vencem. */
   pointsValidityDays: number | null;
   createdAt: string;
@@ -22,7 +26,7 @@ export type StoreRow = Database['public']['Tables']['stores']['Row'];
 
 /** Colunas lidas sempre que o core devolve uma loja (o logo, pesado, fica de fora). */
 export const storeColumns =
-  'id, name, pix_key, city, brand_color, welcome_text, redeem_cost, points_validity_days, created_at';
+  'id, name, pix_key, city, brand_color, welcome_text, redeem_cost, scratch_cost, scratch_win_percent, points_validity_days, created_at';
 
 export function toStore(
   row: Pick<
@@ -34,6 +38,8 @@ export function toStore(
     | 'brand_color'
     | 'welcome_text'
     | 'redeem_cost'
+    | 'scratch_cost'
+    | 'scratch_win_percent'
     | 'points_validity_days'
     | 'created_at'
   >,
@@ -46,6 +52,8 @@ export function toStore(
     brandColor: row.brand_color,
     welcomeText: row.welcome_text,
     redeemCost: row.redeem_cost,
+    scratchCost: row.scratch_cost,
+    scratchWinPercent: row.scratch_win_percent,
     pointsValidityDays: row.points_validity_days,
     createdAt: row.created_at,
   };

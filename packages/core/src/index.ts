@@ -86,6 +86,9 @@ export {
   type PointsOperations,
 } from './points';
 export {
+  SCRATCH_FORMATS,
+  type ClaimScratchPrizeInput,
+  type ClaimScratchPrizeResult,
   type CustomerPageOperations,
   type CustomerView,
   type CustomerViewCoupon,
@@ -93,10 +96,22 @@ export {
   type CustomerViewItem,
   type CustomerViewOpenSale,
   type CustomerViewPrize,
+  type CustomerViewScratchWin,
   type PinActionField,
+  type PlayScratchInput,
   type RedeemRewardInput,
   type RedeemRewardResult,
+  type ScratchFormat,
+  type ScratchPlayResult,
 } from './customerPage';
+export {
+  scratchAverageCost,
+  type ListScratchPlaysOptions,
+  type ScratchAverageCost,
+  type ScratchCostProduct,
+  type ScratchOperations,
+  type ScratchPlay,
+} from './scratch';
 export {
   type Coupon,
   type CouponOperations,

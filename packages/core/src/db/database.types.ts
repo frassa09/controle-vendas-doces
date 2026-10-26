@@ -60,6 +60,7 @@ export type Database = {
           origin: string;
           product_id: string;
           product_name: string;
+          scratch_play_id: string | null;
           status: string;
           store_id: string;
         };
@@ -72,6 +73,7 @@ export type Database = {
           origin: string;
           product_id: string;
           product_name: string;
+          scratch_play_id?: string | null;
           status?: string;
           store_id: string;
         };
@@ -84,6 +86,7 @@ export type Database = {
           origin?: string;
           product_id?: string;
           product_name?: string;
+          scratch_play_id?: string | null;
           status?: string;
           store_id?: string;
         };
@@ -100,6 +103,13 @@ export type Database = {
             columns: ['store_id', 'product_id'];
             isOneToOne: false;
             referencedRelation: 'products';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'coupons_scratch_play_fkey';
+            columns: ['store_id', 'scratch_play_id'];
+            isOneToOne: false;
+            referencedRelation: 'scratch_plays';
             referencedColumns: ['store_id', 'id'];
           },
           {
@@ -236,6 +246,7 @@ export type Database = {
           kind: string;
           points: number;
           sale_id: string | null;
+          scratch_play_id: string | null;
           store_id: string;
         };
         Insert: {
@@ -245,6 +256,7 @@ export type Database = {
           kind: string;
           points: number;
           sale_id?: string | null;
+          scratch_play_id?: string | null;
           store_id: string;
         };
         Update: {
@@ -254,6 +266,7 @@ export type Database = {
           kind?: string;
           points?: number;
           sale_id?: string | null;
+          scratch_play_id?: string | null;
           store_id?: string;
         };
         Relationships: [
@@ -269,6 +282,13 @@ export type Database = {
             columns: ['store_id', 'sale_id'];
             isOneToOne: false;
             referencedRelation: 'sales';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'points_ledger_scratch_play_fkey';
+            columns: ['store_id', 'scratch_play_id'];
+            isOneToOne: false;
+            referencedRelation: 'scratch_plays';
             referencedColumns: ['store_id', 'id'];
           },
           {
@@ -496,6 +516,54 @@ export type Database = {
           },
         ];
       };
+      scratch_plays: {
+        Row: {
+          cost: number;
+          created_at: string;
+          customer_id: string;
+          format: string;
+          id: string;
+          store_id: string;
+          win_percent: number;
+          won: boolean;
+        };
+        Insert: {
+          cost: number;
+          created_at?: string;
+          customer_id: string;
+          format: string;
+          id?: string;
+          store_id: string;
+          win_percent: number;
+          won: boolean;
+        };
+        Update: {
+          cost?: number;
+          created_at?: string;
+          customer_id?: string;
+          format?: string;
+          id?: string;
+          store_id?: string;
+          win_percent?: number;
+          won?: boolean;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'scratch_plays_customer_fkey';
+            columns: ['store_id', 'customer_id'];
+            isOneToOne: false;
+            referencedRelation: 'customers';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'scratch_plays_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       store_invites: {
         Row: {
           code: string;
@@ -569,6 +637,8 @@ export type Database = {
           pix_key: string;
           points_validity_days: number | null;
           redeem_cost: number;
+          scratch_cost: number;
+          scratch_win_percent: number;
           welcome_text: string | null;
         };
         Insert: {
@@ -582,6 +652,8 @@ export type Database = {
           pix_key: string;
           points_validity_days?: number | null;
           redeem_cost?: number;
+          scratch_cost?: number;
+          scratch_win_percent?: number;
           welcome_text?: string | null;
         };
         Update: {
@@ -595,6 +667,8 @@ export type Database = {
           pix_key?: string;
           points_validity_days?: number | null;
           redeem_cost?: number;
+          scratch_cost?: number;
+          scratch_win_percent?: number;
           welcome_text?: string | null;
         };
         Relationships: [];
@@ -606,6 +680,15 @@ export type Database = {
     Functions: {
       cancel_payment: { Args: { p_payment_id: string }; Returns: undefined };
       cancel_sale: { Args: { p_sale_id: string }; Returns: undefined };
+      claim_scratch_prize: {
+        Args: {
+          p_pin: string;
+          p_play_id: string;
+          p_product_id: string;
+          p_token: string;
+        };
+        Returns: Json;
+      };
       create_store: {
         Args: { p_city: string; p_name: string; p_pix_key: string };
         Returns: {
@@ -619,6 +702,8 @@ export type Database = {
           pix_key: string;
           points_validity_days: number | null;
           redeem_cost: number;
+          scratch_cost: number;
+          scratch_win_percent: number;
           welcome_text: string | null;
         };
         SetofOptions: {
@@ -656,6 +741,7 @@ export type Database = {
           origin: string;
           product_id: string;
           product_name: string;
+          scratch_play_id: string | null;
           status: string;
           store_id: string;
         };
@@ -693,6 +779,8 @@ export type Database = {
           pix_key: string;
           points_validity_days: number | null;
           redeem_cost: number;
+          scratch_cost: number;
+          scratch_win_percent: number;
           welcome_text: string | null;
         };
         SetofOptions: {
@@ -719,6 +807,10 @@ export type Database = {
           email: string;
           user_id: string;
         }[];
+      };
+      play_scratch: {
+        Args: { p_format: string; p_pin: string; p_token: string };
+        Returns: Json;
       };
       record_collection: {
         Args: { p_customer_id: string };

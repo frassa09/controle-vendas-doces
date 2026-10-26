@@ -10,6 +10,7 @@ const kinds: Partial<Record<string, PointsMovementKind>> = {
   sale_reversal: 'saleReversal',
   sale_adjustment: 'saleAdjustment',
   redemption: 'redemption',
+  scratch: 'scratch',
   expiration: 'expiration',
 };
 

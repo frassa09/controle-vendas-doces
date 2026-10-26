@@ -421,3 +421,9 @@ verify_jwt = false
 
 [functions.customer-redeem]
 verify_jwt = false
+
+[functions.customer-scratch]
+verify_jwt = false
+
+[functions.customer-scratch-prize]
+verify_jwt = false

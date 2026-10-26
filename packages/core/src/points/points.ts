@@ -1,10 +1,11 @@
 /**
  * Tipo de movimento do livro de pontos: crédito por venda quitada, estorno (a
  * venda foi cancelada ou voltou a ficar em aberto), ajuste (a venda quitada foi
- * editada, ou foi quitada de novo depois de um estorno) resgate (pontos gastos) e vencimento (o saldo venceu sem compra paga no prazo).
+ * editada, ou foi quitada de novo depois de um estorno) resgate (pontos trocados por um produto), raspadinha (pontos gastos numa jogada)
+ * e vencimento (o saldo venceu sem compra paga no prazo).
  */
 export type PointsMovementKind =
-  'saleCredit' | 'saleReversal' | 'saleAdjustment' | 'redemption' | 'expiration';
+  'saleCredit' | 'saleReversal' | 'saleAdjustment' | 'redemption' | 'scratch' | 'expiration';
 
 /** Um movimento do livro de pontos do cliente. */
 export interface PointsMovement {

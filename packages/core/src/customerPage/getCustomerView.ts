@@ -8,6 +8,7 @@ import type {
   CustomerViewEntry,
   CustomerViewItem,
   CustomerViewPrize,
+  CustomerViewScratchWin,
 } from './customerView';
 import { TOKEN_PATTERN } from './invokeAction';
 
@@ -28,6 +29,7 @@ interface RawView {
   scratchCost: number;
   prizes: CustomerViewPrize[];
   coupons: CustomerViewCoupon[];
+  unclaimedScratchWins: CustomerViewScratchWin[];
   openSales: {
     saleId: string;
     createdAt: string;
@@ -94,6 +96,7 @@ function toCustomerView(raw: RawView): CustomerView {
     },
     prizes: raw.prizes,
     coupons: raw.coupons,
+    unclaimedScratchWins: raw.unclaimedScratchWins,
     debt: {
       balanceCents,
       pendingPoints: raw.openSales.reduce((sum, sale) => sum + sale.points, 0),
