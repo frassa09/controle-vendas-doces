@@ -10,12 +10,14 @@ import type { StoreBrandingInput } from './storeBranding';
 import type { StoreDetailsInput } from './storeDetails';
 import { getStoreLogo, setStoreLogo } from './storeLogo';
 import { updateStoreBranding } from './updateStoreBranding';
+import { updatePointsValidity } from './updatePointsValidity';
 import { updateStoreDetails } from './updateStoreDetails';
 
 export type { StoreInvite } from './invite';
 export { INVITE_CODE_LENGTH, type InviteCodeField } from './inviteCode';
 export type { Store } from './store';
 export { BRANDING_LIMITS, type StoreBrandingField, type StoreBrandingInput } from './storeBranding';
+export { POINTS_VALIDITY_LIMITS } from './pointsValidity';
 export { STORE_LIMITS, type StoreDetailsField, type StoreDetailsInput } from './storeDetails';
 
 export interface StoreOperations {
@@ -27,6 +29,8 @@ export interface StoreOperations {
   updateStoreDetails(input: StoreDetailsInput): Promise<Store>;
   /** Altera cor principal e texto de boas-vindas (null = padrão); qualquer membro pode. */
   updateStoreBranding(input: StoreBrandingInput): Promise<Store>;
+  /** Define em quantos dias sem compra paga os pontos vencem; null = sem validade. */
+  updatePointsValidity(days: number | null): Promise<Store>;
   /** Troca o logo (data URL png/jpeg/webp pequeno) ou remove com null. */
   setStoreLogo(logo: string | null): Promise<void>;
   /** O logo da loja (data URL) ou null. */
@@ -45,6 +49,7 @@ export function createStoreOperations(db: DbClient): StoreOperations {
     getMyStore: () => getMyStore(db),
     updateStoreDetails: (input) => updateStoreDetails(db, input),
     updateStoreBranding: (input) => updateStoreBranding(db, input),
+    updatePointsValidity: (days) => updatePointsValidity(db, days),
     setStoreLogo: (logo) => setStoreLogo(db, logo),
     getStoreLogo: () => getStoreLogo(db),
     createInvite: () => createInvite(db),

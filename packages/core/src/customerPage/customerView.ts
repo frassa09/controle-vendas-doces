@@ -60,6 +60,8 @@ export interface CustomerView {
   };
   points: {
     balance: number;
+    /** Até quando os pontos valem; null se a loja não tem validade ou não há saldo. */
+    expiresAt: string | null;
     /** Pontos para trocar por um doce (a estante cheia). */
     redeemCost: number;
     /** Pontos para raspar a sorte. */

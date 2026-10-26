@@ -60,6 +60,7 @@ describe('pontos', () => {
     expect(await member.core.points.getCustomerPoints(julia.id)).toEqual({
       customerId: julia.id,
       balance: 0,
+      expiresAt: null,
       movements: [],
     });
   });
