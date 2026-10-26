@@ -3,6 +3,7 @@ import { cancelSale } from './cancelSale';
 import { getSale } from './getSale';
 import type { CustomerHistoryEntry } from './history';
 import { listCustomerHistory } from './listCustomerHistory';
+import { listSales, type ListSalesOptions, type SaleListItem } from './listSales';
 import { recordSale } from './recordSale';
 import type { Sale } from './sale';
 import type { RecordSaleInput, UpdateSaleInput } from './saleInput';
@@ -19,6 +20,7 @@ export type {
   SaleVersion,
 } from './sale';
 export type { CustomerHistoryEntry, CustomerHistoryPayment, CustomerHistorySale } from './history';
+export type { ListSalesOptions, SaleListItem, SaleListStanding } from './listSales';
 export {
   SALE_LIMITS,
   unitPriceError,
@@ -40,6 +42,8 @@ export interface SaleOperations {
   cancelSale(id: string): Promise<Sale>;
   /** Compras e pagamentos de dívida do cliente, cancelados inclusive, mais novos primeiro. */
   listCustomerHistory(customerId: string): Promise<CustomerHistoryEntry[]>;
+  /** As vendas ativas, da mais nova para a mais antiga, com situação de pagamento. */
+  listSales(options?: ListSalesOptions): Promise<SaleListItem[]>;
 }
 
 export function createSaleOperations(db: DbClient): SaleOperations {
@@ -49,5 +53,6 @@ export function createSaleOperations(db: DbClient): SaleOperations {
     updateSale: (id, input) => updateSale(db, id, input),
     cancelSale: (id) => cancelSale(db, id),
     listCustomerHistory: (customerId) => listCustomerHistory(db, customerId),
+    listSales: (options) => listSales(db, options),
   };
 }
