@@ -599,3 +599,31 @@ describe('isolamento das correções', () => {
     expect(untouched.payments).toMatchObject([{ status: 'active' }]);
   });
 });
+
+describe('página do cliente depois das correções', () => {
+  it('cancelados ficam fora do em aberto e pontos estornados não aparecem nos recadinhos', async () => {
+    const { member, julia, brownie, combo } = await shop();
+    const reopened = await member.core.sales.recordSale({
+      customerId: julia.id,
+      items: [{ productId: brownie.id, quantity: 1 }],
+      payment: { type: 'paidNow', method: 'pix' },
+    });
+    const cancelled = await member.core.sales.recordSale({
+      customerId: julia.id,
+      items: [{ productId: combo.id, quantity: 1 }],
+      payment: { type: 'fiado' },
+    });
+    await member.core.sales.cancelSale(cancelled.id);
+    await member.core.payments.cancelPayment(reopened.payments[0]?.id ?? '');
+
+    const view = await anonymousCore().customerPage.getCustomerView(julia.linkToken);
+
+    expect(view.points.balance).toBe(0);
+    expect(view.debt.balanceCents).toBe(300);
+    expect(view.debt.openSales.map((sale) => sale.saleId)).toEqual([reopened.id]);
+    expect(view.history).toMatchObject([
+      { kind: 'sale', id: cancelled.id, status: 'cancelled', points: 0 },
+      { kind: 'sale', id: reopened.id, status: 'active', points: 0 },
+    ]);
+  });
+});
