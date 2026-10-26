@@ -29,7 +29,7 @@ export interface Core {
   points: PointsOperations;
   /** Mensagens de WhatsApp: recibo de pagamento e reenvio de link e PIN. */
   receipts: ReceiptOperations;
-  /** Métricas de vendas, produtos e clientes por período. */
+  /** Métricas de vendas, produtos, clientes, cobrança e fidelidade por período. */
   metrics: MetricsOperations;
   /** Prêmios a entregar (resgate direto e raspadinha). */
   coupons: CouponOperations;

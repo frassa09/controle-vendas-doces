@@ -3,9 +3,11 @@ import { fromDbError } from '../db/errors';
 import { requireUserId } from '../db/session';
 import { CoreError } from '../errors';
 import type {
+  CollectionMetrics,
   CustomerRank,
   HourMetrics,
   LapsedCustomer,
+  LoyaltyMetrics,
   MetricsComparison,
   MetricsOptions,
   MethodTotals,
@@ -40,7 +42,13 @@ interface RawMetrics {
   };
 }
 
-function toPeriod(from: string, to: string, raw: RawMetrics): PeriodMetrics {
+function toPeriod(
+  from: string,
+  to: string,
+  raw: RawMetrics,
+  collection: CollectionMetrics,
+  loyalty: LoyaltyMetrics,
+): PeriodMetrics {
   const combos = raw.products.filter((p) => p.isCombo);
   const { customerSalesCount, ...customers } = raw.customers;
   return {
@@ -67,6 +75,8 @@ function toPeriod(from: string, to: string, raw: RawMetrics): PeriodMetrics {
           ? 0
           : Math.round((customerSalesCount / customers.buyersCount) * 10) / 10,
     },
+    collection,
+    loyalty,
   };
 }
 
@@ -77,14 +87,24 @@ async function loadPeriod(
   timeZone: string,
   lapsedAfterDays: number,
 ): Promise<PeriodMetrics> {
-  const { data, error } = await db.rpc('store_metrics', {
-    p_from: from,
-    p_to: to,
-    p_time_zone: timeZone,
-    p_lapsed_days: lapsedAfterDays,
-  });
-  if (error) throw fromDbError(error);
-  return toPeriod(from, to, data as unknown as RawMetrics);
+  const range = { p_from: from, p_to: to };
+  const [sales, collection, loyalty] = await Promise.all([
+    db.rpc('store_metrics', {
+      ...range,
+      p_time_zone: timeZone,
+      p_lapsed_days: lapsedAfterDays,
+    }),
+    db.rpc('collection_metrics', range),
+    db.rpc('loyalty_metrics', range),
+  ]);
+  for (const { error } of [sales, collection, loyalty]) if (error) throw fromDbError(error);
+  return toPeriod(
+    from,
+    to,
+    sales.data as unknown as RawMetrics,
+    collection.data as unknown as CollectionMetrics,
+    loyalty.data as unknown as LoyaltyMetrics,
+  );
 }
 
 /**
@@ -108,6 +128,10 @@ export async function getMetrics(
   const timeZone = options.timeZone ?? DEFAULT_TIME_ZONE;
   const lapsed = options.lapsedAfterDays ?? DEFAULT_LAPSED_DAYS;
   if (!Number.isInteger(lapsed) || lapsed < 1) throw new CoreError('INVALID_INPUT');
+
+  // O vencimento de pontos é gravado sob demanda; grava os pendentes antes de contar.
+  const expired = await db.rpc('expire_store_points');
+  if (expired.error) throw fromDbError(expired.error);
 
   const [period, before] = await Promise.all([
     loadPeriod(db, from.toISOString(), to.toISOString(), timeZone, lapsed),

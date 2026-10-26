@@ -3,9 +3,13 @@ import { getMetrics } from './getMetrics';
 import type { MetricsComparison, MetricsOptions } from './metrics';
 
 export type {
+  CollectionMetrics,
   CustomerRank,
+  DebtBand,
   HourMetrics,
   LapsedCustomer,
+  LoyaltyMetrics,
+  PrizeTotals,
   MethodTotals,
   MetricsComparison,
   MetricsOptions,
@@ -15,7 +19,7 @@ export type {
 } from './metrics';
 
 export interface MetricsOperations {
-  /** Métricas de vendas, produtos e clientes do período e do anterior (cancelados fora). */
+  /** Métricas de vendas, produtos, clientes, cobrança e fidelidade do período e do anterior (cancelados fora). */
   getMetrics(options: MetricsOptions): Promise<MetricsComparison>;
 }
 
