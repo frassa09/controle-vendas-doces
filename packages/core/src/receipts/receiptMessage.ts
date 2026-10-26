@@ -7,6 +7,7 @@ import { CoreError } from '../errors';
 import { formatCents } from '../money';
 import { getCustomerBalance } from '../payments/getCustomerBalance';
 import { getPayment } from '../payments/getPayment';
+import { getCustomerPoints } from '../points/getCustomerPoints';
 
 /** Mensagem pronta para o WhatsApp do cliente e o link que a abre. */
 export interface WhatsAppMessage {
@@ -73,19 +74,21 @@ export async function buildPaymentReceipt(
   }
   const customerId = payment.customerId;
 
-  const [customer, balance, ledger] = await Promise.all([
+  // O saldo vem do core de pontos (que já aplica a validade).
+  const [customer, balance, points] = await Promise.all([
     loadCustomer(db, customerId),
     getCustomerBalance(db, customerId),
-    db.from('points_ledger').select('points, created_at').eq('customer_id', customerId),
+    getCustomerPoints(db, customerId),
   ]);
-  if (ledger.error) throw fromDbError(ledger.error);
 
   // Pagamento e créditos nascem na mesma transação, com o mesmo created_at do banco.
   const paidAt = Date.parse(payment.createdAt);
-  const pointsEarned = ledger.data
-    .filter((row) => Date.parse(row.created_at) === paidAt)
-    .reduce((sum, row) => sum + row.points, 0);
-  const pointsBalance = ledger.data.reduce((sum, row) => sum + row.points, 0);
+  const pointsEarned = points.movements
+    .filter(
+      (movement) => movement.kind !== 'expiration' && Date.parse(movement.createdAt) === paidAt,
+    )
+    .reduce((sum, movement) => sum + movement.points, 0);
+  const pointsBalance = points.balance;
 
   const lines = [
     `Oi, ${customer.name}! Recebi o seu pagamento de ${formatCents(payment.amountCents)}. Muito obrigada!`,
