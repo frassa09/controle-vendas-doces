@@ -1,6 +1,6 @@
 import type { ScratchFormat } from '@cvd/core';
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
-import { Doce } from './Doce';
+import { Doce, doceOf } from './Doce';
 
 /** Toques de raspagem até a casinha se limpar sozinha (DESIGN.md › Casinhas de Raspar). */
 const STROKES_TO_CLEAR = 14;
@@ -12,29 +12,41 @@ type Conteudo = { kind: 'doce'; name: string } | { kind: 'vazio' };
  * decide a encenação. A posição do doce sai do id da jogada, para não mudar a cada
  * desenho (e não depende de nada que o cliente controle).
  */
-function conteudos(format: ScratchFormat, won: boolean, seed: string): Conteudo[] {
+function conteudos(
+  format: ScratchFormat,
+  won: boolean,
+  seed: string,
+  prizeNames: readonly string[],
+): Conteudo[] {
   const n = parseInt(seed.replace(/[^0-9a-f]/gi, '').slice(0, 6), 16) || 0;
-  const brownie: Conteudo = { kind: 'doce', name: 'Brownie' };
+  // O doce da encenação é um dos prêmios da loja (o cliente escolhe depois).
+  const doce: Conteudo = { kind: 'doce', name: prizeNames[n % prizeNames.length] ?? 'Brigadeiro' };
   if (format === 'five_spots') {
     const spot = n % 5;
-    return Array.from({ length: 5 }, (_, i) => (won && i === spot ? brownie : { kind: 'vazio' }));
+    return Array.from({ length: 5 }, (_, i) => (won && i === spot ? doce : { kind: 'vazio' }));
   }
-  if (won) return [brownie, brownie, brownie];
-  // Quase: dois iguais e um diferente, em lugar variado.
+  if (won) return [doce, doce, doce];
+  // Quase: dois iguais e um de desenho diferente, em lugar variado.
+  const drawing = doceOf(doce.name).id;
+  const otherName =
+    [...prizeNames, 'Brownie', 'Bolo de pote', 'Brigadeiro'].find(
+      (name) => doceOf(name).id !== drawing,
+    ) ?? 'Brigadeiro';
   const odd = n % 3;
-  const other: Conteudo = { kind: 'doce', name: n % 2 ? 'Bolo de pote' : 'Brigadeiro' };
-  return [0, 1, 2].map((i) => (i === odd ? other : brownie));
+  return [0, 1, 2].map((i) => (i === odd ? { kind: 'doce', name: otherName } : doce));
 }
 
 interface CasaProps {
   conteudo: Conteudo;
+  /** É o doce do prêmio (assenta com mola ao aparecer). */
+  premiada: boolean;
   label: string;
   cleared: boolean;
   onCleared: () => void;
 }
 
 /** Uma casinha: o resultado por baixo e um canvas pintado de papel de presente por cima. */
-function Casa({ conteudo, label, cleared, onCleared }: CasaProps) {
+function Casa({ conteudo, premiada, label, cleared, onCleared }: CasaProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const strokes = useRef(0);
   const drawing = useRef(false);
@@ -99,7 +111,11 @@ function Casa({ conteudo, label, cleared, onCleared }: CasaProps) {
   };
 
   return (
-    <div className={`casa${cleared ? ' limpa' : ''}`} role="img" aria-label={label}>
+    <div
+      className={`casa${cleared ? ' limpa' : ''}${premiada ? ' premiada' : ''}`}
+      role="img"
+      aria-label={label}
+    >
       {conteudo.kind === 'doce' ? (
         <Doce name={conteudo.name} size={40} />
       ) : (
@@ -140,6 +156,8 @@ interface RaspasProps {
   won: boolean;
   /** Id da jogada: fixa a encenação. */
   seed: string;
+  /** Nomes dos produtos-prêmio (o doce desenhado sai deles). */
+  prizeNames: readonly string[];
   /** "Revelar tudo" já foi tocado (ou todas as casinhas foram raspadas). */
   revealed: boolean;
   /** Todas as casinhas foram raspadas com o dedo. */
@@ -147,8 +165,8 @@ interface RaspasProps {
 }
 
 /** As casinhas de raspar de uma jogada (5 casinhas ou 3 iguais). */
-export function Raspas({ format, won, seed, revealed, onRevealed }: RaspasProps) {
-  const items = conteudos(format, won, seed);
+export function Raspas({ format, won, seed, prizeNames, revealed, onRevealed }: RaspasProps) {
+  const items = conteudos(format, won, seed, prizeNames);
   const [cleared, setCleared] = useState<readonly number[]>([]);
 
   return (
@@ -164,6 +182,7 @@ export function Raspas({ format, won, seed, revealed, onRevealed }: RaspasProps)
           <Casa
             key={index}
             conteudo={conteudo}
+            premiada={won && conteudo.kind === 'doce'}
             label={label}
             cleared={isCleared}
             onCleared={() => {

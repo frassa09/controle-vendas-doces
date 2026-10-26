@@ -4,7 +4,7 @@ const doces = [
   { pattern: /pote/i, id: 'doce-pote', viewBox: '0 0 40 40' },
 ] as const;
 
-function doceOf(name: string): { id: string; viewBox: string } {
+export function doceOf(name: string): { id: string; viewBox: string } {
   return (
     doces.find((doce) => doce.pattern.test(name)) ?? {
       id: 'doce-brigadeiro',

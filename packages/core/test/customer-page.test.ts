@@ -71,6 +71,7 @@ describe('página do cliente', () => {
       points: { balance: 0, expiresAt: null, redeemCost: 10, scratchCost: 5 },
       prizes: [],
       coupons: [],
+      unclaimedScratchWins: [],
       debt: { balanceCents: 0, pendingPoints: 0, pixCode: null, openSales: [] },
       history: [],
     });

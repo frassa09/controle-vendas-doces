@@ -6,7 +6,7 @@ import {
   type ScratchFormat,
   type ScratchPlayResult,
 } from '@cvd/core';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getCore } from '../core';
 import { Doce } from './Doce';
 import { Folha } from './Folha';
@@ -81,6 +81,14 @@ export function RaspadinhaFolha({
   const pinRef = useRef<HTMLInputElement>(null);
   const sending = useRef(false);
   const changed = useRef(false);
+  // Ao revelar, o botão "Revelar tudo" some: o foco vai para o próximo passo.
+  const firstPrizeRef = useRef<HTMLInputElement>(null);
+  const afterRevealRef = useRef<HTMLButtonElement>(null);
+  const revealedNow = step.kind === 'raspar' && step.revealed;
+  useEffect(() => {
+    if (!revealedNow) return;
+    (firstPrizeRef.current ?? afterRevealRef.current)?.focus({ preventScroll: true });
+  }, [revealedNow]);
 
   const close = () => {
     // A jogada já mudou o saldo; relê a visão ao fechar se a revelação não releu.
@@ -183,9 +191,10 @@ export function RaspadinhaFolha({
     >
       <fieldset className="escolhas">
         <legend className="sr-only">Doce do prêmio</legend>
-        {prizes.map((prize) => (
+        {prizes.map((prize, index) => (
           <label key={prize.id} className="escolha">
             <input
+              ref={index === 0 ? firstPrizeRef : undefined}
               type="radio"
               name="premio"
               value={prize.id}
@@ -212,8 +221,12 @@ export function RaspadinhaFolha({
         />
       )}
       {errorLine}
-      <button className="botao botao-principal" type="submit" aria-disabled={busy}>
-        <span>{busy ? 'Guardando…' : 'Quero esse'}</span>
+      <button
+        className="botao botao-principal"
+        type="submit"
+        aria-disabled={busy || chosen === null}
+      >
+        <span>{busy ? 'Guardando…' : chosen === null ? 'Escolha um doce' : 'Quero esse'}</span>
       </button>
     </form>
   );
@@ -260,6 +273,7 @@ export function RaspadinhaFolha({
             format={result.play.format}
             won={result.play.won}
             seed={result.play.id}
+            prizeNames={prizes.map((prize) => prize.name)}
             revealed={revealed}
             onRevealed={() => {
               setStep({ kind: 'raspar', result, revealed: true });
@@ -301,7 +315,12 @@ export function RaspadinhaFolha({
           ) : result.play.won ? (
             prizeForm(result.play.id)
           ) : (
-            <button className="botao botao-secundario" type="button" onClick={close}>
+            <button
+              ref={afterRevealRef}
+              className="botao botao-secundario"
+              type="button"
+              onClick={close}
+            >
               <span>Fechar</span>
             </button>
           )}

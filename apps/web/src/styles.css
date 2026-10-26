@@ -717,8 +717,10 @@ dialog.folha::backdrop {
 .escolha svg {
   flex: none;
 }
-.escolha:hover {
-  box-shadow: 0 0 0 2.5px var(--madeira-2);
+@media (hover: hover) {
+  .escolha:not(:has(input:checked)):hover {
+    background: color-mix(in oklab, var(--campo) 90%, var(--madeira));
+  }
 }
 .escolha:has(input:checked) {
   box-shadow: 0 0 0 3px var(--loja-forte);
@@ -772,7 +774,7 @@ dialog.folha::backdrop {
   border-color: #b3261e;
 }
 .pin::placeholder {
-  color: #a87447;
+  color: color-mix(in oklab, var(--madeira) 75%, #fff);
 }
 .erro {
   min-height: 22px;
@@ -810,15 +812,19 @@ dialog.folha::backdrop {
   background: var(--campo);
   box-shadow: 0 0 0 1.5px var(--madeira);
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition:
+    box-shadow 0.2s,
+    background 0.2s;
 }
 .formato input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
 }
-.formato:hover {
-  box-shadow: 0 0 0 2.5px var(--madeira-2);
+@media (hover: hover) {
+  .formato:not(:has(input:checked)):hover {
+    background: color-mix(in oklab, var(--campo) 90%, var(--madeira));
+  }
 }
 .formato:has(input:checked) {
   box-shadow: 0 0 0 3px var(--loja-forte);
@@ -892,6 +898,10 @@ dialog.folha::backdrop {
 }
 .casa.limpa > svg {
   animation: aparece 0.5s var(--sai);
+}
+/* O doce premiado assenta com mola, como o doce que cai na estante. */
+.casa.limpa.premiada > svg {
+  animation: aparece 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 @keyframes aparece {
   from {
