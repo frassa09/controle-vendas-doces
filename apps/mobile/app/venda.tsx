@@ -4,6 +4,7 @@ import {
   parseCents,
   unitPriceError,
   type CustomerBalance,
+  type Coupon,
   type CustomerSummary,
   type PaymentMethod,
   type Product,
@@ -29,6 +30,7 @@ import {
   TouchableRipple,
 } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CouponRow, deliveredText } from '../src/coupons/CouponRow';
 import { core } from '../src/core';
 import { debtSinceText } from '../src/payments/debt';
 import { radii, spacing } from '../src/theme/theme';
@@ -229,6 +231,9 @@ function SaleBuilder({ original }: { original: Sale | null }) {
         ) : (
           <CustomerPicker customer={customer} onChange={chooseCustomer} />
         )}
+        {!original && customer ? (
+          <CustomerCoupons key={customer.id} customer={customer} onNotice={setNotice} />
+        ) : null}
 
         <Text variant="titleMedium" accessibilityRole="header" style={styles.sectionTitle}>
           Produtos
@@ -568,6 +573,72 @@ function CustomerPicker({
   );
 }
 
+/**
+ * Prêmios pendentes do cliente escolhido, para entregar na mesma ocasião. Some
+ * quando não há nenhum (ou se a leitura falhar: o aviso é uma ajuda, não trava a venda).
+ */
+function CustomerCoupons({
+  customer,
+  onNotice,
+}: {
+  customer: CustomerSummary;
+  onNotice: (message: string) => void;
+}) {
+  const theme = useAppTheme();
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+
+  useEffect(() => {
+    let active = true;
+    core.coupons
+      .listPendingCoupons({ customerId: customer.id })
+      .then((list) => {
+        if (active) setCoupons(list);
+      })
+      .catch(() => {
+        if (active) setCoupons([]);
+      });
+    return () => {
+      active = false;
+    };
+  }, [customer.id]);
+
+  if (coupons.length === 0) return null;
+  const firstName = customer.name.trim().split(/s+/)[0] ?? customer.name;
+  return (
+    <View
+      accessibilityLiveRegion="polite"
+      style={[
+        styles.card,
+        styles.coupons,
+        { backgroundColor: theme.colors.primaryContainer, borderColor: theme.colors.primary },
+      ]}
+    >
+      <Text
+        variant="titleMedium"
+        style={[styles.couponsTitle, { color: theme.colors.onPrimaryContainer }]}
+      >
+        {coupons.length === 1
+          ? `${firstName} tem 1 prêmio para levar`
+          : `${firstName} tem ${String(coupons.length)} prêmios para levar`}
+      </Text>
+      {coupons.map((coupon) => (
+        <CouponRow
+          key={coupon.id}
+          coupon={coupon}
+          onDelivered={(delivered) => {
+            setCoupons((current) => current.filter((c) => c.id !== delivered.id));
+            onNotice(deliveredText(delivered));
+          }}
+          onError={(message) => {
+            setCoupons((current) => current.filter((c) => c.id !== coupon.id));
+            onNotice(message);
+          }}
+        />
+      ))}
+    </View>
+  );
+}
+
 /** O saldo devedor do cliente escolhido, para lembrar da dívida no balcão. */
 function BalanceLine({ customer }: { customer: CustomerSummary }) {
   const theme = useAppTheme();
@@ -860,6 +931,8 @@ const styles = StyleSheet.create({
   },
   tileName: { paddingRight: 30, fontWeight: '800' },
   badge: { position: 'absolute', top: -4, right: -4, fontWeight: '800', fontSize: 15 },
+  coupons: { marginTop: spacing.gap, borderWidth: 2, paddingTop: spacing.md },
+  couponsTitle: { fontWeight: '800', paddingHorizontal: spacing.margem },
   card: {
     marginTop: spacing.gap,
     borderRadius: radii.cartao,

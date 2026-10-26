@@ -25,6 +25,12 @@ export type CoreErrorCode =
   | 'PAYMENT_CANCELLED'
   | 'PAYMENTS_EXCEED_DEBT'
   | 'WALK_IN_SALE_PAYMENT'
+  | 'PIN_INVALID'
+  | 'PIN_LOCKED'
+  | 'PRIZE_NOT_AVAILABLE'
+  | 'INSUFFICIENT_POINTS'
+  | 'COUPON_NOT_FOUND'
+  | 'COUPON_ALREADY_DELIVERED'
   | 'NETWORK'
   | 'UNEXPECTED';
 
@@ -51,6 +57,12 @@ const defaultMessages: Record<CoreErrorCode, string> = {
   PAYMENTS_EXCEED_DEBT:
     'Um pagamento de dívida do cliente já cobre esta compra. Cancele esse pagamento antes e registre de novo o valor certo.',
   WALK_IN_SALE_PAYMENT: 'Este pagamento é de uma venda avulsa. Para desfazer, cancele a venda.',
+  PIN_INVALID: 'PIN errado. Confira os 4 números que a loja mandou.',
+  PIN_LOCKED: 'Muitas tentativas com o PIN errado. Espere um pouco e tente de novo.',
+  PRIZE_NOT_AVAILABLE: 'Esse doce não está mais disponível como prêmio. Escolha outro.',
+  INSUFFICIENT_POINTS: 'Ainda não há pontos suficientes para essa troca.',
+  COUPON_NOT_FOUND: 'Cupom não encontrado.',
+  COUPON_ALREADY_DELIVERED: 'Este cupom já foi entregue.',
   NETWORK: 'Sem conexão com o servidor. Confira a internet e tente de novo.',
   UNEXPECTED: 'Algo deu errado. Tente de novo.',
 };

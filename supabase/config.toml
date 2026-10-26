@@ -418,3 +418,6 @@ enabled = true
 # Página do cliente: chamada sem login (a autorização é o token secreto do link).
 [functions.customer-view]
 verify_jwt = false
+
+[functions.customer-redeem]
+verify_jwt = false

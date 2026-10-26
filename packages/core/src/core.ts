@@ -1,5 +1,6 @@
 import { createAuthOperations, type AuthOperations } from './auth';
 import { createCollectionOperations, type CollectionOperations } from './collections';
+import { createCouponOperations, type CouponOperations } from './coupons';
 import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
 import { createCustomerPageOperations, type CustomerPageOperations } from './customerPage';
@@ -26,6 +27,8 @@ export interface Core {
   points: PointsOperations;
   /** Mensagens de WhatsApp: recibo de pagamento e reenvio de link e PIN. */
   receipts: ReceiptOperations;
+  /** Prêmios a entregar (resgate direto e raspadinha). */
+  coupons: CouponOperations;
   /** Página pública do cliente (sem login, pelo token do link). */
   customerPage: CustomerPageOperations;
 }
@@ -48,6 +51,7 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     collections: createCollectionOperations(supabase, { customerPageUrl }),
     points: createPointsOperations(supabase),
     receipts: createReceiptOperations(supabase, { customerPageUrl }),
+    coupons: createCouponOperations(supabase),
     customerPage: createCustomerPageOperations(supabase),
   };
 }

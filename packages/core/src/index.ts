@@ -22,6 +22,9 @@ export {
   BRANDING_LIMITS,
   POINTS_VALIDITY_LIMITS,
   INVITE_CODE_LENGTH,
+  REWARD_LIMITS,
+  type RewardSettingsField,
+  type RewardSettingsInput,
   STORE_LIMITS,
   type StoreBrandingField,
   type StoreBrandingInput,
@@ -85,11 +88,23 @@ export {
 export {
   type CustomerPageOperations,
   type CustomerView,
+  type CustomerViewCoupon,
   type CustomerViewEntry,
   type CustomerViewItem,
   type CustomerViewOpenSale,
+  type CustomerViewPrize,
+  type PinActionField,
+  type RedeemRewardInput,
+  type RedeemRewardResult,
 } from './customerPage';
 export { type PaymentReceipt, type ReceiptOperations, type WhatsAppMessage } from './receipts';
+export {
+  type Coupon,
+  type CouponOperations,
+  type CouponOrigin,
+  type CouponStatus,
+  type ListPendingCouponsOptions,
+} from './coupons';
 export { formatCents, parseCents } from './money';
 export {
   COLLECTION_TEMPLATE_MAX,

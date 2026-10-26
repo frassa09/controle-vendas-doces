@@ -6,15 +6,22 @@ import { getOpenInvite } from './getOpenInvite';
 import type { StoreInvite } from './invite';
 import { joinWithInvite } from './joinWithInvite';
 import type { Store } from './store';
+import type { RewardSettingsInput } from './rewardSettings';
 import type { StoreBrandingInput } from './storeBranding';
 import type { StoreDetailsInput } from './storeDetails';
 import { getStoreLogo, setStoreLogo } from './storeLogo';
 import { updateStoreBranding } from './updateStoreBranding';
+import { updateRewardSettings } from './updateRewardSettings';
 import { updatePointsValidity } from './updatePointsValidity';
 import { updateStoreDetails } from './updateStoreDetails';
 
 export type { StoreInvite } from './invite';
 export { INVITE_CODE_LENGTH, type InviteCodeField } from './inviteCode';
+export {
+  REWARD_LIMITS,
+  type RewardSettingsField,
+  type RewardSettingsInput,
+} from './rewardSettings';
 export type { Store } from './store';
 export { BRANDING_LIMITS, type StoreBrandingField, type StoreBrandingInput } from './storeBranding';
 export { POINTS_VALIDITY_LIMITS } from './pointsValidity';
@@ -29,6 +36,8 @@ export interface StoreOperations {
   updateStoreDetails(input: StoreDetailsInput): Promise<Store>;
   /** Altera cor principal e texto de boas-vindas (null = padrão); qualquer membro pode. */
   updateStoreBranding(input: StoreBrandingInput): Promise<Store>;
+  /** Altera as regras de fidelidade (custo do resgate direto); qualquer membro pode. */
+  updateRewardSettings(input: RewardSettingsInput): Promise<Store>;
   /** Define em quantos dias sem compra paga os pontos vencem; null = sem validade. */
   updatePointsValidity(days: number | null): Promise<Store>;
   /** Troca o logo (data URL png/jpeg/webp pequeno) ou remove com null. */
@@ -49,6 +58,7 @@ export function createStoreOperations(db: DbClient): StoreOperations {
     getMyStore: () => getMyStore(db),
     updateStoreDetails: (input) => updateStoreDetails(db, input),
     updateStoreBranding: (input) => updateStoreBranding(db, input),
+    updateRewardSettings: (input) => updateRewardSettings(db, input),
     updatePointsValidity: (days) => updatePointsValidity(db, days),
     setStoreLogo: (logo) => setStoreLogo(db, logo),
     getStoreLogo: () => getStoreLogo(db),
