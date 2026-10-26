@@ -140,3 +140,15 @@ export {
   type PixField,
   type PixInput,
 } from './collections';
+export type {
+  CustomerRank,
+  HourMetrics,
+  LapsedCustomer,
+  MethodTotals,
+  MetricsComparison,
+  MetricsOperations,
+  MetricsOptions,
+  PeriodMetrics,
+  ProductMetrics,
+  WeekdayMetrics,
+} from './metrics';
