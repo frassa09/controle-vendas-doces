@@ -767,6 +767,10 @@ export type Database = {
           isSetofReturn: true;
         };
       };
+      store_metrics: {
+        Args: { p_from: string; p_lapsed_days: number; p_time_zone: string; p_to: string };
+        Returns: Json;
+      };
       update_sale: {
         Args: { p_items: Json; p_sale_id: string };
         Returns: undefined;

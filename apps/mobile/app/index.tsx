@@ -122,6 +122,19 @@ export default function StoreHomeScreen() {
           />
           <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
           <List.Item
+            title="Métricas"
+            description="Faturamento, produtos e clientes por período"
+            onPress={() => {
+              router.push('/metricas');
+            }}
+            left={(props) => <List.Icon {...props} icon="chart-box-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.areaTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.area}
+          />
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+          <List.Item
             title="Cupons"
             description="Prêmios que os clientes trocaram, para entregar"
             onPress={() => {

@@ -5,6 +5,7 @@ import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
 import { createCustomerPageOperations, type CustomerPageOperations } from './customerPage';
 import type { DbClient } from './db/client';
+import { createMetricsOperations, type MetricsOperations } from './metrics';
 import { createPaymentOperations, type PaymentOperations } from './payments';
 import { createPointsOperations, type PointsOperations } from './points';
 import { createReceiptOperations, type ReceiptOperations } from './receipts';
@@ -27,6 +28,8 @@ export interface Core {
   points: PointsOperations;
   /** Mensagens de WhatsApp: recibo de pagamento e reenvio de link e PIN. */
   receipts: ReceiptOperations;
+  /** Métricas de vendas, produtos e clientes por período. */
+  metrics: MetricsOperations;
   /** Prêmios a entregar (resgate direto e raspadinha). */
   coupons: CouponOperations;
   /** Página pública do cliente (sem login, pelo token do link). */
@@ -51,6 +54,7 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     collections: createCollectionOperations(supabase, { customerPageUrl }),
     points: createPointsOperations(supabase),
     receipts: createReceiptOperations(supabase, { customerPageUrl }),
+    metrics: createMetricsOperations(supabase),
     coupons: createCouponOperations(supabase),
     customerPage: createCustomerPageOperations(supabase),
   };
