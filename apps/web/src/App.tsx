@@ -1,5 +1,5 @@
 import { isCoreError, type CustomerView } from '@cvd/core';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { Cantinho } from './cantinho/Cantinho';
 import { Abrindo, LinkNaoEncontrado, SemConexao } from './cantinho/States';
 import { Symbols } from './cantinho/Symbols';
@@ -53,6 +53,15 @@ function readVisit(token: string, balance: number): number | null {
   }
 }
 
+/** Depois de gastar pontos na página, a próxima visita compara com o saldo novo. */
+function rememberBalance(token: string, balance: number) {
+  try {
+    window.localStorage.setItem(lastSeenKey(token), String(balance));
+  } catch {
+    // Sem armazenamento: a chegada dos doces só não é lembrada.
+  }
+}
+
 function applyStoreColor(color: string | null) {
   document.documentElement.style.setProperty('--loja', color ?? DEFAULT_STORE_COLOR);
   // A barra do navegador acompanha a parede.
@@ -90,6 +99,24 @@ export function App() {
     };
   }, [token, attempt]);
 
+  // Relê sem a tela de "abrindo": a página continua de pé durante e depois da troca.
+  const refresh = useCallback(() => {
+    if (!token) return;
+    void getCore()
+      .customerPage.getCustomerView(token)
+      .then((view) => {
+        rememberBalance(token, view.points.balance);
+        setState((current) =>
+          current.status === 'ready'
+            ? { status: 'ready', view, arrived: current.arrived }
+            : current,
+        );
+      })
+      .catch(() => {
+        // Falhou a releitura: fica o que já está na tela.
+      });
+  }, [token]);
+
   const retry = () => {
     setState({ status: 'loading' });
     setAttempt((n) => n + 1);
@@ -113,7 +140,12 @@ export function App() {
     <>
       <Symbols />
       {state.status === 'ready' ? (
-        <Cantinho view={state.view} arrivedSinceLastVisit={state.arrived} />
+        <Cantinho
+          token={token ?? ''}
+          view={state.view}
+          onChanged={refresh}
+          arrivedSinceLastVisit={state.arrived}
+        />
       ) : state.status === 'notFound' ? (
         <LinkNaoEncontrado />
       ) : state.status === 'failed' ? (

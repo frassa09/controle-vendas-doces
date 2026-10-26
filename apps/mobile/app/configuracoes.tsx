@@ -110,6 +110,19 @@ export default function SettingsScreen() {
           />
           <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
           <List.Item
+            title="Recompensas"
+            description={`Troca por produto grátis: ${String(store.redeemCost)} pontos`}
+            onPress={() => {
+              router.push('/recompensas');
+            }}
+            left={(props) => <List.Icon {...props} icon="gift-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.menuTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.menuItem}
+          />
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+          <List.Item
             title="Texto da cobrança"
             description="A mensagem que vai no WhatsApp"
             onPress={() => {

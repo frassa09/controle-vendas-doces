@@ -1,4 +1,35 @@
+import type { CouponOrigin } from '../coupons/coupon';
 import type { PaymentMethod, RecordStatus, SalePaymentType } from '../sales';
+
+/** Um produto que o cliente pode escolher como prêmio (ativo e marcado pela loja). */
+export interface CustomerViewPrize {
+  id: string;
+  name: string;
+}
+
+/** Um prêmio ainda não retirado, como a página do cliente mostra. */
+export interface CustomerViewCoupon {
+  id: string;
+  productName: string;
+  origin: CouponOrigin;
+  createdAt: string;
+}
+
+/** Pedido de troca de pontos por um prêmio (resgate direto). */
+export interface RedeemRewardInput {
+  /** Token do link da página. */
+  token: string;
+  /** PIN de 4 dígitos do cliente. */
+  pin: string;
+  /** Um dos `prizes` da visão. */
+  productId: string;
+}
+
+/** Resultado do resgate: o cupom criado e o saldo de pontos depois do débito. */
+export interface RedeemRewardResult {
+  coupon: CustomerViewCoupon;
+  balance: number;
+}
 
 /** Um item como a página do cliente o mostra (nome copiado na hora da venda). */
 export interface CustomerViewItem {
@@ -67,6 +98,10 @@ export interface CustomerView {
     /** Pontos para raspar a sorte. */
     scratchCost: number;
   };
+  /** Produtos que podem ser escolhidos como prêmio, por nome. */
+  prizes: CustomerViewPrize[];
+  /** Cupons pendentes (prêmios a retirar na loja), do mais antigo para o mais novo. */
+  coupons: CustomerViewCoupon[];
   debt: {
     balanceCents: number;
     /** Pontos que entram na estante quando o que está em aberto for pago. */

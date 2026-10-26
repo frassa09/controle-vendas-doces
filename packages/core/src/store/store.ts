@@ -11,6 +11,8 @@ export interface Store {
   brandColor: string | null;
   /** Texto de boas-vindas da página do cliente, ou null para a frase padrão. */
   welcomeText: string | null;
+  /** Pontos de um resgate direto (produto grátis). */
+  redeemCost: number;
   /** Dias até os pontos vencerem sem compra paga, ou null se não vencem. */
   pointsValidityDays: number | null;
   createdAt: string;
@@ -20,7 +22,7 @@ export type StoreRow = Database['public']['Tables']['stores']['Row'];
 
 /** Colunas lidas sempre que o core devolve uma loja (o logo, pesado, fica de fora). */
 export const storeColumns =
-  'id, name, pix_key, city, brand_color, welcome_text, points_validity_days, created_at';
+  'id, name, pix_key, city, brand_color, welcome_text, redeem_cost, points_validity_days, created_at';
 
 export function toStore(
   row: Pick<
@@ -31,6 +33,7 @@ export function toStore(
     | 'city'
     | 'brand_color'
     | 'welcome_text'
+    | 'redeem_cost'
     | 'points_validity_days'
     | 'created_at'
   >,
@@ -42,6 +45,7 @@ export function toStore(
     city: row.city,
     brandColor: row.brand_color,
     welcomeText: row.welcome_text,
+    redeemCost: row.redeem_cost,
     pointsValidityDays: row.points_validity_days,
     createdAt: row.created_at,
   };
