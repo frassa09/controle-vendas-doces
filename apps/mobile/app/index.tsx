@@ -109,6 +109,19 @@ export default function StoreHomeScreen() {
           />
           <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
           <List.Item
+            title="Vendas"
+            description="Tudo que foi vendido, dia a dia"
+            onPress={() => {
+              router.push('/vendas');
+            }}
+            left={(props) => <List.Icon {...props} icon="receipt-text-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.areaTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.area}
+          />
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+          <List.Item
             title="Cobrança"
             description="Quem está devendo, com o WhatsApp pronto"
             onPress={() => {
