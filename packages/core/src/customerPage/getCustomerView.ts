@@ -2,10 +2,14 @@ import { FunctionsFetchError, FunctionsHttpError } from '@supabase/supabase-js';
 import { buildPixCopyAndPaste } from '../collections/pix';
 import type { DbClient } from '../db/client';
 import { CoreError } from '../errors';
-import type { CustomerView, CustomerViewEntry, CustomerViewItem } from './customerView';
-
-/** Formato do token do link (gerado pelo banco: 32 bytes em hex). */
-const TOKEN_PATTERN = /^[0-9a-f]{64}$/;
+import type {
+  CustomerView,
+  CustomerViewCoupon,
+  CustomerViewEntry,
+  CustomerViewItem,
+  CustomerViewPrize,
+} from './customerView';
+import { TOKEN_PATTERN } from './invokeAction';
 
 /** O JSON devolvido por public.get_customer_page (via edge function customer-view). */
 interface RawView {
@@ -21,6 +25,8 @@ interface RawView {
   points: number;
   redeemCost: number;
   scratchCost: number;
+  prizes: CustomerViewPrize[];
+  coupons: CustomerViewCoupon[];
   openSales: {
     saleId: string;
     createdAt: string;
@@ -84,6 +90,8 @@ function toCustomerView(raw: RawView): CustomerView {
       redeemCost: raw.redeemCost,
       scratchCost: raw.scratchCost,
     },
+    prizes: raw.prizes,
+    coupons: raw.coupons,
     debt: {
       balanceCents,
       pendingPoints: raw.openSales.reduce((sum, sale) => sum + sale.points, 0),

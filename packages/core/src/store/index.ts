@@ -6,14 +6,21 @@ import { getOpenInvite } from './getOpenInvite';
 import type { StoreInvite } from './invite';
 import { joinWithInvite } from './joinWithInvite';
 import type { Store } from './store';
+import type { RewardSettingsInput } from './rewardSettings';
 import type { StoreBrandingInput } from './storeBranding';
 import type { StoreDetailsInput } from './storeDetails';
 import { getStoreLogo, setStoreLogo } from './storeLogo';
 import { updateStoreBranding } from './updateStoreBranding';
+import { updateRewardSettings } from './updateRewardSettings';
 import { updateStoreDetails } from './updateStoreDetails';
 
 export type { StoreInvite } from './invite';
 export { INVITE_CODE_LENGTH, type InviteCodeField } from './inviteCode';
+export {
+  REWARD_LIMITS,
+  type RewardSettingsField,
+  type RewardSettingsInput,
+} from './rewardSettings';
 export type { Store } from './store';
 export { BRANDING_LIMITS, type StoreBrandingField, type StoreBrandingInput } from './storeBranding';
 export { STORE_LIMITS, type StoreDetailsField, type StoreDetailsInput } from './storeDetails';
@@ -27,6 +34,8 @@ export interface StoreOperations {
   updateStoreDetails(input: StoreDetailsInput): Promise<Store>;
   /** Altera cor principal e texto de boas-vindas (null = padrão); qualquer membro pode. */
   updateStoreBranding(input: StoreBrandingInput): Promise<Store>;
+  /** Altera as regras de fidelidade (custo do resgate direto); qualquer membro pode. */
+  updateRewardSettings(input: RewardSettingsInput): Promise<Store>;
   /** Troca o logo (data URL png/jpeg/webp pequeno) ou remove com null. */
   setStoreLogo(logo: string | null): Promise<void>;
   /** O logo da loja (data URL) ou null. */
@@ -45,6 +54,7 @@ export function createStoreOperations(db: DbClient): StoreOperations {
     getMyStore: () => getMyStore(db),
     updateStoreDetails: (input) => updateStoreDetails(db, input),
     updateStoreBranding: (input) => updateStoreBranding(db, input),
+    updateRewardSettings: (input) => updateRewardSettings(db, input),
     setStoreLogo: (logo) => setStoreLogo(db, logo),
     getStoreLogo: () => getStoreLogo(db),
     createInvite: () => createInvite(db),

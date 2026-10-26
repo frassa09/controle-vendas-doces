@@ -50,6 +50,67 @@ export type Database = {
           },
         ];
       };
+      coupons: {
+        Row: {
+          created_at: string;
+          customer_id: string;
+          delivered_at: string | null;
+          delivered_by: string | null;
+          id: string;
+          origin: string;
+          product_id: string;
+          product_name: string;
+          status: string;
+          store_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          customer_id: string;
+          delivered_at?: string | null;
+          delivered_by?: string | null;
+          id?: string;
+          origin: string;
+          product_id: string;
+          product_name: string;
+          status?: string;
+          store_id: string;
+        };
+        Update: {
+          created_at?: string;
+          customer_id?: string;
+          delivered_at?: string | null;
+          delivered_by?: string | null;
+          id?: string;
+          origin?: string;
+          product_id?: string;
+          product_name?: string;
+          status?: string;
+          store_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'coupons_customer_fkey';
+            columns: ['store_id', 'customer_id'];
+            isOneToOne: false;
+            referencedRelation: 'customers';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'coupons_product_fkey';
+            columns: ['store_id', 'product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['store_id', 'id'];
+          },
+          {
+            foreignKeyName: 'coupons_store_id_fkey';
+            columns: ['store_id'];
+            isOneToOne: false;
+            referencedRelation: 'stores';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       customers: {
         Row: {
           consent_at: string | null;
@@ -506,6 +567,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          redeem_cost: number;
           welcome_text: string | null;
         };
         Insert: {
@@ -517,6 +579,7 @@ export type Database = {
           logo_data?: string | null;
           name: string;
           pix_key: string;
+          redeem_cost?: number;
           welcome_text?: string | null;
         };
         Update: {
@@ -528,6 +591,7 @@ export type Database = {
           logo_data?: string | null;
           name?: string;
           pix_key?: string;
+          redeem_cost?: number;
           welcome_text?: string | null;
         };
         Relationships: [];
@@ -550,6 +614,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          redeem_cost: number;
           welcome_text: string | null;
         };
         SetofOptions: {
@@ -576,6 +641,27 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      deliver_coupon: {
+        Args: { p_coupon_id: string };
+        Returns: {
+          created_at: string;
+          customer_id: string;
+          delivered_at: string | null;
+          delivered_by: string | null;
+          id: string;
+          origin: string;
+          product_id: string;
+          product_name: string;
+          status: string;
+          store_id: string;
+        };
+        SetofOptions: {
+          from: '*';
+          to: 'coupons';
+          isOneToOne: true;
+          isSetofReturn: false;
+        };
+      };
       get_customer_balance: {
         Args: { p_customer_id: string };
         Returns: {
@@ -597,6 +683,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          redeem_cost: number;
           welcome_text: string | null;
         };
         SetofOptions: {
@@ -643,6 +730,10 @@ export type Database = {
       record_sale: {
         Args: { p_customer_id: string; p_items: Json; p_payment_method: string };
         Returns: string;
+      };
+      redeem_reward: {
+        Args: { p_pin: string; p_product_id: string; p_token: string };
+        Returns: Json;
       };
       search_customers: {
         Args: { p_query: string };

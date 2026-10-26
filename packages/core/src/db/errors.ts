@@ -25,6 +25,8 @@ const businessCodes = new Set<CoreErrorCode>([
   'PAYMENT_CANCELLED',
   'PAYMENTS_EXCEED_DEBT',
   'WALK_IN_SALE_PAYMENT',
+  'COUPON_NOT_FOUND',
+  'COUPON_ALREADY_DELIVERED',
 ]);
 
 /**
