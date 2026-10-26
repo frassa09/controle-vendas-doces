@@ -4,7 +4,7 @@ import { Bilhete } from './Bilhete';
 import { Recados } from './Recados';
 import { Room, SHELF_SLOTS } from './Room';
 import { Use } from './Symbols';
-import { docesText, money, pontosText } from './text';
+import { docesText, money, pontosText, shortDate } from './text';
 import { useAviso } from './useAviso';
 
 interface CantinhoProps {
@@ -146,7 +146,11 @@ export function Cantinho({ view, arrivedSinceLastVisit }: CantinhoProps) {
             {missing === 0
               ? 'estante cheia: troque por um doce'
               : `faltam ${String(missing)} pro doce grátis`}
-            <small>os pontos entram quando a compra é paga</small>
+            <small>
+              {points.expiresAt && balance > 0
+                ? `seus pontos valem até ${shortDate(points.expiresAt)}`
+                : 'os pontos entram quando a compra é paga'}
+            </small>
           </span>
         </div>
 

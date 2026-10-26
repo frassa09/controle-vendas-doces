@@ -19,6 +19,7 @@ interface RawView {
   };
   customer: { name: string };
   points: number;
+  pointsExpiresAt: string | null;
   redeemCost: number;
   scratchCost: number;
   openSales: {
@@ -81,6 +82,7 @@ function toCustomerView(raw: RawView): CustomerView {
     },
     points: {
       balance: raw.points,
+      expiresAt: raw.pointsExpiresAt,
       redeemCost: raw.redeemCost,
       scratchCost: raw.scratchCost,
     },

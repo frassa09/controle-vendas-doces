@@ -220,6 +220,7 @@ const kindLabel: Record<PointsMovementKind, string> = {
   saleReversal: 'Estorno de compra',
   saleAdjustment: 'Ajuste de compra',
   redemption: 'Resgate',
+  expiration: 'Pontos vencidos',
 };
 
 /** Saldo de pontos (pode ser negativo depois de um estorno) e o extrato, do mais novo ao mais antigo. */
@@ -250,6 +251,11 @@ function PointsCard({ points }: { points: CustomerPoints }) {
         >
           {points.balance}
         </Text>
+        {points.expiresAt !== null ? (
+          <Text variant="bodyMedium" style={[styles.debtSince, muted]}>
+            {`Valem até ${dayFormat.format(new Date(points.expiresAt))}, se não houver compra paga antes.`}
+          </Text>
+        ) : null}
         {points.movements.length === 0 ? (
           <Text variant="bodyMedium" style={[styles.debtSince, muted]}>
             Os pontos entram quando a compra é paga por inteiro.

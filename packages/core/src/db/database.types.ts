@@ -506,6 +506,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          points_validity_days: number | null;
           welcome_text: string | null;
         };
         Insert: {
@@ -517,6 +518,7 @@ export type Database = {
           logo_data?: string | null;
           name: string;
           pix_key: string;
+          points_validity_days?: number | null;
           welcome_text?: string | null;
         };
         Update: {
@@ -528,6 +530,7 @@ export type Database = {
           logo_data?: string | null;
           name?: string;
           pix_key?: string;
+          points_validity_days?: number | null;
           welcome_text?: string | null;
         };
         Relationships: [];
@@ -550,6 +553,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          points_validity_days: number | null;
           welcome_text: string | null;
         };
         SetofOptions: {
@@ -576,6 +580,10 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      expire_customer_points: {
+        Args: { p_customer_id: string };
+        Returns: string;
+      };
       get_customer_balance: {
         Args: { p_customer_id: string };
         Returns: {
@@ -597,6 +605,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          points_validity_days: number | null;
           welcome_text: string | null;
         };
         SetofOptions: {
