@@ -42,6 +42,7 @@ export {
 export {
   SALE_LIMITS,
   unitPriceError,
+  type ListSalesOptions,
   type MemberRef,
   type PaymentMethod,
   type RecordSaleInput,
@@ -50,6 +51,8 @@ export {
   type SaleField,
   type SaleItem,
   type SaleItemInput,
+  type SaleListItem,
+  type SaleListStanding,
   type SaleOperations,
   type SalePayment,
   type SalePaymentInput,
