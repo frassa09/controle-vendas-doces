@@ -254,6 +254,8 @@ begin
   end if;
 
   select s.redeem_cost into v_cost from public.stores s where s.id = v_customer.store_id;
+  -- Pontos vencidos saem do saldo antes da troca (validade dos pontos).
+  perform private.expire_customer_points(v_customer.store_id, v_customer.id);
   v_balance := private.customer_points_balance(v_customer.store_id, v_customer.id);
   if v_balance < v_cost then
     return jsonb_build_object('error', 'INSUFFICIENT_POINTS', 'balance', v_balance, 'cost', v_cost);
@@ -282,14 +284,13 @@ revoke execute on function public.redeem_reward(text, text, uuid) from public, a
 grant execute on function public.redeem_reward(text, text, uuid) to service_role;
 
 -- Página do cliente -------------------------------------------------------------------
--- Igual à da correção de vendas, mais: custo do resgate configurado, prêmios que
+-- Igual à da validade dos pontos, mais: custo do resgate configurado, prêmios que
 -- podem ser escolhidos e cupons pendentes. O custo da raspadinha continua fixo até
 -- o ticket da raspadinha.
 
 create or replace function public.get_customer_page(p_token text)
 returns jsonb
 language plpgsql
-stable
 security definer
 set search_path = ''
 as $$
@@ -301,6 +302,7 @@ declare
   v_history jsonb;
   v_prizes jsonb;
   v_coupons jsonb;
+  v_expires timestamptz;
 begin
   if p_token is null or p_token !~ '^[0-9a-f]{64}$' then
     return null;
@@ -313,6 +315,8 @@ begin
 
   select * into v_store from public.stores s where s.id = v_customer.store_id;
 
+  -- Vence os pontos antes de ler o saldo (a leitura é o gatilho do vencimento).
+  v_expires := private.expire_customer_points(v_customer.store_id, v_customer.id);
   v_points := private.customer_points_balance(v_customer.store_id, v_customer.id);
 
   -- Vendas ainda não quitadas (FIFO), com o que falta de cada uma e os pontos que
@@ -409,6 +413,7 @@ begin
     ),
     'customer', jsonb_build_object('name', v_customer.name),
     'points', v_points,
+    'pointsExpiresAt', v_expires,
     'redeemCost', v_store.redeem_cost,
     -- Fixo até o ticket da raspadinha (padrão da spec: 5 pontos).
     'scratchCost', 5,

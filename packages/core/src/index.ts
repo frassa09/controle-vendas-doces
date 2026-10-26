@@ -20,6 +20,7 @@ export {
 } from './customers';
 export {
   BRANDING_LIMITS,
+  POINTS_VALIDITY_LIMITS,
   INVITE_CODE_LENGTH,
   REWARD_LIMITS,
   type RewardSettingsField,

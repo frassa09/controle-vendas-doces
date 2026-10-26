@@ -68,7 +68,7 @@ describe('página do cliente', () => {
         logoDataUrl: null,
       },
       customer: { name: 'Júlia Santos', firstName: 'Júlia' },
-      points: { balance: 0, redeemCost: 10, scratchCost: 5 },
+      points: { balance: 0, expiresAt: null, redeemCost: 10, scratchCost: 5 },
       prizes: [],
       coupons: [],
       debt: { balanceCents: 0, pendingPoints: 0, pixCode: null, openSales: [] },

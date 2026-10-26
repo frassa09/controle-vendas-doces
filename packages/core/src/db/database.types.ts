@@ -567,6 +567,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          points_validity_days: number | null;
           redeem_cost: number;
           welcome_text: string | null;
         };
@@ -579,6 +580,7 @@ export type Database = {
           logo_data?: string | null;
           name: string;
           pix_key: string;
+          points_validity_days?: number | null;
           redeem_cost?: number;
           welcome_text?: string | null;
         };
@@ -591,6 +593,7 @@ export type Database = {
           logo_data?: string | null;
           name?: string;
           pix_key?: string;
+          points_validity_days?: number | null;
           redeem_cost?: number;
           welcome_text?: string | null;
         };
@@ -614,6 +617,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          points_validity_days: number | null;
           redeem_cost: number;
           welcome_text: string | null;
         };
@@ -662,6 +666,10 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      expire_customer_points: {
+        Args: { p_customer_id: string };
+        Returns: string;
+      };
       get_customer_balance: {
         Args: { p_customer_id: string };
         Returns: {
@@ -683,6 +691,7 @@ export type Database = {
           logo_data: string | null;
           name: string;
           pix_key: string;
+          points_validity_days: number | null;
           redeem_cost: number;
           welcome_text: string | null;
         };

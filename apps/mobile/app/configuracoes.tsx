@@ -134,6 +134,23 @@ export default function SettingsScreen() {
             descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
             style={styles.menuItem}
           />
+          <Divider style={{ backgroundColor: theme.colors.outlineVariant }} />
+          <List.Item
+            title="Validade dos pontos"
+            description={
+              store.pointsValidityDays === null
+                ? 'Sem validade'
+                : `Vencem após ${String(store.pointsValidityDays)} dias sem compra paga`
+            }
+            onPress={() => {
+              router.push('/validade-pontos');
+            }}
+            left={(props) => <List.Icon {...props} icon="clock-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            titleStyle={styles.menuTitle}
+            descriptionStyle={{ color: theme.colors.onSurfaceVariant }}
+            style={styles.menuItem}
+          />
         </View>
 
         <Text

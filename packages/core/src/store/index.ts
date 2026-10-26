@@ -12,6 +12,7 @@ import type { StoreDetailsInput } from './storeDetails';
 import { getStoreLogo, setStoreLogo } from './storeLogo';
 import { updateStoreBranding } from './updateStoreBranding';
 import { updateRewardSettings } from './updateRewardSettings';
+import { updatePointsValidity } from './updatePointsValidity';
 import { updateStoreDetails } from './updateStoreDetails';
 
 export type { StoreInvite } from './invite';
@@ -23,6 +24,7 @@ export {
 } from './rewardSettings';
 export type { Store } from './store';
 export { BRANDING_LIMITS, type StoreBrandingField, type StoreBrandingInput } from './storeBranding';
+export { POINTS_VALIDITY_LIMITS } from './pointsValidity';
 export { STORE_LIMITS, type StoreDetailsField, type StoreDetailsInput } from './storeDetails';
 
 export interface StoreOperations {
@@ -36,6 +38,8 @@ export interface StoreOperations {
   updateStoreBranding(input: StoreBrandingInput): Promise<Store>;
   /** Altera as regras de fidelidade (custo do resgate direto); qualquer membro pode. */
   updateRewardSettings(input: RewardSettingsInput): Promise<Store>;
+  /** Define em quantos dias sem compra paga os pontos vencem; null = sem validade. */
+  updatePointsValidity(days: number | null): Promise<Store>;
   /** Troca o logo (data URL png/jpeg/webp pequeno) ou remove com null. */
   setStoreLogo(logo: string | null): Promise<void>;
   /** O logo da loja (data URL) ou null. */
@@ -55,6 +59,7 @@ export function createStoreOperations(db: DbClient): StoreOperations {
     updateStoreDetails: (input) => updateStoreDetails(db, input),
     updateStoreBranding: (input) => updateStoreBranding(db, input),
     updateRewardSettings: (input) => updateRewardSettings(db, input),
+    updatePointsValidity: (days) => updatePointsValidity(db, days),
     setStoreLogo: (logo) => setStoreLogo(db, logo),
     getStoreLogo: () => getStoreLogo(db),
     createInvite: () => createInvite(db),

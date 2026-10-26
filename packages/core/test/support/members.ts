@@ -86,3 +86,20 @@ export async function simulatePointsSpent(
   });
   if (error) throw error;
 }
+
+/**
+ * Volta no tempo todos os movimentos de pontos do cliente (para testar o vencimento
+ * sem esperar dias de verdade). Usa a chave de serviço.
+ */
+export async function ageCustomerPoints(customerId: string, days: number): Promise<void> {
+  const { data, error } = await admin
+    .from('points_ledger')
+    .select('id, created_at')
+    .eq('customer_id', customerId);
+  if (error) throw error;
+  for (const row of data as { id: string; created_at: string }[]) {
+    const moved = new Date(new Date(row.created_at).getTime() - days * 86_400_000).toISOString();
+    const update = await admin.from('points_ledger').update({ created_at: moved }).eq('id', row.id);
+    if (update.error) throw update.error;
+  }
+}
