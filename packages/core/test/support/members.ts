@@ -103,3 +103,16 @@ export async function ageCustomerPoints(customerId: string, days: number): Promi
     if (update.error) throw update.error;
   }
 }
+
+/**
+ * Põe venda ou pagamento numa data/hora conhecida (os registros nascem com o relógio
+ * do banco), para testar períodos com valores fixos. Usa a chave de serviço.
+ */
+export async function setRecordTime(
+  table: 'sales' | 'payments',
+  id: string,
+  isoTime: string,
+): Promise<void> {
+  const { error } = await admin.from(table).update({ created_at: isoTime }).eq('id', id);
+  if (error) throw error;
+}

@@ -4,6 +4,7 @@ import { createCatalogOperations, type CatalogOperations } from './catalog';
 import { createCustomerOperations, type CustomerOperations } from './customers';
 import { createCustomerPageOperations, type CustomerPageOperations } from './customerPage';
 import type { DbClient } from './db/client';
+import { createMetricsOperations, type MetricsOperations } from './metrics';
 import { createPaymentOperations, type PaymentOperations } from './payments';
 import { createPointsOperations, type PointsOperations } from './points';
 import { createSaleOperations, type SaleOperations } from './sales';
@@ -23,6 +24,8 @@ export interface Core {
   payments: PaymentOperations;
   collections: CollectionOperations;
   points: PointsOperations;
+  /** Métricas de vendas, produtos e clientes por período. */
+  metrics: MetricsOperations;
   /** Página pública do cliente (sem login, pelo token do link). */
   customerPage: CustomerPageOperations;
 }
@@ -44,6 +47,7 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     payments: createPaymentOperations(supabase),
     collections: createCollectionOperations(supabase, { customerPageUrl }),
     points: createPointsOperations(supabase),
+    metrics: createMetricsOperations(supabase),
     customerPage: createCustomerPageOperations(supabase),
   };
 }
