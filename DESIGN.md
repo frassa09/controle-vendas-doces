@@ -315,6 +315,9 @@ Diálogo modal ancorado embaixo, até 440px, 92% da altura, papel com topo de 26
 ### Casinhas de Raspar
 Quadrados brancos (14px de canto, anel `madeira`) com o resultado por baixo e um canvas por cima pintado com a cor crua da loja, listras brancas a 32% em diagonal e um círculo branco no centro. O dedo apaga em círculos; após 14 toques a cobertura some em 0.4s. "Revelar tudo" é sempre oferecido como secundário. Casinha vazia mostra um círculo tracejado em `madeira-2`.
 
+### Estados da página inteira
+Abrindo, link não encontrado e sem conexão ficam fora do quarto, centralizados na parede: o brigadeiro balançando ("Abrindo seu cantinho…"), ou a geladeira com um bilhete em branco, título em Display `loja-forte` e uma frase em `cacau-2`. O link não encontrado não mostra nada da loja (usa a cor padrão); sem conexão oferece "Tentar de novo" como ação principal. Na primeira visita a estante se enche doce a doce; nas seguintes, só os doces novos caem e o "+N" aparece. "+N guardados" fica no rodapé de madeira, à direita do vaso.
+
 ### Aviso
 Pílula cacau com texto branco em 700, 14px de canto, fixa a 24px do fundo; entra subindo 20px com a curva de saída e some após 2.6s.
 
