@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Appbar, Divider, List, Menu, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BackupReminder } from '../src/backup/BackupReminder';
 import { useSession } from '../src/session/SessionProvider';
 import { PrimaryButton } from '../src/ui/PrimaryButton';
 import { radii, spacing } from '../src/theme/theme';
@@ -85,6 +86,8 @@ export default function StoreHomeScreen() {
         >
           Nova venda
         </PrimaryButton>
+
+        <BackupReminder storeId={store.id} />
 
         <View
           style={[
