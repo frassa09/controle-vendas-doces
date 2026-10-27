@@ -140,16 +140,25 @@ Usa `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` (públicas) em `apps/web/.env
 O endereço da página é `<CUSTOMER_PAGE_URL>/c/<token do cliente>` (o mesmo que a cobrança
 manda); qualquer outro caminho mostra "Não achamos esse cantinho".
 
-A página não lê tabelas: tudo vem da edge function `customer-view`
-(`supabase/functions/customer-view`, `verify_jwt = false`), que recebe o token e chama
-`public.get_customer_page` com a service role. Ela precisa estar publicada no projeto
-(sem Docker, o bundle é feito no servidor):
+A página não lê tabelas: tudo passa pelas edge functions em `supabase/functions` (todas
+com `verify_jwt = false`), que recebem o token e chamam o banco com a service role:
+
+| Função                   | Para quê                                        |
+| ------------------------ | ----------------------------------------------- |
+| `customer-view`          | abrir o Cantinho (`public.get_customer_page`)   |
+| `customer-redeem`        | trocar pontos por produto (com PIN)             |
+| `customer-scratch`       | jogar a raspadinha (com PIN)                    |
+| `customer-scratch-prize` | escolher o prêmio da raspadinha ganha (com PIN) |
+
+**Todas** precisam estar publicadas no projeto; sem uma delas a ação correspondente da
+página falha com "sem conexão". Sem nome, o comando publica todas de uma vez (sem Docker,
+o bundle é feito no servidor):
 
 ```bash
 # testes (necessário para npm test)
-npx supabase functions deploy customer-view --project-ref "$SUPABASE_TEST_PROJECT_REF" --use-api
+npx supabase functions deploy --project-ref "$SUPABASE_TEST_PROJECT_REF" --use-api
 # produção (o integrador, depois de aplicar as migrações)
-npx supabase functions deploy customer-view --project-ref "$SUPABASE_PROJECT_REF" --use-api
+npx supabase functions deploy --project-ref "$SUPABASE_PROJECT_REF" --use-api
 ```
 
 Na Vercel: projeto com raiz `apps/web`, build `npm run build`, saída `dist`, variáveis
