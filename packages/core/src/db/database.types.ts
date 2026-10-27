@@ -689,6 +689,10 @@ export type Database = {
         };
         Returns: Json;
       };
+      collection_metrics: {
+        Args: { p_from: string; p_to: string };
+        Returns: Json;
+      };
       create_store: {
         Args: { p_city: string; p_name: string; p_pix_key: string };
         Returns: {
@@ -756,6 +760,7 @@ export type Database = {
         Args: { p_customer_id: string };
         Returns: string;
       };
+      expire_store_points: { Args: never; Returns: number };
       get_customer_balance: {
         Args: { p_customer_id: string };
         Returns: {
@@ -808,6 +813,7 @@ export type Database = {
           user_id: string;
         }[];
       };
+      loyalty_metrics: { Args: { p_from: string; p_to: string }; Returns: Json };
       play_scratch: {
         Args: { p_format: string; p_pin: string; p_token: string };
         Returns: Json;
@@ -860,7 +866,12 @@ export type Database = {
         };
       };
       store_metrics: {
-        Args: { p_from: string; p_lapsed_days: number; p_time_zone: string; p_to: string };
+        Args: {
+          p_from: string;
+          p_lapsed_days: number;
+          p_time_zone: string;
+          p_to: string;
+        };
         Returns: Json;
       };
       update_sale: {
