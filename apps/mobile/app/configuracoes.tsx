@@ -4,6 +4,7 @@ import { ScrollView, Share, StyleSheet, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ActivityIndicator, Button, Divider, List, Text } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BackupSection } from '../src/backup/BackupSection';
 import { core } from '../src/core';
 import { useSession } from '../src/session/SessionProvider';
 import { radii, spacing } from '../src/theme/theme';
@@ -24,7 +25,7 @@ function messageOf(error: unknown): string {
   return isCoreError(error) ? error.message : fallbackMessage;
 }
 
-/** Configurações da loja. Por enquanto: convidar a pessoa que vende junto. */
+/** Configurações da loja: ajustes, convite de quem vende junto e cópia dos dados. */
 export default function SettingsScreen() {
   const session = useSession();
   const theme = useAppTheme();
@@ -240,6 +241,8 @@ export default function SettingsScreen() {
             </PrimaryButton>
           )
         ) : null}
+
+        <BackupSection storeId={store.id} />
       </ScrollView>
     </View>
   );

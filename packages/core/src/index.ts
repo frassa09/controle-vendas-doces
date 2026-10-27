@@ -157,3 +157,16 @@ export type {
   ProductMetrics,
   WeekdayMetrics,
 } from './metrics';
+export {
+  BACKUP_FILE_NAMES,
+  backupToZip,
+  crc32,
+  createZip,
+  toCsv,
+  type Backup,
+  type BackupFile,
+  type BackupFileName,
+  type BackupOperations,
+  type CsvValue,
+  type ZipEntry,
+} from './backup';

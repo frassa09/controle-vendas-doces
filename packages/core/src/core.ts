@@ -1,4 +1,5 @@
 import { createAuthOperations, type AuthOperations } from './auth';
+import { createBackupOperations, type BackupOperations } from './backup';
 import { createCollectionOperations, type CollectionOperations } from './collections';
 import { createCouponOperations, type CouponOperations } from './coupons';
 import { createCatalogOperations, type CatalogOperations } from './catalog';
@@ -37,6 +38,8 @@ export interface Core {
   scratch: ScratchOperations;
   /** Página pública do cliente (sem login, pelo token do link). */
   customerPage: CustomerPageOperations;
+  /** Cópia de segurança de tudo da loja em CSV. */
+  backup: BackupOperations;
 }
 
 export interface CoreDependencies {
@@ -61,5 +64,6 @@ export function createCore({ supabase, customerPageUrl }: CoreDependencies): Cor
     coupons: createCouponOperations(supabase),
     scratch: createScratchOperations(supabase),
     customerPage: createCustomerPageOperations(supabase),
+    backup: createBackupOperations(supabase),
   };
 }
