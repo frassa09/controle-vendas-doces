@@ -99,7 +99,7 @@ export interface LoyaltyMetrics {
     redeemed: number;
     /** Gastos na raspadinha. */
     scratched: number;
-    /** Vencidos pela validade da loja. */
+    /** Vencidos pela validade da loja (contam na data em que venceram). */
     expired: number;
   };
   scratch: {

@@ -357,6 +357,159 @@ function Customers({ now, before }: { now: PeriodMetrics; before: PeriodMetrics 
   );
 }
 
+/** "19,5" e "26,7%" no jeito brasileiro. */
+const decimalText = (n: number) => String(n).replace('.', ',');
+
+function Collection({ now, before }: { now: PeriodMetrics; before: PeriodMetrics }) {
+  const c = now.collection;
+  const rate = c.defaultRate;
+  const bands = [
+    { key: 'upTo7', label: 'Até 7 dias', band: c.debtByAge.upTo7 },
+    { key: 'upTo30', label: 'De 8 a 30 dias', band: c.debtByAge.upTo30 },
+    { key: 'over30', label: 'Mais de 30 dias', band: c.debtByAge.over30 },
+  ];
+
+  return (
+    <>
+      <Card title="Fiado em aberto">
+        <Figure
+          big
+          label="Em aberto no fim do período"
+          value={formatCents(c.openCents)}
+          delta={deltaText(c.openCents, before.collection.openCents)}
+        />
+        {c.openCents === 0 ? (
+          <Muted>Ninguém devendo. Todo fiado foi pago.</Muted>
+        ) : (
+          <>
+            <Muted>
+              {countText(c.debtorsCount, 'cliente devendo', 'clientes devendo')}, pela idade de cada
+              venda:
+            </Muted>
+            <BarList
+              rows={bands.map(({ key, label, band }) => ({
+                key,
+                label,
+                value: band.cents,
+                valueText: formatCents(band.cents),
+                hint: countText(band.customersCount, 'cliente', 'clientes'),
+              }))}
+            />
+          </>
+        )}
+      </Card>
+      <Card title="Pagamento do fiado">
+        <View style={styles.grid}>
+          <Figure
+            label="Tempo médio até pagar"
+            value={
+              c.averageDaysToPay === null
+                ? '—'
+                : `${decimalText(c.averageDaysToPay)} ${c.averageDaysToPay === 1 ? 'dia' : 'dias'}`
+            }
+            delta={
+              c.settledCount === 0
+                ? 'nenhum fiado quitado no período'
+                : countText(c.settledCount, 'venda quitada', 'vendas quitadas')
+            }
+          />
+          <Figure
+            label="Inadimplência"
+            value={rate.percent === null ? '—' : `${decimalText(rate.percent)}%`}
+            delta={
+              rate.percent === null
+                ? 'nenhum fiado com mais de 30 dias'
+                : `${formatCents(rate.openCents)} de ${formatCents(rate.fiadoCents)}`
+            }
+          />
+        </View>
+        <Muted>
+          Inadimplência: de tudo o que foi vendido fiado há mais de {String(rate.overdueDays)} dias,
+          quanto ainda não foi pago. Fiado mais novo está no prazo e não entra na conta.
+        </Muted>
+      </Card>
+    </>
+  );
+}
+
+function Loyalty({ now, before }: { now: PeriodMetrics; before: PeriodMetrics }) {
+  const theme = useAppTheme();
+  const { points, scratch, prizes } = now.loyalty;
+
+  return (
+    <>
+      <Card title="Pontos">
+        <View style={styles.grid}>
+          <Figure
+            label="Ganhos em compras"
+            value={String(points.issued)}
+            delta={deltaText(points.issued, before.loyalty.points.issued)}
+          />
+          <Figure label="Trocados por produto" value={String(points.redeemed)} delta={null} />
+          <Figure label="Gastos na raspadinha" value={String(points.scratched)} delta={null} />
+          <Figure label="Vencidos" value={String(points.expired)} delta={null} />
+        </View>
+        {points.reversed > 0 ? (
+          <Muted>
+            {countText(points.reversed, 'ponto voltou', 'pontos voltaram')} por venda cancelada ou
+            corrigida.
+          </Muted>
+        ) : null}
+      </Card>
+      <Card title="Raspadinha">
+        {scratch.plays === 0 ? (
+          <Muted>Ninguém raspou neste período.</Muted>
+        ) : (
+          <View style={styles.grid}>
+            <Figure
+              label="Jogadas"
+              value={String(scratch.plays)}
+              delta={deltaText(scratch.plays, before.loyalty.scratch.plays)}
+            />
+            <Figure
+              label="Deram prêmio"
+              value={`${decimalText(scratch.winPercent ?? 0)}%`}
+              delta={`${countText(scratch.wins, 'prêmio', 'prêmios')} · chance configurada ${decimalText(scratch.configuredPercent ?? 0)}%`}
+            />
+          </View>
+        )}
+      </Card>
+      <Card title="Custo da fidelidade">
+        <Figure
+          label="Produtos entregues de prêmio"
+          value={formatCents(prizes.costCents)}
+          delta={deltaText(prizes.costCents, before.loyalty.prizes.costCents)}
+        />
+        {prizes.count === 0 ? (
+          <Muted>Nenhum prêmio entregue neste período.</Muted>
+        ) : (
+          <>
+            <SplitBar
+              segments={[
+                {
+                  key: 'redemption',
+                  label: 'Troca por pontos',
+                  value: prizes.redemption.cents,
+                  valueText: `${formatCents(prizes.redemption.cents)} · ${countText(prizes.redemption.count, 'prêmio', 'prêmios')}`,
+                  color: theme.colors.primary,
+                },
+                {
+                  key: 'scratch',
+                  label: 'Raspadinha',
+                  value: prizes.scratch.cents,
+                  valueText: `${formatCents(prizes.scratch.cents)} · ${countText(prizes.scratch.count, 'prêmio', 'prêmios')}`,
+                  color: SECOND_SERIES,
+                },
+              ]}
+            />
+            <Muted>Pelo preço atual de cada produto. Cupons ainda não entregues não entram.</Muted>
+          </>
+        )}
+      </Card>
+    </>
+  );
+}
+
 const KIND_BUTTONS: { value: PeriodKind; label: string }[] = [
   { value: 'day', label: 'Dia' },
   { value: 'week', label: 'Semana' },
@@ -502,6 +655,8 @@ export default function MetricsScreen() {
         <Rhythm now={data.period} />
         <Products now={data.period} />
         <Customers now={data.period} before={data.previous} />
+        <Collection now={data.period} before={data.previous} />
+        <Loyalty now={data.period} before={data.previous} />
       </ScrollView>
     </View>
   );
